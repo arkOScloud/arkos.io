@@ -1,0 +1,24 @@
+<aside class="sidebar" role="complementary">
+  <h3>Stay Connected</h3>
+  <ul class="nav nav-list">
+    <li><a href="/blog/feed.xml"><i class="icon-rss" target="_blank"></i> News and Releases (RSS)</a></li>
+    <li><a href="https://lists.citizenweb.io/listinfo/arkos"><i class="icon-envelope-alt" target="_blank"></i> Mailing List</a></li>
+    <li><a href="https://webchat.freenode.net/?channels=arkOS"><i class="icon-comment" target="_blank"></i> IRC</a></li>
+    <li><a href="https://twitter.com/cznweb"><i class="icon-twitter" target="_blank"></i> Follow on Twitter</a></li>
+    <li><a href="https://joindiaspora.com/u/cznweb"><i class="icon-asterisk" target="_blank"></i> Follow on Diaspora</a></li>
+    <li><a href="https://github.com/cznweb"><i class="icon-github-alt" target="_blank"></i> Contribute via GitHub</a></li>
+    <li><a href="mailto:info@citizenweb.io"><i class="icon-envelope" target="_blank"></i> Contact Us</a></li>
+  </ul>
+  
+  <h3>Recent News</h3>
+  <ul>
+    {% for post in site.posts limit:5 %}
+      <li>
+        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <h3>A derivative of</h3>
+  <a href="http://archlinuxarm.org/"><img src="https://cdn.citizenweb.io/static/img/logo-alarm2.png" class="img-responsive" /></a>
+</aside><!-- /.sidebar -->

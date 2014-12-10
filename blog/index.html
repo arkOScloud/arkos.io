@@ -1,0 +1,37 @@
+---
+layout: page
+title: Blog
+---
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <ul class="post-list">
+        {% for post in paginator.posts %}
+          <li>
+            <h2>
+              <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+            </h2>
+            <span class="post-meta">{{ post.date | date: "%-d %B %Y" }} by {{ post.author }}</span>
+            {% if post.summary %}
+              <p class="lead">{{ post.summary }}</p>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+      <nav>
+        <ul class="pager">
+        {% if paginator.previous_page %}
+          <li class="previous"><a href="{{ paginator.previous_page_path }}"><span aria-hidden="true">&larr;</span> Older</a></li>
+        {% endif %}
+          <li><span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span></li>
+        {% if paginator.next_page %}
+          <li class="next"><a href="{{ paginator.next_page_path }}">Newer <span aria-hidden="true">&rarr;</span></a></li>
+        {% endif %}
+        </ul>
+      </nav>
+    </div>
+    <div class="col-sm-4">
+      {% include sidebar.html %}
+    </div>
+  </div>
+</div>
