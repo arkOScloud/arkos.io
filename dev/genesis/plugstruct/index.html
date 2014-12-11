@@ -1,0 +1,335 @@
+---
+layout: page
+pretitle: Development Centre
+title: "Genesis: Plugin Structure"
+---
+<div class="container">
+  <div class="row">
+    <div class="col-md-3" id="sidenav">
+      <ul class="nav nav-list docs-sidenav" data-spy="affix" data-offset-top="290">
+      <li><a href="#init"><i class="icon-chevron-right"></i> plugin.json</a></li>
+      <li><a href="#main"><i class="icon-chevron-right"></i> main.py</a></li>
+      <li><a href="#backend"><i class="icon-chevron-right"></i> backend.py</a></li>
+      <li><a href="#layout"><i class="icon-chevron-right"></i> layout/</a></li>
+      <li><a href="#files"><i class="icon-chevron-right"></i> files/</a></li>
+      </ul>
+    </div>
+    <div id="content" class="col-md-9">
+      <p class="lead">In addition to the API structure, general plugins in Genesis follow a specific convention for files and folders. These conventions should be followed whenever possible to ensure plugin compatibility and ease of bugtesting.</p>
+      <div class="alert alert-warning"><strong>Please note</strong> that webapp and database plugins do not follow these conventions. See the <a href="https://arkos.io/dev/genesis/apps-dbs">Webapp and Database Plugin documentation</a> for details.</div>
+      <section id="init">
+        <div class="page-header">
+          <h2>plugin.json</h2>
+        </div>
+        <p>The first step to creating a plugin is in setting a <code>plugin.json</code>. This file contains certain variables that Genesis reads to create entries in the Applications pane. Below is the typical structure of a <code>plugin.json</code> file:</p>
+{% highlight json %}
+{
+    "name": "Chat (XMPP)",
+    "type": "plugin",
+    "icon": "gen-bubbles",
+    "description": {
+        "short": "Host your own chat/IM server",
+        "long": "XMPP (also known as Jabber) is an open protocol for real-time instant messaging and chat between different clients. This plugin hosts an XMPP server on your device, registers user accounts and intermediates communication between multiple services."
+    },
+    "categories": [
+        {
+            "primary": "Communication",
+            "secondary": ["Chat", "Instant Messaging (IM)"]
+        }
+    ],
+    "version": "0.1",
+    "author": "arkOS",
+    "homepage": "https://arkos.io",
+    "app_author": "The Prosody Team",
+    "app_homepage": "https://prosody.im",
+    "logo": false,
+    "screenshots": [],
+    "services": [
+        {
+            "name": "XMPP Chat Server",
+            "binary": "prosody",
+            "ports": [["tcp", "5222"], ["tcp", "5269"]]
+        }
+    ],
+    "modules": ["main", "backend"],
+    "platforms": ["any"],
+    "dependencies": {
+        "any": [
+            {
+                "type": "app",
+                "name": "Prosody",
+                "package": "prosody",
+                "binary": "prosodyctl"
+            },
+            {
+                "type": "app",
+                "name": "LUA",
+                "package": "lua51",
+                "binary": null
+            },
+            {
+                "type": "app",
+                "name": "LUA Security",
+                "package": "lua51-sec",
+                "binary": null
+            }
+        ]
+    },
+    "generation": 1
+}
+{% endhighlight %}
+        <p>Most variables are required, if not needed they should be declared but left null.</p>
+        <dl class="devsub">
+          <dt>name</dt>
+            <dd><em>String.</em> The name of the plugin. This shows up in the Applications menu. It is NOT the name used in the sidebar, that gets set by <code>text</code> in <a href="/dev/genesis/api#genesis.api.CategoryPlugin">genesis.api.CategoryPlugin</a>.</dd>
+          <dt>type</dt>
+            <dd><em>String.</em> One of &#8216;plugin&#8217;, &#8216;database&#8217; or &#8216;webapp&#8217;.</dd>
+          <dt>icon</dt>
+            <dd><em>String.</em> The class of the iconfont that you want to use to represent this plugin. Icons are listed on the <a href="/dev/genesis/iconref">Icon Reference</a> page.</dd>
+          <dt>description</dt>
+            <dd><em>JSON.</em> Two keys here, <code>short</code> and <code>long</code>, which are strings used for short and long descriptions of the application, respectively. These are displayed in the Applications pane list.</dd>
+          <dt>categories</dt>
+            <dd><em>JSON.</em> A list of JSON objects declaring the categories that the app will appear in the Applications pane. One object for each primary category, and its subsequent secondary categories are in a new key like shown.</dd>
+          <dt>version</dt>
+            <dd><em>String.</em> The version of this plugin. This <strong>must</strong> be incremented at every new release. When a new version is available on a Genesis Plugin Repository, the application will mark it as an available update for the user to install.</dd>
+          <dt>author</dt>
+            <dd><em>String.</em> The name or chosen pseudonym of the plugin&#8217;s author. (That&#8217;s you!)</dd>
+          <dt>homepage</dt>
+            <dd><em>String.</em> A page where one can go to get more information about the plugin OR its author. It&#8217;s up to the author to choose what goes here.</dd>
+          <dt>app_author</dt>
+            <dd>Optional <em>String.</em> The name or chosen pseudonym of the original application&#8217;s author.</dd>
+          <dt>app_homepage</dt>
+            <dd>Optional <em>String.</em> A page where one can go to get more information about the application behind the plugin itself.</dd>
+          <dt>logo</dt>
+            <dd><em>Boolean.</em> True if the plugin has a logo file to display in the Applications pane. This logo file is looked for at <code>files/logo.png</code> in the plugin folder if true.</dd>
+          <dt>screenshots</dt>
+            <dd>Optional <em>List.</em> A list of filenames for images to use as screenshots in the App Store window. i.e. if one of the list items is <code>screen1.png</code>, it will look for the file at <code>files/screen1.png</code></dd>
+          <dt>services</dt>
+            <dd><em>List.</em> A list of JSON objects declaring the services that accompany this plugin&#8217;s application. <code>name</code> is a human-readable name for the service; <code>binary</code> is the name for the systemd service file that is installed with this application (NOT an executable); <code>ports</code> is a list of lists in form [protocol, port] which gets passed to the Security (Firewall) framework. Ports list can be left empty if it is not a socket-binding application.</dd>
+          <dt>modules</dt>
+            <dd><em>List.</em> Lists the Python modules in this plugin folder that must be loaded and included in this plugin. Example: a file named <code>main.py</code> must be declared here as <code>main</code>.</dd>
+          <dt>platforms</dt>
+            <dd><em>List.</em> A list of platforms that this plugin is compatible with. This plugin will not show up in the Applications list of platforms not listed here. Plugins that are compatible with all platforms are listed &#8216;any&#8217;.</dd>
+            <dd>The platform should be in shortname format, i.e. &#8216;arkos&#8217; for arkOS, &#8216;debian&#8217; for Ubuntu/Debian, etc.</dd>
+          <dt>dependencies</dt>
+            <dd><em>JSON object.</em> Lists dpendencies for each operating system. The operating system in question (or <code>all</code> for any OS) is listed as the key. The value is a list of JSON objects, one object per dependency.</dd>
+            <dd>Dependencies can be of type <code>module</code> for Python modules, <code>plugin</code> for another Genesis plugin, or <code>app</code> for a binary application.</dd>
+            <dd><code>app</code> dependencies must have at least the human-readable <code>name</code>, then the <code>package</code> name which will be installed by the operating system&#8217;s package management system. The <code>binary</code> name is used to quickly verify if the app was installed correctly. If the package doesn&#8217;t have a binary, it can be set to null.</dd>
+            <dd><code>module</code> dependencies must have at least the human-readable <code>name</code>, the <code>package</code> name which will be installed from the Python Package Index, and the <code>binary</code> which is the actual module name that would be imported in a script (to test if correctly installed).</dd>
+            <dd><code>plugin</code> dependencies must have at least the human-readable <code>name</code>, and the <code>package</code> id which will be installed from the Genesis Plugin Repository.</dd>
+          <dt>generation</dt>
+            <dd><em>Integer.</em> The version of the Genesis API that this plugin is compatible with. At this time, there is only one version, <code>1</code>.</dd>
+        </dl>
+      </section>
+      <section id="main" class="docsection">
+        <div class="page-header">
+          <h2>main.py</h2>
+        </div>
+        <p>The file that contains the plugin&#8217;s code structure is generally called <code>main.py</code>. Here is an edited example of a <code>main.py</code> file, set up to show its basic elements.</p>
+{% highlight python %}
+from genesis.ui import *
+from genesis.api import *
+import backend
+
+class HostsPlugin(CategoryPlugin):
+    text = 'Hosts/Aliases'
+    iconfont = 'gen-screen'
+    folder = 'advanced'
+
+    def on_init(self):
+        ...
+
+    def on_session_start(self):
+        ...
+
+    def get_ui(self):
+        ...
+
+    @event('button/click')
+    def on_click(self, event, params, vars = None):
+        if params[0] == 'add':
+            ...
+
+    @event('dialog/submit')
+    def on_submit(self, event, params, vars = None):
+        if params[0] == 'dlgEdit':
+{% endhighlight %}
+        <p>The plugin is first instantiated by a <a href="/dev/genesis/api#genesis.api.CategoryPlugin">genesis.api.CategoryPlugin</a> class. This is where the structure of the plugin resides. Within this class are the <code>on_init()</code>, <code>on_session_start()</code>, <code>get_ui()</code> functions, as well as the event triggers <code>on_click()</code> and <code>on_submit()</code>.</p>
+        <p>The class must contain the following variables:</p>
+        <dl class="devsub">
+          <dt>text</dt>
+            <dd>The name of the plugin that will show as a link in the sidebar.</dd>
+          <dt>iconfont</dt>
+            <dd>The class of the iconfont that you want to use to represent this plugin in the sidebar.</dd>
+          <dt>folder</dt>
+            <dd>The folder in the submenu that the plugin link will be shown under. Must be one of &#8216;servers&#8217;, &#8216;system&#8217;, &#8216;tools&#8217;, &#8216;applications&#8217;, or &#8216;advanced&#8217;.</dd>
+        </dl>
+        <p class="devsection">Let&#8217;s look now at the most commonly-used variables.</p>
+{% highlight python %}
+def on_init(self):
+    be = backend.Config(self.app)
+    self.hosts = be.read()
+    self.hostname = be.gethostname()
+{% endhighlight %}
+        <p><em>see <a href="/dev/genesis/api#genesis.api.CategoryPlugin">genesis.api.CategoryPlugin</a></em>.</p>
+        <p>This function is called at the instant when a web request is given to this plugin. This is a good place to put things that must load before anything else, such as calling functions that check configurations or that set important variables.</p>
+{% highlight python %}
+def on_session_start(self):
+    self._editing = None
+    self._editing_self = False
+{% endhighlight %}
+        <p><em>see <a href="/dev/genesis/api#genesis.api.SessionPlugin">genesis.api.SessionPlugin</a></em>.</p>
+        <p>This function is called when a session is estabilished for a new user, or when the plugin is attached to the session for the first time. Instance variables placed here starting with &#8216;_&#8217; will be automatically [re]stored from/into the session.</p>
+{% highlight python %}
+def get_ui(self):
+    ui = self.app.inflate('hosts:main')
+    t = ui.find('list')
+    ...
+    return ui
+{% endhighlight %}
+        <p><em>see <a href="/dev/genesis/api#genesis.api.ICategoryProvider">genesis.api.ICategoryProvider</a></em>.</p>
+        <p>Here, the <code>get_ui()</code> function establishes everything that should be dynamically produced on-screen in the plugin. First, it &#8216;inflates&#8217; the XML user interface (see below), then interacts with various elements in the XML template in accordance with the <a href="/dev/genesis/ux">User Interface</a> reference. Once all dynamic elements have been appended to the inflated XML interface, this function must return the user interface for it to be displayed.</p>
+{% highlight python %}
+  @event('button/click')
+  def on_click(self, event, params, vars = None):
+      if params[0] == 'add':
+          self._editing = len(self.hosts)
+{% endhighlight %}
+        <p><em>see <a href="/dev/genesis/api#genesis.api.IEventDispatcher">genesis.api.IEventDispatcher</a></em>.</p>
+        <p>Following, there can be any number of event-triggered functions (<code>on_click()</code>, <code>on_submit()</code>, etc.) that receive responses from the user interface. These functions should be used to save configuration changes that are entered on the page, or to effectuate any other change in conjunction with an ID assigned to a user interface object. The ID of the user interface object is passed as the first parameter to these functions, and conditional operation can be done by simple if statements, as shown above.<br />
+      </section>
+      <section id="backend" class="docsection">
+        <div class="page-header">
+          <h2>backend.py</h2>
+        </div>
+        <p>Classes and functions that perform major operations, i.e. that interact directly with system processes or do mid-scale file editing, should be abstracted to additional Python modules. These modules can be named anything obviously, but a common choice is <code>backend.py</code>. These modules can then be called in <code>main.py</code> when it comes time to interact with them in the app.</p>
+{% highlight python %}
+from genesis.api import *
+from genesis.utils import *
+from genesis.com import *
+from genesis import apis
+
+class Host:
+    def __init__(self):
+        self.ip = '';
+        self.name = '';
+        self.aliases = '';
+
+
+class Config(Plugin):
+    implements(IConfigurable)
+    name = 'Hosts'
+    iconfont = 'gen-screen'
+    id = 'hosts'
+
+    def list_files(self):
+        return ['/etc/hosts']
+
+    def read(self):
+        ss = ConfManager.get().load('hosts', '/etc/hosts').split('\n')
+        r = []
+
+        for s in ss:
+            if s != '' and s[0] != '#':
+                try:
+                    s = s.split()
+                    h = Host()
+                    try:
+                        h.ip = s[0]
+                        h.name = s[1]
+                        for i in range(2, len(s)):
+                            h.aliases += '%s ' % s[i]
+                        h.aliases = h.aliases.rstrip();
+                    except:
+                        pass
+                    r.append(h)
+                except:
+                    pass
+
+        return r
+
+    def save(self, hh):
+        d = ''
+        for h in hh:
+            d += '%s\t%s\t%s\n' % (h.ip, h.name, h.aliases)
+        ConfManager.get().save('hosts', '/etc/hosts', d)
+        ConfManager.get().commit('hosts')
+
+    def gethostname(self):
+        return self.app.get_backend(IHostnameManager).gethostname()
+
+    def sethostname(self, hn):
+        self.app.get_backend(IHostnameManager).sethostname(hn)
+
+
+class ArchHostnameManager(Plugin):
+    implements(IHostnameManager)
+    platform = ['arch', 'arkos']
+
+    def gethostname(self):
+        return open('/etc/hostname').read()
+
+    def sethostname(self, hn):
+        open('/etc/hostname', 'w').write(hn)
+{% endhighlight %}
+        <p>Here is the backend for an old Hosts/Aliases plugin. You can see that the operations that actually do the work have been placed here, and are called from <code>main.py</code>.</p>
+        <p>Remember that any additional modules must be referenced in <code>__init__.py</code> for them to be usable.<br />
+      </section>
+      <section id="layout" class="docsection">
+        <div class="page-header">
+          <h2>layout/</h2>
+        </div>
+        <p>The <code>layout/</code> subfolder is designated for XML interface templates. These templates are inflated in <code>main.py</code> when the time is right, with <code>inflate()</code> from <a href="/dev/genesis/api#genesis.core.Application">genesis.core.Application</a>. The parameter is in the format <code>plugin_name:template_name</code>.</p>
+{% highlight xml %}
+<xml>
+    <toolbar>
+        <button id="add" text="Add host" iconfont="gen-plus-circle" />
+        <button id="hostname" text="Change hostname" iconfont="gen-tag-2" />
+    </toolbar>
+
+    <label text="Hosts" size="5" />
+
+    <pad>
+        <dt id="list" width="100%">
+            <dtr header="True">
+                <dth>
+                    <label text="IP address" />
+                </dth>
+                <dth>
+                    <label text="Hostname" />
+                </dth>
+                <dth>
+                    <label text="Aliases" />
+                </dth>
+                <dth width="1" />
+            </dtr>
+        </dt>
+    </pad>
+
+    <dialogbox id="dlgEdit">
+        <formline text="IP address">
+            <textinput id="ip" name="ip" />
+        </formline>
+        <formline text="Hostname">
+            <textinput id="name" name="name" />
+        </formline>
+        <formline text="Aliases">
+            <textinput id="aliases" name="aliases" />
+        </formline>
+    </dialogbox>
+
+    <inputbox id="dlgSelf" text="Hostname" />
+</xml>
+{% endhighlight %}
+        <p>As you can see, elements can be referred to by their <code>id</code> or <code>name</code> once the XML is inflated. This is how user interaction can be passed from the user interface to the functions that actually enact the changes.</p>
+        <p>For more information on creating an XML template, see the <a href="/dev/genesis/ux">User Interface</a> reference.</p>
+      </section>
+      <section id="files" class="docsection">
+        <div class="page-header">
+          <h2>files/</h2>
+        </div>
+          <p>The <code>files/</code> folder is where static content required for the plugin is placed. CSS/LESS, JS, and image files placed here will automatically be made available to the app via URIs. These files are generally available at <code>/dl/plugin_name/file_name</code>.</p>
+      </section>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,786 @@
+---
+layout: page
+pretitle: Development Centre
+title: "Genesis: API"
+---
+<div class="container">
+  <div class="row">
+    <div class="col-md-3" id="sidenav">
+      <ul class="nav nav-list docs-sidenav" data-spy="affix" data-offset-top="290">
+      <li><a href="#genesis"><i class="icon-chevron-right"></i> genesis</a></li>
+      <li><a href="#genesis-api"><i class="icon-chevron-right"></i> genesis.api</a></li>
+      <li><a href="#genesis-com"><i class="icon-chevron-right"></i> genesis.com</a></li>
+      <li><a href="#genesis-config"><i class="icon-chevron-right"></i> genesis.config</a></li>
+      <li><a href="#genesis-core"><i class="icon-chevron-right"></i> genesis.core</a></li>
+      <li><a href="#genesis-plugins-core"><i class="icon-chevron-right"></i> genesis.plugins.core</a></li>
+      <li><a href="#genesis-plugins-dashboard"><i class="icon-chevron-right"></i> genesis.plugins.dashboard</a></li>
+      <li><a href="#genesis-plugmgr"><i class="icon-chevron-right"></i> genesis.plugmgr</a></li>
+      <li><a href="#genesis-ui"><i class="icon-chevron-right"></i> genesis.ui</a></li>
+      <li><a href="#genesis-utils"><i class="icon-chevron-right"></i> genesis.utils</a></li>
+      </ul>
+    </div>
+    <div id="content" class="col-md-9">
+      <section id="genesis">
+      <div class="page-header">
+      <h2>genesis</h2>
+      </div>
+      <p id="genesis.version" class="devtitle">genesis.<strong>version</strong></p>
+      <p>Returns version (including git revision if Genesis is running inside a working tree)<br />
+      <em>returns: str</em><br />
+      </section>
+      <section id="genesis-api" class="docsection">
+      <div class="page-header">
+      <h2>genesis.api</h2>
+      <p class="lead">Genesis plugin programming APIs</p>
+      </div>
+      <p id="genesis.api.ICategoryProvider" class="devtitle"><em>class</em> genesis.api.<strong>ICategoryProvider</strong></p>
+      <p>Base interface for plugins that require a sidebar entry<br />
+      <em>See <a href="#genesis.api.CategoryPlugin">genesis.api.CategoryPlugin</a></em></p>
+      <dl class="devsub">
+      <dt>get_ui()</dt>
+      <dd>Should return <a href="#genesis.ui.Layout">genesis.ui.Layout</a> or <a href="#genesis.ui.Element">genesis.ui.Element</a> representing plugin’s UI state</dd>
+      </dl>
+      <p id="genesis.api.CategoryPlugin" class="devtitle devsection"><em>class</em> genesis.api.<strong>CategoryPlugin</strong>(<em>plugin_manager, init=&lt;function __init__ at 0x30458c0&gt;, cls=&lt;class &#8216;genesis.api.helpers.CategoryPlugin&#8217;&gt;</em>)</p>
+      <p>A base class for plugins that feature an entry in the sidebar</p>
+      <div class="devsub">
+      <strong>Variables:</strong></p>
+      <ul>
+      <li><code>text</code> &#8211; str, sidebar entry text</li>
+      <li><code>icon</code> &#8211; str, sidebar icon URL</li>
+      <li><code>folder</code> &#8211; str, sidebar section name (lowercase)</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>get_config()</dt>
+      <dd>Returns a most preferred ModuleConfig for this class.</dd>
+      <dd><em>returns ModuleConfig or None</em></dd>
+      <dt>get_counter()</dt>
+      <dd>May return short string to be displayed in ‘bubble’ right to the sidebar entry.</dd>
+      <dd><em>returns str or None</em></dd>
+      <dt>on_init()</dt>
+      <dd>Called when a web request has arrived and this plugin is active (visible).</dd>
+      <dt>put_message(<em>cls, msg</em>)</dt>
+      <dd>Pushes a visual message to the message queue. All messages will be displayed on the next webpage update user will receive.</dd>
+      <dd><em>Parameter: cls (str) – one of ‘info’, ‘warn’, ‘err’</em></dd>
+      <dd><em>Parameter: msg (str) – message text</em></dd>
+      </dl>
+      <p id="genesis.api.IEventDispatcher" class="devtitle devsection"><em>class</em> genesis.api.<strong>IEventDispatcher</strong></p>
+      <p>Base interface for Plugin which may dispatch UI Events.<br />
+      <em>See <a href="#genesis.api.EventProcessor">genesis.api.EventProcessor</a></em></p>
+      <dl class="devsub">
+      <dt>event(<em>event, *params, **kwparams</em>)</dt>
+      <dt>match_event(<em>event</em>)</dt>
+      </dl>
+      <p id="genesis.api.event" class="devtitle devsection">genesis.api.<strong>event</strong></p>
+      <p>Decorator function to register event handlers</p>
+      <pre class="devsub">
+      >>> class a(object):
+      ...     @event('some/event')
+      ...     def test1 (self):
+      ...         pass
+      ...
+      ...     @event('other/event')
+      ...     def test2 (self):
+      ...         pass
+      >>> a._events
+      {'other/event': 'test2', 'some/event': 'test1'}
+      </pre>
+      <p id="genesis.api.EventProcessor" class="devtitle devsection"><em>class</em> genesis.api.<strong>EventProcessor</strong></p>
+      <p>A base class for plugins suitable for handling UI Events.<br />
+      <em>You will need to decorate handler methods with <a href="#genesis.api.event">event()</a>.</em></p>
+      <dl class="devsub">
+      <dt>event(<em>event, *params, **kwparams</em>)</dt>
+      <dd>Calls a handler method suitable for given event.</dd>
+      <dd>
+      <pre>
+      >>> class Test(EventProcessor):
+      ...     @event('test')
+      ...     def test(self, *p, **kw):
+      ...         print(kw)
+      ...
+      >>> t = Test()
+      >>> t.event('test', value='test')
+      {'value': 'test'}
+      </pre>
+      </dd>
+      <dt>match_event(<em>event</em>)</dt>
+      <dd>Returns True if class (or any parent class) could handle event.</dd>
+      <dd>
+      <pre>
+      >>> class Test(EventProcessor):
+      ...     @event('test')
+      ...     def test(self):
+      ...         pass
+      ...
+      >>> t = Test()
+      >>> t._get_event_handler('test')
+      'test'
+      >>> t.match_event('test')
+      True
+      >>> t.match_event('test2')
+      False
+      </pre>
+      </dl>
+      <p id="genesis.api.SessionPlugin" class="devtitle devsection"><em>class</em> genesis.api.<strong>SessionPlugin</strong>(<em>plugin_manager, init=&lt;function __init__ at 0x30458c0&gt;, cls=&lt;class &#8216;genesis.api.helpers.SessionPlugin&#8217;&gt;</em>)</p>
+      <p>A base class for plugins attached to the current user’s session.<br />
+      Instance variables starting with `_` will be automatically [re]stored from/into the session.</p>
+      <dl class="devsub">
+      <dt>on_session_start()</dt>
+      <dd>Called when a session is estabilished for new user or a new plugin is attached to the session for the first time.</dd>
+      </dl>
+      <p id="genesis.api.url" class="devtitle devsection">genesis.api.<strong>url</strong>(<em>uri</em>)</p>
+      <p>Decorator function to register URL handlers</p>
+      <p id="genesis.api.IURLHandler" class="devtitle devsection"><em>class</em> genesis.api.<strong>IURLHandler</strong></p>
+      <p>Base interface for classes that can handle HTTP requests.</p>
+      <dl class="devsub">
+      <dt>match_url(<em>req</em>)</dt>
+      <dd>Determines if the class can handle given request.</dd>
+      <dd><em>Parameter: req (dict) – WSGI request environment</em></dd>
+      <dd><em>returns boolean</em></dd>
+      <dt>url_handler(<em>req, sr</em>)</dt>
+      <dd>Should handle given request.</dd>
+      <dd><em>Parameter: req (dict) – WSGI request environment</em></dd>
+      <dd><em>Parameter: sr (func(code, headers)) – start_response callback for setting HTTP code and headers</em></dd>
+      <dd><em>returns: str</em></dd>
+      </dl>
+      <p id="genesis.api.URLHandler" class="devtitle devsection"><em>class</em> genesis.api.<strong>URLHandler</strong></p>
+      <p>Base class that handles HTTP requests based on its methods decorated with <a href="#genesis.api.url">genesis.api.url</a></p>
+      <dl class="devsub">
+      <dt>match_url(<em>req</em>)</dt>
+      <dd>Returns True if class (or any parent class) could handle URL</dd>
+      <dt>url_handler(<em>req, start_response</em>)</dt>
+      </dl>
+      <p id="genesis.api.IModuleConfig" class="devtitle devsection"><em>class</em> genesis.api.<strong>IModuleConfig</strong></p>
+      <p>Base interface for module configurations.<br />
+      <em>See <a href="#genesis.api.ModuleConfig">genesis.api.ModuleConfig</a></em>.</p>
+      <p id="genesis.api.ModuleConfig" class="devtitle devsection"><em>class</em> genesis.api.<strong>ModuleConfig</strong>(<em>plugin_manager, init=None, cls=&lt;class &#8216;genesis.api.helpers.ModuleConfig&#8217;&gt;</em>)</p>
+      <p>Base class for simple &#8220;configs&#8221; for different platforms for the plugins.</p>
+      <div class="devsub">
+      <strong>Variables:</strong></p>
+      <ul>
+      <li><code>target</code> &#8211; type, <a href="#genesis.com.Plugin">genesis.com.Plugin</a> class for which this config is targeted.</li>
+      <li><code>labels</code> &#8211; dict(<em>str:str</em>) &#8211; text labels for visual editing of each property.</li>
+      </ul>
+      </div>
+      <p>All other properties are considered ModuleConfig parameters &#8211; they are shown in the UI and saved to config files.</p>
+      <dl class="devsub">
+      <dt>apply_vars(<em>vars</em>)</dt>
+      <dt>get_ui_edit()</dt>
+      <dt>overlay_config()</dt>
+      <dt>save()</dt>
+      </dl>
+      <p id="genesis.api.IComponent" class="devtitle devsection"><em>class</em> genesis.api.<strong>IComponent</strong></p>
+      <p>Base interface for background components.</p>
+      <p>See <a href="#genesis.api.component">Component</a>.</p>
+      <dl class="devsub">
+      <dt>run()</dt>
+      </dl>
+      <p id="genesis.api.Component" class="devtitle devsection"><em>class</em> genesis.api.<strong>Component</strong>(<em>plugin_manager, init=&lt;function __init__ at 0x30502a8&gt;, cls=&lt;class &#8216;genesis.api.components.Component&#8217;&gt;</em>)</p>
+      <p>Base class for a custom Component. Components are thread-safe objects (optionally containing a background thread) that are persist for the entirety of run time.</p>
+      <div class="devsub">
+      <strong>Variables:</strong></p>
+      <ul>
+      <li><code>name</code> &#8211; str, unique component ID</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt><em>classmethod</em> get()</dt>
+      <dd>Convinience method, will return the component. Same as <code>ComponentManager.get().find(name)</code>.</dd>
+      <dt>on_starting()</dt>
+      <dd>Called when component is started. Use this instead of <code>__init__</code>.</dd>
+      <dt>on_stopped()</dt>
+      <dd>Called when component’s thread has been stopped.</dd>
+      <dt>on_stopping()</dt>
+      <dd>Called when component is about to be stopped. Thread is still running.</dd>
+      <dt>run()</dt>
+      <dd>Derived classes should put here the body of background thread (if any).</dd>
+      <dt>start()</dt>
+      <dd>Starts the component. For internal use only.</dd>
+      <dt>stop()</dt>
+      <dd>Stops the component. For internal use only.</dd>
+      <dt>unload()</dt>
+      </dl>
+      <p id="genesis.api.ComponentManager" class="devtitle devsection"><em>class</em> genesis.api.<strong>ComponentManager</strong>(<em>plugin_manager, init=&lt;function __init__ at 0x3050848&gt;, cls=&lt;class &#8216;genesis.api.components.ComponentManager&#8217;&gt;</em>)</p>
+      <p>A general manager for all <a href="#genesis.api.Component">Component</a> classes.</p>
+      <dl class="devsub">
+      <dt><em>static</em> create(<em>app</em>)</dt>
+      <dd>Initializes the ComponentManager.</dd>
+      <dt>find(<em>name</em>)</dt>
+      <dd>Finds a Component by ID.</dd>
+      <dt><em>static</em> get()</dt>
+      <dd><em>returns: the ComponentManager instance</em></dd>
+      <dt>rescan()</dt>
+      <dd>Finds and starts any newly-found Components</dd>
+      <dt>stop()</dt>
+      <dd>Shuts down all components</dd>
+      </dl>
+      <p id="genesis.api.ConfManager" class="devtitle devsection"><em>class</em> genesis.api.<strong>ConfManager</strong>(<em>plugin_manager, init=&lt;function __init__ at 0x30502a8&gt;, cls=&lt;class &#8216;genesis.api.confmanager.ConfManager&#8217;&gt;</em>)</p>
+      <p>A <a href="#genesis.api.Component">Component</a>, proxyfies access to system’s config files. Use this when possible instead of <code>open()</code>. You’ll have to create an <a href="#genesis.api.IConfigurable">IConfigurable</a> first, then use <code>load</code>, <code>save</code>, and <code>commit</code> functions.</p>
+      <dl class="devsub">
+      <dt>commit(<em>id</em>)</dt>
+      <dd>Notifies ConfManager that you have finished writing Configurable’s files. For example, at this point Recovery plugin will make a backup.</dd>
+      <dd><em>Parameters: id (str) – IConfigurable ID.</em></dd>
+      <dt>get_configurable(<em>id</em>)</dt>
+      <dd>Finds a Configurable.</dd>
+      <dd><em>Parameters: id (str) – IConfigurable ID.</em></dd>
+      <dd><em>returns: IConfigurable</em></dd>
+      <dt>load(<em>id, path</em>)</dt>
+      <dd>Reads a config file.</dd>
+      <dd><em>Parameters: id (str) – IConfigurable ID.</em></dd>
+      <dd><em>Parameters: path (str) – file location</em></dd>
+      <dd><em>returns: file contents as str</em></dd>
+      <dt>rescan()</dt>
+      <dd>Registers any newly found Configurables</dd>
+      <dt>save()</dt>
+      <dd>Writes a config file.</dd>
+      <dd><em>Parameters: id (str) – IConfigurable ID.</em></dd>
+      <dd><em>Parameters: path (str) – file location</em></dd>
+      <dd><em>Parameters: data (str) – file contents</em></dd>
+      </dl>
+      <p id="genesis.api.IConfMgrHook" class="devtitle devsection"><em>class</em> genesis.api.<strong>IConfMgrHook</strong></p>
+      <p>Base interface for ConfManager hooks that react to events and process the config files.</p>
+      <dl class="devsub">
+      <dt>finished(<em>cfg</em>)</dt>
+      <dd>Called when a <code>commit</code> is performed. Good time to make backups/save data/etc.</dd>
+      <dd><em>Parameters: cfg (<a href="#genesis.api.IConfigurable">IConfigurable</a>) – Configurable</em></dd>
+      <dt>post_load(<em>cfg, path, data</em>)</dt>
+      <dd>Called after reading a file. Implementation has to process the file and return new content.</dd>
+      <dd><em>Parameters: cfg (<a href="#genesis.api.IConfigurable">IConfigurable</a>) – Configurable</em></dd>
+      <dd><em>Parameters: path (str) – file location</em></dd>
+      <dd><em>Parameters: data (str) – file contents</em></dd>
+      <dd><em>returns: modified contents as str</em></dd>
+      <dt>post_save(<em>cfg, path</em>)</dt>
+      <dd>Called after saving a file.</dd>
+      <dd><em>Parameters: cfg (<a href="#genesis.api.IConfigurable">IConfigurable</a>) – Configurable</em></dd>
+      <dd><em>Parameters: path (str) – file location</em></dd>
+      <dt>pre_load(<em>cfg, path</em>)</dt>
+      <dd>Called before reading a file.</dd>
+      <dd><em>Parameters: cfg (<a href="#genesis.api.IConfigurable">IConfigurable</a>) – Configurable</em></dd>
+      <dd><em>Parameters: path (str) – file location</em></dd>
+      <dt>pre_save(<em>cfg, path, data</em>)</dt>
+      <dd>Called before saving a file. Implementation has to process the file and return new content.</dd>
+      <dd><em>Parameters: cfg (<a href="#genesis.api.IConfigurable">IConfigurable</a>) – Configurable</em></dd>
+      <dd><em>Parameters: path (str) – file location</em></dd>
+      <dd><em>Parameters: data (str) – file contents</em></dd>
+      <dd><em>returns: modified contents as str</em></dd>
+      </dl>
+      <p id="genesis.api.ConfMgrHook" class="devtitle devsection"><em>class</em> genesis.api.<strong>ConfMgrHook</strong>(<em>plugin_manager, init=None, cls=&lt;class &#8216;genesis.api.confmanager.ConfMgrHook&#8217;&gt;</em>)</p>
+      <p>Handy base class in case you don’t want to reimplement all hook methods.</p>
+      <dl class="devsub">
+      <dt>finished(<em>cfg</em>)</dt>
+      <dt>post_load(<em>cfg, path, data</em>)</dt>
+      <dt>post_save(<em>cfg, path</em>)</dt>
+      <dt>pre_load(<em>cfg, path</em>)</dt>
+      <dt>pre_save(<em>cfg, path, data</em>)</dt>
+      </dl>
+      <p id="genesis.api.IConfigurable" class="devtitle devsection"><em>class</em> genesis.api.<strong>IConfigurable</strong></p>
+      <p>Interface for Configurables. A Configurable is an entity (software or system aspect) which has a set of config files.</p>
+      <div class="devsub">
+      <strong>Variables:</strong></p>
+      <ul>
+      <li><code>name</code> &#8211; str, a human-readable name.</li>
+      <li><code>id</code> &#8211; str, a unique ID.</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>list_files()</dt>
+      <dd>Implementation should return list of config file paths &#8211; file names or wildcards (globs) which will be expanded by <code>glob.glob()</code>.</dd>
+      </dl>
+      <p id="genesis.api.IMeter" class="devtitle devsection"><em>class</em> genesis.api.<strong>IMeter</strong></p>
+      <p id="genesis.api.BaseMeter" class="devtitle devsection"><em>class</em> genesis.api.<strong>BaseMeter</strong>(<em>plugin_manager, init=None, cls=&lt;class &#8216;genesis.api.meters.BaseMeter&#8217;&gt;</em>)</p>
+      <p>Meters are determinable values (int, float, bool) representing system status (sysload, memory usage, service status, etc.) which are used and exported over HTTP by the <code>sysalerts</code> core plugin.</p>
+      <div class="devsub">
+      <strong>Variables:</strong></p>
+      <ul>
+      <li><code>name</code> &#8211; str, meter name</li>
+      <li><code>text</code> &#8211; str, text shown on the specific meter widget</li>
+      <li><code>category</code> &#8211; str, meter category name</li>
+      <li><code>type</code> &#8211; str, one of &#8216;binary&#8217;, &#8216;linear&#8217;, &#8216;decimal&#8217;</li>
+      <li><code>transform</code> &#8211; str, value->text transform applied to meter. One of &#8216;float&#8217;, &#8216;fsize&#8217;, &#8216;percent&#8217;, &#8216;fsize_percent&#8217;, &#8216;yesno&#8217;, &#8216;onoff’, &#8216;running&#8217;</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>format_value()</dt>
+      <dd></dd>
+      <dt>get_variants()</dt>
+      <dd>Implementation should return list of meter ‘variants’ here.</dd>
+      <dt>init()</dt>
+      <dd>Implementation may perform preparations based on <code>self.variant</code> here.</dd>
+      <dt>prepare(<em>variant=None</em>)</dt>
+      </dl>
+      <p id="genesis.api.BinaryMeter" class="devtitle devsection"><em>class</em> genesis.api.<strong>BinaryMeter</strong>(<em>plugin_manager, init=None, cls=&lt;class &#8216;genesis.api.meters.BinaryMeter&#8217;&gt;</em>)</p>
+      <p>Base class for binary value meters</p>
+      <dl class="devsub">
+      <dt>format_value()</dt>
+      <dd></dd>
+      <dt>get_value()</dt>
+      <dd>Implementation should return binary meter value</dd>
+      </dl>
+      <p id="genesis.api.DecimalMeter" class="devtitle devsection"><em>class</em> genesis.api.<strong>DecimalMeter</strong>(<em>plugin_manager, init=None, cls=&lt;class &#8216;genesis.api.meters.DecimalMeter&#8217;&gt;</em>)</p>
+      <p>Base class for decimal/float value meters</p>
+      <dl class="devsub">
+      <dt>format_value()</dt>
+      <dd></dd>
+      <dt>get_value()</dt>
+      <dd>Implementation should return decimal meter value</dd>
+      </dl>
+      <p id="genesis.api.LinearMeter" class="devtitle devsection"><em>class</em> genesis.api.<strong>LinearMeter</strong>(<em>plugin_manager, init=None, cls=&lt;class &#8216;genesis.api.meters.LinearMeter&#8217;&gt;</em>)</p>
+      <p>Base class for decimal/float value meters with min/max range</p>
+      <dl class="devsub">
+      <dt>format_value()</dt>
+      <dd></dd>
+      <dt>get_max()</dt>
+      <dd>Implementation should return decimal meter range maximum</dd>
+      <dt>get_min()</dt>
+      <dd>Implementation should return decimal meter range minimum</dd>
+      <dt>get_value()</dt>
+      <dd>Implementation should return decimal meter value</dd>
+      </dl>
+      <p id="genesis.api.IXSLTFunctionProvider" class="devtitle devsection"><em>class</em> genesis.api.<strong>IXSLTFunctionProvider</strong></p>
+      <p>Interface for classes which provide additional XSLT functions for use in Widget templates.</p>
+      <dl class="devsub">
+      <dt>get_funcs()</dt>
+      <dd>Gets all XSLT functions provided. Functions are subject to be invoked by <code>lxml</code>.</dd>
+      <dd><em>returns: dict(str:func)</em></dd>
+      </dl>
+      <p id="genesis.api.get_environment_vars" class="devtitle devsection">genesis.api.<strong>get_environment_vars</strong>(<em>req</em>)</p>
+      <p>Extracts POST data from WSGI environment<br />
+      <em>returns: cgi.FieldStorage</em>
+      </dl>
+      </section>
+      <section id="genesis-com" class="docsection">
+      <div class="page-header">
+      <h2>genesis.com</h2>
+      <p class="lead">Base plugin-interface architecture</p>
+      </div>
+      <p id="genesis.com.Interface" class="devtitle"><em>class</em> genesis.com.<strong>Interface</strong></p>
+      <p>Base abstract class for all interfaces<br />
+      Can be used as callable (decorator) to check if Plugin implements all methods (internal use only)</p>
+      <p id="genesis.com.Interface" class="devtitle devsection">genesis.com.<strong>Implements</strong>(<em>*interfaces</em>)</p>
+      <p>Used to note that a <a href="#genesis.com.Plugin">Plugin</a> implements an <a href="#genesis.com.Interface">Interface</a>. Example:</p>
+      <pre class="devsub">
+          class IFoo (Interface):
+              pass
+          class IBaz (Interface):
+              pass
+          class FooBazImp (Plugin):
+              implements (IFoo, IBaz)
+      </pre>
+      <p id="genesis.com.Plugin" class="devtitle devsection"><em>class</em> genesis.com.<strong>Plugin</strong></p>
+      <p>Base class for all plugins.</p>
+      <div class="devsub">
+      <strong>Variables:</strong></p>
+      <ul>
+      <li><code>multi_instance</code> &#8211; bool, if True, plugin will be not treated as a singleton</li>
+      <li><code>abstract</code> &#8211; bool, abstract plugins are not registered in <a href="#genesis.com.PluginManager">PluginManager</a></li>
+      <li><code>platform</code> &#8211; list(str), platforms on which the Plugin can be run</li>
+      <li><code>plugin_id</code> &#8211; str, autoset to lowercase class name</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>unload()</dt>
+      <dd>Called when plugin class is being unloaded by <a href="#genesis.plugmgr.PluginLoader">genesis.plugmgr.PluginLoader</a></dd>
+      </dl>
+      <p id="genesis.com.PluginManager" class="devtitle devsection"><em>class</em> genesis.com.<strong>PluginManager</strong></p>
+      <p>Holds all registered classes, instances and implementations You should have one class instantiated from both PluginManager and Plugin to trigger plugins magick</p>
+      <dl class="devsub">
+      <dt><em>static</em> class_list()</dt>
+      <dd>Lists all registered classes</dd>
+      <dd><em>returns: list(type)</em></dd>
+      <dt><em>static</em> class_register()</dt>
+      <dd>Registers a new class</dd>
+      <dd><em>Parameters: cls (type) – class</em></dd>
+      <dt><em>static</em> class_unregister()</dt>
+      <dd>Unregisters a class</dd>
+      <dd><em>Parameters: cls (type) – class</em></dd>
+      <dt>instance_get(<em>cls, instantiate=False</em>)</dt>
+      <dd>Gets a saved instance for the <a href="#genesis.com.Plugin">Plugin</a> subclass.</dd>
+      <dd><em>Parameters: instantiate (bool) – instantiate plugin if it wasn’t instantiated before</em></dd>
+      <dt>instance_list()</dt>
+      <dd> </dd>
+      <dt>instance_set(<em>cls, inst</em>)</dt>
+      <dd> </dd>
+      <dt>plugin_activated(<em>plugin</em>)</dt>
+      <dd>Called when a <a href="#genesis.com.Plugin">Plugin</a> is successfully instantiated.</dd>
+      <dd><em>Parameters: instantiate (bool) – instantiate plugin if it wasn’t instantiated before</em></dd>
+      <dt>plugin_enabled(<em>cls</em>)</dt>
+      <dd>Called to check if <a href="#genesis.com.Plugin">Plugin</a> is eligible for running on this system.</dd>
+      <dd><em>returns: bool</em></dd>
+      <dt><em>static</em> plugin_get(<em>iface</em>)</dt>
+      <dd>Returns plugins that implement the given <a href="#genesis.com.Interface">Interface</a>.</dd>
+      <dd><em>Parameters: iface (type) – interface</em></dd>
+      <dt><em>static</em> plugin_list(<em></em>)</dt>
+      <dd> </dd>
+      <dt><em>static</em> plugin_register(<em>iface, cls</em>)</dt>
+      <dd>Registers a Plugin for implementing an Interface.</dd>
+      <dd><em>Parameters: iface (type) – interface</em></dd>
+      <dd><em>Parameters: cls (Plugin) – plugin</em></dd>
+      <dt><em>static</em> start_tracking(<em></em>)</dt>
+      <dd>Starts internal registration tracker</dd>
+      <dt><em>static</em> stop_tracking(<em></em>)</dt>
+      <dd>Stops internal registration tracker and returns all classes registered since calling <code>start_tracking</code>.</dd>
+      </dl>
+      </section>
+      <section id="genesis-config" class="docsection">
+      <div class="page-header">
+      <h2>genesis.config</h2>
+      <p class="lead">Tools for manipulating Genesis configuration files</p>
+      </div>
+      <p id="genesis.config.Config" class="devtitle"><em>class</em> genesis.config.<strong>Config</strong></p>
+      <p>A wrapper around ConfigParser</p>
+      <dl class="devsub">
+      <dt>get(<em>section, val=None, default=None</em>)</dt>
+      <dd>Gets a configuration parameter</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>Parameters: val (str) – Value name</em></dd>
+      <dd><em>Parameters: default (str) – Default value</em></dd>
+      <dd><em>returns: value or default value if value was not found</em></dd>
+      <dt>get_proxy(<em>user</em>)</dt>
+      <dd>Gets a configuration parameter</dd>
+      <dd><em>Parameters: user (str) – User</em></dd>
+      <dd><em>returns: <a href="#genesis.config.ConfigProxy">ConfigProxy</a> for the specified user</em></dd>
+      <dt>has_option(<em>section, name</em>)</dt>
+      <dd>Checks if an parameter is present in the given section</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>Parameters: name (str) – Value name</em></dd>
+      <dd><em>returns: bool</em></dd>
+      <dt>load(<em>fn</em>)</dt>
+      <dd>Loads configuration data from the specified file</dd>
+      <dd><em>Parameters: fn (str) – Config file path</em></dd>
+      <dt>save()</dt>
+      <dd>Saves data to the last loaded file</dd>
+      <dt>set(<em>section, val, value=None</em>)</dt>
+      <dd>Sets a configuration parameter</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>Parameters: val (str) – Value name</em></dd>
+      <dd><em>Parameters: value (str) – Value</em></dd>
+      </dl>
+      <p id="genesis.config.ConfigProxy" class="devtitle devsection"><em>class</em> genesis.config.<strong>ConfigProxy</strong>(<em>cfg, user</em>)</p>
+      <p>A proxy class that directs all writes into user’s personal config file while reading from both personal and common configs.</p>
+      <div class="devsub">
+      <strong>Class Parameters:</strong></p>
+      <ul>
+      <li><code>cfg</code> &#8211; <a href="#genesis.config.Config">Config</a> common for all users,</li>
+      <li><code>user</code> &#8211; username</a></li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>get(<em>section, val=None, default=None</em>)</dt>
+      <dd>Gets a configuration parameter</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>Parameters: val (str) – Value name</em></dd>
+      <dd><em>Parameters: default (str) – Default value</em></dd>
+      <dd><em>returns: value or default value if value was not found</em></dd>
+      <dt>has_option(<em>section, name</em>)</dt>
+      <dd>Checks if an parameter is present in the given section</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>Parameters: name (str) – Value name</em></dd>
+      <dd><em>returns: bool</em></dd>
+      <dt>options(<em>section</em>)</dt>
+      <dd>Enumerates parameters in the given section</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>returns: list(str)</em></dd>
+      <dt>remove_option(<em>section, val</em>)</dt>
+      <dd>Removes a parameter from the given section</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>Parameters: val (str) – Value name</em></dd>
+      <dd><em>returns: False if there was no such option</em></dd>
+      <dt>remove_section(<em>section</em>)</dt>
+      <dd>Removes a section from the given section</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>returns: False if there was no such section</em></dd>
+      <dt>set(<em>section, val, value=None</em>)</dt>
+      <dd>Sets a configuration parameter</dd>
+      <dd><em>Parameters: section (str) – Config file section</em></dd>
+      <dd><em>Parameters: val (str) – Value name</em></dd>
+      <dd><em>Parameters: value (str) – Value</em></dd>
+      </dl>
+      </section>
+      <section id="genesis-core" class="docsection">
+      <div class="page-header">
+      <h2>genesis.core</h2>
+      <p class="lead">Core application function</p>
+      </div>
+      <p id="genesis.core.Application" class="devtitle"><em>class</em> genesis.core.<strong>Application</strong>(<em>config=None</em>)</p>
+      <p>Class representing app state during a request.</p>
+      <div class="devsub">
+      <strong>Instance Variables:</strong></p>
+      <ul>
+      <li><code>config</code> &#8211; <a href="#genesis.config.ConfigProxy">genesis.config.ConfigProxy</a> &#8211; config for the current user</li>
+      <li><code>gconfig</code> &#8211; <a href="#genesis.config.Config">genesis.config.Config</a> &#8211; global app config</li>
+      <li><code>auth</code> &#8211; <a href="#genesis.core.AuthManager">genesis.core.AuthManager</a> &#8211; authentication system</li>
+      <li><code>log</code> &#8211; logging.Logger &#8211; app log</li>
+      <li><code>session</code> &#8211; dict &#8211; full access to the session</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>config</dt>
+      <dt>dispatcher(<em>environ, start_response</em>)</dt>
+      <dd>Dispatches WSGI requests</dd>
+      <dt>fix_length(<em>content</em>)</dt>
+      <dt>get_backend(<em>iface, flt=None</em>)</dt>
+      <dd>Same as <code>grab_plugins</code>, but returns the first plugin found and will raise <code>genesis.util.BackendRequirementError</code> if no plugin was found.</dd>
+      <dd><em>Parameters: iface (<a href="#genesis.com.Interface">genesis.com.Interface</a>) – interface to match plugins against</em></dd>
+      <dd><em>Parameters: flt (func(Plugin)) – filter function</em></dd>
+      <dd><em>returns: list(<a href="#genesis.com.Plugin">genesis.com.Plugin</a>)</em></dd>
+      <dt>inflate(<em>layout</em>)</dt>
+      <dd>Inflates an XML UI layout into the DOM UI tree.</dd>
+      <dd><em>Parameters: layout (str) – &#8216;&lt;pluginid&gt;:&lt;layoutname&gt;&#8217;, ex: dashboard:main for /plugins/dashboard/layout/main.xml</em></dd>
+      <dd><em>returns: <a href="#genesis.ui.layout">genesis.ui.Layout</a></em></dd>
+      <dt>plugin_activated(<em>plugin</em>)</dt>
+      <dt>plugin_enabled(<em>cls</em>)</dt>
+      <dt>plugin_changed()</dt>
+      <dd>Implementing PluginLoader observer</dd>
+      <dt>refresh_plugin_data()</dt>
+      <dd>Rescans plugins for JS, CSS, LESS, XSLT widgets and XML templates.</dd>
+      <dt>restart()</dt>
+      <dd>Restarts the Genesis process</dd>
+      <dt>start_response(<em>status, headers=[]</em>)</dt>
+      <dt>stop()</dt>
+      <dd>Stops Genesis</dd>
+      </dl>
+      <p id="genesis.core.AppDispatcher" class="devtitle devsection"><em>class</em> genesis.core.<strong>AppDispatcher</strong>(<em>config=None</em>)</p>
+      <p>Main WSGI dispatcher which assembles session, auth and application altogether</p>
+      <dl class="devsub">
+      <dt>dispatcher(<em>environ, start_response</em>)</dt>
+      </dl>
+      <p id="genesis.core.AuthManager" class="devtitle devsection"><em>class</em> genesis.core.<strong>AuthManager</strong>(<em>config, app, dispatcher</em>)</p>
+      <p>Authentication middleware which takes care of user authentication</p>
+      <div class="devsub">
+      <strong>Instance Variable:</strong></p>
+      <ul>
+      <li><code>user</code> &#8211; str, current user logged in or None</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>deauth()</dt>
+      <dd>Deauthenticates current user.</dd>
+      </dl>
+      <p id="genesis.core.SessionManager" class="devtitle devsection"><em>class</em> genesis.core.<strong>SessionManager</strong>(<em>store, application</em>)</p>
+      <p>Session middleware. Takes care of creation/checkout/commit of a session. Sets ‘app.session’ variable inside WSGI environment.</p>
+      <dl class="devsub">
+      <dt>add_cookie(<em>headers</em>)</dt>
+      <dt>start_response(<em>status, headers</em>)</dt>
+      </dl>
+      </section>
+      <section id="genesis-plugins-core" class="docsection">
+      <div class="page-header">
+      <h2>genesis.plugins.core</h2>
+      </div>
+      <p id="genesis.plugins.core.api.IProgressBoxProvider" class="devtitle"><em>class</em> genesis.plugins.core.api.<strong>IProgressBoxProvider</strong></p>
+      <p>Allows your plugin to show a background progress dialog</p>
+      <div class="devsub">
+      <strong>Instance Variables:</strong></p>
+      <ul>
+      <li><code>icon</code> &#8211; str, icon URI</li>
+      <li><code>title</code> &#8211; str, text describing current activity</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>abort()</dt>
+      <dd>Should abort current activity</dd>
+      <dt>can_abort()</dt>
+      <dd><em>returns: whether currently-running activity can be aborted</em></dd>
+      <dt>get_progress()</dt>
+      <dd><em>returns: text describing activity&#8217;s current status</em></dd>
+      <dt>has_progress()</dt>
+      <dd><em>returns: whether this plugin has any currently running activity</em></dd>
+      </dl>
+      </section>
+      <section id="genesis-plugins-dashboard" class="docsection">
+      <div class="page-header">
+      <h2>genesis.plugins.dashboard</h2>
+      <p class="lead">Dashboard (System Monitor) API</p>
+      </div>
+      <p id="genesis.plugins.dashboard.api.Dashboard" class="devtitle"><em>class</em> genesis.plugins.dashboard.api.<strong>Dashboard</strong></p>
+      <div class="devsub">
+      <p id="genesis.plugins.core.api.Dashboard.IWidget" class="devtitle"><em>class</em> <strong>IWidget</strong></p>
+      <p>Interface for a Dashboard (System Monitor) widget</p>
+      <div class="devsub">
+      <strong>Instance Variables:</strong></p>
+      <ul>
+      <li><code>icon</code> &#8211; str, icon URI</li>
+      <li><code>title</code> &#8211; str, short title text</li>
+      <li><code>name</code> &#8211; str, name shown in &#8216;choose widget&#8217; dialog</li>
+      <li><code>style</code> &#8211; str, one of &#8216;normal&#8217; or &#8216;linear&#8217;</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>get_config_dialog()</dt>
+      <dd><em>returns: configuration dialog UI (Layout or Element), or None</em></dd>
+      <dt>get_ui(<em>cfg, id=None</em>)</dt>
+      <dd><em>Parameters: cfg (str) – saved plugin configuration</em></dd>
+      <dd><em>Parameters: id (str) – plugin ID</em></dd>
+      <dd><em>returns: plugin UI (Layout or Element)</em></dd>
+      <dt>event(<em>event, params, cfg, vars=None</em>)</dt>
+      <dd>Handles the UI event of a plugin</dd>
+      <dd><em>Parameters: cfg (str) – saved plugin configuration</em></dd>
+      <dt>progress_config(<em>vars</em>)</dt>
+      <dd>Saves configuration from the configuration dialog (get_config_dialog)</dd>
+      </dl>
+      </div>
+      </section>
+      <section id="genesis-plugmgr" class="docsection">
+      <div class="page-header">
+      <h2>genesis.plugmgr</h2>
+      <p class="lead">Tools for manipulating plugins and repository</p>
+      </div>
+      <p id="genesis.plugmgr.BaseRequirementError" class="devtitle"><em>exception</em> genesis.plugmgr.<strong>BaseRequirementError</strong></p>
+      <p>Basic exception that means a plugin wasn’t loaded due to unmet dependencies</p>
+      <p id="genesis.plugmgr.PlatformRequirementError" class="devtitle devsection"><em>exception</em> genesis.plugmgr.<strong>PlatformRequirementError</strong>(<em>lst</em>)</p>
+      <p>Exception that means a plugin wasn’t loaded due to unsupported platform</p>
+      <p id="genesis.plugmgr.PluginRequirementError" class="devtitle devsection"><em>exception</em> genesis.plugmgr.<strong>PluginRequirementError</strong>(<em>name</em>)</p>
+      <p>Exception that means a plugin wasn’t loaded due to required plugin being unavailable</p>
+      <p id="genesis.plugmgr.ModuleRequirementError" class="devtitle devsection"><em>exception</em> genesis.plugmgr.<strong>ModuleRequirementError</strong>(<em>name</em>)</p>
+      <p>Exception that means a plugin wasn’t loaded due to required Python module being unavailable</p>
+      <p id="genesis.plugmgr.SoftwareRequirementError" class="devtitle devsection"><em>exception</em> genesis.plugmgr.<strong>SoftwareRequirementError</strong>(<em>name</em>)</p>
+      <p>Exception that means a plugin wasn’t loaded due to required software being unavailable</p>
+      <p id="genesis.plugmgr.PluginLoader" class="devtitle devsection"><em>class</em> genesis.plugmgr.<strong>PluginLoader</strong></p>
+      <p>Handles plugin loading and unloading</p>
+      <dl class="devsub">
+      <dt><em>static</em> get_plugin_path(<em>app, id</em>)</dt>
+      <dd>Returns path for plugin’s files.</dd>
+      <dd><em>Parameters: app (<a href="genesis.core.Application">genesis.core.Application</a>)</em></dd>
+      <dd><em>Parameters: id (str) – Plugin id</em></dd>
+      <dt><em>static</em> initialize(<em>app, id</em>)</dt>
+      <dd>Initializes the PluginLoader.</dd>
+      <dd><em>Parameters: log (logging.Logger) – Logger</em></dd>
+      <dd><em>Parameters: path (str) – Path to the plugins</em></dd>
+      <dd><em>Parameters: platform (str) – System platform for plugin validation</em></dd>
+      <dt><em>static</em> list_plugins()</dt>
+      <dd><em>returns: dict of PluginInfo for all plugins</em></dd>
+      <dt><em>static</em> load(<em>plugin</em>)</dt>
+      <dd>Loads given plugin</dd>
+      <dt><em>static</em> load_plugins()</dt>
+      <dd>Loads all plugins from plugin path</dd>
+      <dt><em>static</em> notify_plugins_changed()</dt>
+      <dd>Notifies all observers that plugin set has changed.</dd>
+      <dt><em>static</em> register_mgr(<em>mgr</em>)</dt>
+      <dd>Registers a <a href="#genesis.com.PluginManager">genesis.com.PluginManager</a> from which the unloaded classes will be removed when a plugin is unloaded</dd>
+      <dd><em>Parameters: mgr (<a href="#genesis.com.PluginManager">genesis.com.PluginManager</a>)</em></dd>
+      <dt><em>static</em> register_observer(<em>mgr</em>)</dt>
+      <dd>Registers an observer which will be notified when plugin set is changed. Observer should have a callable <code>plugins_changed</code> method.</dd>
+      <dd><em>Parameters: mgr (object)</em></dd>
+      <dt><em>static</em> unload(<em>plugin</em>)</dt>
+      <dd>Unloads given plugin</dd>
+      <dt><em>static</em> verify_dep(<em>dep</em>)</dt>
+      <dd>Verifies that given plugin dependency is satisfied.</dd>
+      <dd><em>returns: boolean</em></dd>
+      </dl>
+      <p id="genesis.plugmgr.RepositoryManager" class="devtitle devsection"><em>class</em> genesis.plugmgr.<strong>RepositoryManager</strong>(<em>cfg</em>)</p>
+      <p>Manages interaction with official Genesis plugin repository. <code>cfg</code> is <a href="#genesis.config.Config">genesis.config.Config</a>.</p>
+      <div class="devsub">
+      <strong>Instance Variables:</strong></p>
+      <ul>
+      <li><code>available</code> &#8211; list(<a href="#genesis.plugmgr.PluginInfo">PluginInfo</a>), plugins available in the repository</li>
+      <li><code>installed</code> &#8211; list(<a href="#genesis.plugmgr.PluginInfo">PluginInfo</a>), plugins that are locally installed</li>
+      <li><code>upgradable</code> &#8211; list(<a href="#genesis.plugmgr.PluginInfo">PluginInfo</a>), plugins that are locally installed and have a different version in the repository</li>
+      </ul>
+      </div>
+      <dl class="devsub">
+      <dt>install(<em>id, load=True</em>)</dt>
+      <dd>Installs a plugin</dd>
+      <dd><em>Parameters: id (str) – Plugin id</em></dd>
+      <dd><em>Parameters: load (bool) – True if you want Genesis to load the plugin immediately</em></dd>
+      <dt>install_stream(<em>stream</em>)</dt>
+      <dd>Installs a plugin from a stream containing the package</dd>
+      <dd><em>Parameters: stream (file) – Data stream</em></dd>
+      <dt>install_tar(<em>load=True</em>)</dt>
+      <dd>Unpacks and installs a <code>plugin.tar.gz</code> file located in the plugins directory.</dd>
+      <dd><em>Parameters: load (bool) – True if you want Genesis to load the plugin immediately</em></dd>
+      <dt>refresh()</dt>
+      <dd>Re-reads saved repository information and rebuilds installed/available lists</dd>
+      <dt>remove(<em>id</em>)</dt>
+      <dd>Uninstalls given plugin.</dd>
+      <dd><em>Parameters: id (str) – Plugin id</em></dd>
+      <dt>update_available()</dt>
+      <dd>Re-reads saved list of available plugins</dd>
+      <dt>update_installed()</dt>
+      <dd>Rebuilds list of installed plugins</dd>
+      <dt>update_list()</dt>
+      <dd>Downloads fresh list of plugins and rebuilds installed/available lists</dd>
+      <dt>update_upgradable()</dt>
+      <dd>Rebuilds list of upgradable plugins</dd>
+      </dl>
+      <p id="genesis.plugmgr.PluginInfo" class="devtitle devsection"><em>class</em> genesis.plugmgr.<strong>PluginInfo</strong></p>
+      <p>Container for the plugin description: <code>upgradable</code> &#8211; bool, if the plugin can be upgraded; <code>problem</code> &#8211; Exception which occured while loading plugin, else None; <code>deps</code> &#8211; list of dependency tuples; and other fields read by <code>PluginLoader</code> from plugin’s __init__.py</p>
+      <dl class="devsub">
+      <dt>str_req()</dt>
+      <dd>Formats plugin’s unmet requirements into human-readable string</dd>
+      <dd><em>returns: str</em></dd>
+      </dl>
+      </section>
+      <section id="genesis-ui" class="docsection">
+      <div class="page-header">
+      <h2>genesis.ui</h2>
+      <p class="lead">User interface controls</p>
+      </div>
+      <p id="genesis.ui.Element" class="devtitle"><em>class</em> genesis.ui.<strong>Element</strong>(<em>tag, *args, **kwargs</em>)</p>
+      <p>XML layout element &#8211; derived from lxml.ElementBase. See <a href="http://lxml.de/api/lxml.etree.ElementBase-class.html">http://lxml.de/api/lxml.etree.ElementBase-class.html</a><br />
+      <em>args</em> should be child elements and <em>kwargs</em> &#8211; attributes.</p>
+      <dl class="devsub">
+      <dt>append(<em>el</em>)</dt>
+      <dd>Appends an <a href="#genesis.ui.Element">Element</a> or <a href="#genesis.ui.Layout">Layout</a> to current element.</dd>
+      <dt>append_all(<em>*els</em>)</dt>
+      <dd>Appends all <a href="#genesis.ui.Element">Elements</a> or <a href="#genesis.ui.Layout">Layouts</a> instances to current element.</dd>
+      <dt>set(<em>attr, val</em>)</dt>
+      <dd>Sets <em>attr</em> attribute to <em>val</em>, converting value to unicode string.</dd>
+      </dl>
+      <p id="genesis.ui.UI" class="devtitle devsection">genesis.ui.<strong>UI</strong></p>
+      <p>Automatically generate XML tags by calling name</p>
+      <pre>
+      >>> m = UI.Meta(encoding="ru")
+      >>> m.toxml()
+      '<meta encoding="ru"/>'
+      >>>
+      </pre>
+      <p>Some of the tags have overriding classes here.</p>
+      <p id="genesis.ui.TreeManager" class="devtitle devsection"><em>class</em> genesis.ui.<strong>TreeManager</strong></p>
+      <p>Processes treenode click events and stores the nodes’ collapsed/expanded states. You should keep the TreeManager inside the session, call <code>node_click()</code> on each ‘click’ event, and <code>apply()</code> to the tree object before rendering it.</p>
+      <dl class="devsub">
+      <dt>apply(<em>tree</em>)</dt>
+      <dd>Applies saved node states to a TreeContainer element</dd>
+      <dt>node_click(<em>id</em>)</dt>
+      <dd>Toggles node state (collapsed/expanded)</dd>
+      <dt>reset()</dt>
+      <dd>Removes all saved node states.</dd>
+      </dl>
+      <p id="genesis.ui.Layout" class="devtitle devsection"><em>class</em> genesis.ui.<strong>Layout</strong>(<em>file</em>)</p>
+      <p>An XML user interface layout storage. Loads layout data from file.</p>
+      <dl class="devsub">
+      <dt>append(<em>dest, child</em>)</dt>
+      <dd>Appends <em>child</em> to a tag with <em>id&#8217;=&#8217;dest</em>.</dd>
+      <dt>appendAll(<em>dest, *args</em>)</dt>
+      <dd>Appends <em>*args</em> to a tag with <em>id&#8217;=&#8217;dest</em>.</dd>
+      <dt>elements()</dt>
+      <dd>Returns root element.</dd>
+      <dt>find(<em>id</em>)</dt>
+      <dd>Finds a child element by <em>id</em> attribute.</dd>
+      <dt>insertText(<em>dest, text</em>)</dt>
+      <dd>Sets node&#8217;s text.</dd>
+      <dt>remove(<em>id</em>)</dt>
+      <dd>Removes a child element by <em>id</em> attribute.</dd>
+      <dt>render()</dt>
+      <dd>Renders HTML into a string.</dd>
+      <dt>xpath(<em>path</em>)</dt>
+      <dd>Performs an XPath query on the tree.</dd>
+      </dl>
+      <p id="genesis.ui.BasicTemplate" class="devtitle devsection"><em>class</em> genesis.ui.<strong>BasicTemplate</strong>(<em>filename, search_path=[], styles=[], scripts=[]</em>)</p>
+      </section>
+      <section id="genesis-utils" class="docsection">
+      <div class="page-header">
+      <h2>genesis.utils</h2>
+      <p class="lead">Miscellaneous utility functions</p>
+      </div>
+      <p id="genesis.utils.BackgroundRequirementError" class="devtitle"><em>exception</em> genesis.utils.<strong>BackgroundRequirementError</strong>(<em>interface</em>)</p>
+      <p>Raised by <a href="#genesis.core.Application.get_backend">genesis.core.Application.get_backend()</a> if backend plugin wasn’t found.</p>
+      <p id="genesis.utils.ConfigurationError" class="devtitle devsection"><em>exception</em> genesis.utils.<strong>ConfigurationError</strong>(<em>hint</em>)</p>
+      <p>You should raise this exception if ModuleConfig or other configurations contain wrong or non-consitent parameters.</p>
+      <p id="genesis.utils.enquote" class="devtitle devsection">genesis.utils.<strong>enquote</strong>(<em>s</em>)</p>
+      <p>Inserts <code>&amp;lt;</code> and <code>&amp;gt;</code> entities and replaces newlines with <code>&lt;br /&gt;</code>.</p>
+      <p id="genesis.utils.enquote" class="devtitle devsection">genesis.utils.<strong>enquote</strong>(<em>s</em>)</p>
+      <p>Inserts <code>&amp;lt;</code> and <code>&amp;gt;</code> entities and replaces newlines with <code>&lt;br /&gt;</code>.</p>
+      </section>
+    </div>
+  </div>
+</div>

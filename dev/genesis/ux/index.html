@@ -1,0 +1,383 @@
+---
+layout: page
+pretitle: Development Centre
+title: "Genesis: User Interface"
+---
+<div class="container">
+  <div class="row">
+    <div class="col-md-3" id="sidenav">
+      <ul class="nav nav-list docs-sidenav" data-spy="affix" data-offset-top="290">
+        <li><a href="#overview"><i class="icon-chevron-right"></i> Overview</a></li>
+        <li><a href="#generic"><i class="icon-chevron-right"></i> Generic Controls</a></li>
+        <li><a href="#main"><i class="icon-chevron-right"></i> Main Controls</a></li>
+        <li><a href="#complex"><i class="icon-chevron-right"></i> Complex Controls</a></li>
+        <li><a href="#forms"><i class="icon-chevron-right"></i> Forms</a></li>
+        <li><a href="#inputs"><i class="icon-chevron-right"></i> Inputs</a></li>
+        <li><a href="#tables"><i class="icon-chevron-right"></i> Tables</a></li>
+      </ul>
+    </div>
+    <div id="content" class="col-md-9">
+      <section id="overview">
+        <div class="page-header">
+          <h2>Overview</h2>
+        </div>
+        <p>The following items represent different widgets and elements that can be used in the design of a Genesis plugin. These elements are parsed by an XML stylesheet interpreter that will then render them into HTML.</p>
+        <p>Elements can also be created by calling them on <a href="/dev/genesis/api#genesis.core.Application">genesis.core.Application.inflate</a> like so:</p>
+{% highlight python %}
+ui = self.app.inflate('hosts:main')
+t = ui.find('list')
+
+for h in self.hosts:
+    t.append(UI.DTR(
+        UI.Label(text=h.ip),
+        UI.Label(text=h.name),
+        UI.Label(text=h.aliases),
+        UI.HContainer(
+            UI.TipIcon(
+                iconfont='gen-pencil-2',
+                id='edit/' + str(self.hosts.index(h)),
+                text='Edit'
+            ),
+            UI.TipIcon(
+                iconfont='gen-cancel-circle',
+                id='del/' + str(self.hosts.index(h)),
+                text='Delete',
+                warning='Remove %s from hosts'%h.ip
+            )
+        ),
+    ))
+{% endhighlight %}
+        <p>First, a container is found in the inflated XML (variable <code>t</code> above), then the elements are &#8220;appended&#8221; to the container by calling their name on <code>UI</code> like so.</p>
+        <p>Attributes of elements can be changed in the backend by calling <a href="/dev/genesis/api#genesis.ui.Element">genesis.ui.Element.set()</a> like this:</p>
+{% highlight python %}
+  ui.find('aliases').set('value', h.aliases)
+{% endhighlight %}
+      </section>
+      <section id="generic" class="docsection">
+        <div class="page-header">
+          <h2>Generic Controls</h2>
+        </div>
+        <h4 class="devsection">Spacer</h4>
+          <p>An empty space.</p>
+          {% highlight xml %}
+          <spacer width=css height=css />
+          {% endhighlight %}
+        <h4 class="devsection">Container</h4>
+          <p>Holds elements in their default layout.</p>
+          {% highlight xml %}
+          <container width=css height=css> ... </container>
+          {% endhighlight %}
+        <h4 class="devsection">HContainer</h4>
+          <p>Holds elements horizontally.</p>
+          {% highlight xml %}
+          <hcontainer width=css height=css spacing=css> ... </hcontainer>
+          {% endhighlight %}
+        <h4 class="devsection">VContainer</h4>
+          <p>Holds elements vertically.</p>
+          {% highlight xml %}
+          <vcontainer width=css height=css spacing=css> ... </vcontainer>
+          {% endhighlight %}
+        <h4 class="devsection">Pad</h4>
+          <p>A padded container.</p>
+          {% highlight xml %}
+          <pad> ... </pad>
+          {% endhighlight %}
+        <h4 class="devsection">CustomHTML</h4>
+          <p>Generates an arbitrary HTML chunk. </p>
+          {% highlight xml %}
+          <customhtml html=str id=str />
+          {% endhighlight %}
+        <h4 class="devsection">CompleteRefresh</h4>
+          <p>Performs immediate complete page refresh. </p>
+          {% highlight xml %}
+          <completerefresh />
+          {% endhighlight %}
+        <h4 class="devsection">ScrollContainer</h4>
+          <p>A container with scrollbars. </p>
+          {% highlight xml %}
+          <scrollcontainer width=css height=css> ... </scrollcontainer>
+          {% endhighlight %}
+        <h4 class="devsection">JS</h4>
+          <p>Executes JavaScript code. </p>
+          {% highlight xml %}
+          <js code=str />
+          {% endhighlight %}
+      </section>
+      <section id="main" class="docsection">
+        <div class="page-header">
+          <h2>Main Controls</h2>
+        </div>
+        <h4 class="devsection">Label</h4>
+          <p>Size can be &#8220;1&#8221; through &#8220;5&#8221;, with &#8220;5&#8221; being the largest size.</p>
+          {% highlight xml %}
+          <label size=int bold=bool monospace=bool text=str />
+          {% endhighlight %}
+        <h4 class="devsection">Image</h4>
+          <dl class="devsub">
+          <dt>file</dt>
+          <dd>An absolute URL to the image.</dd>
+          </dl>
+          {% highlight xml %}
+          <image file=str />
+          {% endhighlight %}
+        <h4 class="devsection">Button</h4>
+        <dl class="devsub">
+        <dt>text</dt>
+        <dd>Text to be included in the button.</dd>
+        <dt>design</dt>
+        <dd>One of: &#8216;mini&#8217;, &#8216;primary&#8217;, &#8216;danger&#8217;, &#8216;info&#8217;, &#8216;success&#8217;. Can also be none for a regular button.</dd>
+        <dt>warning</dt>
+        <dd>If set, a confirmation dialog will be displayed on click, and attached actions will not be completed unless the user confirms this dialog.</dd>
+        <dt>onclick</dt>
+        <dd>May be empty, arbitrary Javascript (overrides button/click event) or &#8216;form&#8217;. When &#8216;form&#8217;, use form and action attributes to specify the form ID to be submitted, and the form action value.</dd>
+        <dt>iconfont</dt>
+        <dd>Class name for the icon to be displayed (see <a href="/dev/genesis/icons">iconfont</a> list)</dd>
+        </dl>
+        {% highlight xml %}
+        <button id=str text=str design=str onclick=str warning=str iconfont=str />
+        <button id=str text=str design=str onclick="form" form=str action=str warning=str iconfont=str />
+        {% endhighlight %}
+        <h4 class="devsection">IconFont</h4>
+        <p>An icon that shows a tooltip on hover.</p>
+        <dl class="devsub">
+        <dt>text</dt>
+        <dd>Text to be included in the tooltip.</dd>
+        <dt>iconfont</dt>
+        <dd>Absolute URL to an icon for use in the button.</dd>
+        </dl>
+        {% highlight xml %}
+        <icon id=str text=str icon=str />
+        {% endhighlight %}
+        <h4 class="devsection">TipIcon</h4>
+        <p>A clickable icon that shows a tooltip on hover.</p>
+        <dl class="devsub">
+        <dt>text</dt>
+        <dd>Text to be included in the tooltip.</dd>
+        <dt>warning</dt>
+        <dd>If set, a confirmation dialog will be displayed on click, and attached actions will not be completed unless the user confirms this dialog.</dd>
+        <dt>onclick</dt>
+        <dd>May be empty, arbitrary Javascript (overrides button/click event) or &#8216;form&#8217;. When &#8216;form&#8217;, use form and action attributes to specify the form ID to be submitted, and the form action value.</dd>
+        <dt>iconfont</dt>
+        <dd>Class name for the icon to be displayed (see <a href="/dev/genesis/icons">iconfont</a> list)</dd>
+        </dl>
+        {% highlight xml %}
+        <tipicon id=str text=str onclick=str warning=str icon=str />
+        {% endhighlight %}
+        <h4 class="devsection">LinkLabel</h4>
+        <p>A clickable label that gives a <code>linklabel/click</code> event.</p>
+        <dl class="devsub">
+        <dt>text</dt>
+        <dd>The link text.</dd>
+        </dl>
+        {% highlight xml %}
+        <linklabel id=str text=str />
+        {% endhighlight %}
+        <h4 class="devsection">OutLinkLabel</h4>
+        <p>A text link that opens in a new tab/window on click.</p>
+        <dl class="devsub">
+        <dt>text</dt>
+        <dd>The link text.</dd>
+        <dt>url</dt>
+        <dd>The URL to open in a new tab/window.</dd>
+        </dl>
+        {% highlight xml %}
+        <outlinklabel url=str text=str />
+        {% endhighlight %}
+        <h4 class="devsection">ProgressBar</h4>
+        <dl class="devsub">
+        <dt>left</dt>
+        <dd><em>Integer.</em> Width of the left part.</dd>
+        <dt>right</dt>
+        <dd><em>Integer.</em> Width of the right part./dd>
+        </dl>
+        {% highlight xml %}
+        <progressbar left=int right=int />
+        {% endhighlight %}
+        <p>You can also add a ProgressBar in runtime like this:</p>
+        {% highlight python %}
+        UI.ProgressBar(value=0.33, max=2.0, width=200)
+        {% endhighlight %}
+        <h4 class="devsection">Toolbar</h4>
+        <p>Toolbars can hold any controls. Buttons and some other controls will auto-adjust their height to fit in this space.</p>
+        {% highlight xml %}
+        <toolbar> ... </toolbar>
+        {% endhighlight %}
+        <h4 class="devsection">Tooltip</h4>
+        <p>The contained elements will show a tooltip on hover.</p>
+        {% highlight xml %}
+        <tooltip text=str> ... </tooltip>
+        {% endhighlight %}
+      </section>
+    <section id="complex" class="docsection">
+    <div class="page-header">
+    <h2>Complex Controls</h2>
+    </div>
+    <h4 class="devsection">Tabs</h4>
+    <p>Shows a row of tabs with a space underneath for element pagination.</p>
+    {% highlight xml %}
+    <tabcontrol active="tab1">
+      <tabheader id="tab1" text="Tab one" />
+      <tabheader id="tab2" text="Tab two" />
+      <tabheader id="new-tab" text="New tab" live="True" />
+      <tabbody id="tab1"> ... </tabbody>
+      <tabbody id="tab2"> ... </tabbody>
+    </tabcontrol>
+    {% endhighlight %}
+    <p>Tabs are switched immediately, without generating events. But, a TabHeader with the **live=True** attribute will generate **tab/click** event. With **live=True**, you can also use **form** and **action** attributes. Applying the **live** attribute to TabControl will force all child TabHeaders to generate events.</p>
+    <h4 class="devsection">Tree</h4>
+    <p>A tree is a complex expandable widget. Can only be called from runtime. Example:</p>
+{% highlight python %}
+def on_session_start(self):
+    self._tree = genesis.ui.TreeManager()
+ 
+def get_ui(self):
+    ...
+    tree = UI.TreeContainer(text='Root', id='/')
+    sub = UI.TreeContainer(text='Subtree', id='/sub')
+    node0 = UI.TreeContainerNode(
+        UI.Label(text='node 0')
+    )
+    node1 = UI.TreeContainerNode(
+        UI.Label(text='node 1'),
+        active=True
+    )
+    tree.append(sub)
+    sub.append(node0)
+    tree.append(node1)
+    self._tree.apply(root) # restore node states
+ 
+@event('treecontainer/click')
+def on_tclick(self, event, params, vars=None):
+    self._tree.node_click('/'.join(params)) # save node state
+    return ''   
+{% endhighlight %}
+    <h4 class="devsection">List</h4>
+    <p>Creates a clickable nav-style list.</p>
+    {% highlight xml %}
+    <list id=str>
+      <listitem id=str active=bool> ... </list.item>
+      ...
+    </list>
+    {% endhighlight %}
+    </section>
+    <section id="forms" class="docsection">
+    <div class="page-header">
+    <h2>Forms</h2>
+    </div>
+    <h4 class="devsection">FormBox</h4>
+    <p>Yields the <strong>form/submit</strong> event on submission. The FormBox is displayed as a set of fields and an OK + Cancel buttons. The optional <code>miscbtn</code> attribute allows a third button to be added to the form.</p>
+    {% highlight xml %}
+    <formbox id=str hidecancel=bool hideok=bool width=css height=css miscbtn=str miscbtnid>
+      <formline text=str help=str>
+        ...
+      </formline>
+      ...
+    </formbox>
+    {% endhighlight %}
+    <h4 class="devsection">SimpleForm</h4>
+    <p>Same as FormBox, but doesn&#8217;t have any buttons or padding. Yields the <strong>dialog/submit</strong> event on submission.</p>
+    {% highlight xml %}
+    <inputbox title=str extra=str width=css height=css id=str>
+    {% endhighlight %}
+    <h4 class="devsection">DialogBox</h4>
+    <p>Yields the <strong>dialog/submit</strong> event on submission. Same as a FormBox, but is displayed as a modal.</p>
+    {% highlight xml %}
+    <dialogbox id=str hidecancel=bool hideok=bool width=css height=css miscbtn=str miscbtnid>
+      <formline text=str help=str>
+        ...
+      </formline>
+      ...
+    </dialogbox>
+    {% endhighlight %}
+    <h4 class="devsection">InputBox</h4>
+    <p>A DialogBox with a single text input. Yields the <strong>dialog/submit</strong> event on submission. Input can be a TextInput, TextInputArea or CodeInputArea depending on the <code>extra</code> attribute (empty, &#8216;area&#8217; or &#8216;code&#8217; values).</p>
+    {% highlight xml %}
+    <inputbox title=str extra=str width=css height=css id=str>
+    {% endhighlight %}
+    </section>
+    <section id="inputs" class="docsection">
+    <div class="page-header">
+    <h2>Inputs</h2>
+    </div>
+    <p>Inputs with the <strong>design</strong> attribute may accept &#8216;mini&#8217;, &#8216;small&#8217; or &#8216;xlarge&#8217; values which affect input&#8217;s size. </p>
+    <h4 class="devsection">TextInput</h4>
+    {% highlight xml %}
+    <textinput id=str name=str value=str password=bool />
+    {% endhighlight %}
+    <h4 class="devsection">AttachTextInput</h4>
+    <p>A TextInput with a custom button or control attached to the left. </p>
+    {% highlight xml %}
+    <attachtextinput id=str name=str value=str password=bool />
+    {% endhighlight %}
+    <h4 class="devsection">Chechbox</h4>
+    <p>Checkboxes will yield either a <strong>0</strong> (unchecked) or <strong>1</strong> (checked).</p>
+    {% highlight xml %}
+    <checkbox id=str name=str checked=bool text=str  />
+    {% endhighlight %}
+    <h4 class="devsection">Radio</h4>
+    {% highlight xml %}
+    <radio id=str name=str checked=bool text=str />
+    {% endhighlight %}
+    <h4 class="devsection">SelectInput</h4>
+    <p>A simple drop-down box.</p>
+    {% highlight xml %}
+    <selectinput id=str name=str>
+      <selectoption value=str text=str />
+      ...
+      <selectoption value=str text=str />
+    </selectinput>
+    {% endhighlight %}
+    <h4 class="devsection">SelectTextInput</h4>
+    <p>A TextInput with a list of presets in a drop-down.</p>
+    {% highlight xml %}
+    <selecttextinput id=str name=str value=str size=int>
+      <selectoption value=str text=str />
+      ...
+      <selectoption value=str text=str />
+    </selecttextinput>
+    {% endhighlight %}
+    <h4 class="devsection">TextInputArea</h4>
+    <p>A text input area with customizable size.</p>
+    {% highlight xml %}
+    <textinputarea id=str name=str value=str width=css height=css disabled=bool />
+    {% endhighlight %}
+    <h4 class="devsection">CodeInputArea</h4>
+    <p>A custom code editor with line numbers.</p>
+    {% highlight xml %}
+    <codeinputarea id=str name=str value=str width=css height=css />
+    {% endhighlight %}
+    </section>
+    <section id="tables" class="docsection">
+    <div class="page-header">
+    <h2>Tables</h2>
+    </div>
+    <h4 class="devsection">LayoutTable</h4>
+    {% highlight xml %}
+    <lt width=css height=css>
+      <ltr height=css>
+          <ltd width=css height=css colspan=int rowspan=int>
+              ...
+          </ltd>
+      </ltr>
+    </lt>
+    {% endhighlight %}
+    <h4 class="devsection">DataTable</h4>
+    {% highlight xml %}
+    <dt width=css height=css noborder=bool>
+      <dtr height=css header=True>
+          <dth width=css height=css colspan=int rowspan=int>
+              ...
+          </dth>
+          ...
+      </dtr>
+      <dtr height=css>
+          <dtd width=css height=css colspan=int rowspan=int>
+              ...
+          </dtd>
+      </dtr>
+    </dt>
+    {% endhighlight %}
+    </section>
+    </div>
+  </div>
+</div>

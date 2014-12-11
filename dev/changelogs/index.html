@@ -1,0 +1,100 @@
+---
+layout: page-with-sidebar
+pretitle: Development Centre
+title: "Changelogs"
+---
+<div class="tabbable">
+<ul class="nav nav-tabs">
+<li class="active"><a href="#arkos" data-toggle="tab">arkOS (Distro)</a></li>
+<li><a href="#genesis" data-toggle="tab">Genesis</a></li>
+<li><a href="#installer" data-toggle="tab">Installer</a></li>
+</ul>
+<div class="tab-content">
+<div class="tab-pane active" id="arkos">
+<h4>Install Image 20140205</h4>
+<p>February 5th, 2014</p>
+<ul>
+<li>Updated Genesis to 0.5</li>
+<li>Includes Fail2Ban by default</li>
+<li>Updated repo structure in pacman, and new mirrorlist reflecting community mirrors</li>
+</ul>
+<p></p>
+<h4>Install Image 20131005-1</h4>
+<p>October 5th, 2013</p>
+<ul>
+<li>Updated Genesis to 0.4</li>
+<li>Includes Beacon and LogRunner utilities by default</li>
+<li>Update to system time sync &#8211; don&#8217;t start daemon and check on ethernet connect</li>
+<li>All packages updated to latest versions</li>
+</ul>
+<p></p>
+<h4>Install Image 20130716-1</h4>
+<p>July 16th, 2013</p>
+<ul>
+<li>Updated Genesis to 0.3</li>
+<li>Adds new optional packages, several PHP dependencies and nginx multisite support</li>
+</ul>
+<p></p>
+<h4>Install Image 20130614-1</h4>
+<p>June 14th, 2013</p>
+<ul>
+<li>Added additional Python modules by default for use with Genesis plugins: python2-psutil and python2-imaging</li>
+<li>Major update to Arch Linux file location standards</li>
+<li>All packages updated to latest versions</li>
+</ul>
+<p></p>
+<h4>Install Image 20130421-1</h4>
+<p>April 21st, 2013</p>
+<ul>
+<li>Added Genesis, the arkOS server management app</li>
+<li>Added python2 and Python modules required for Genesis, syslog-ng, and many others</li>
+<li>All packages updated to latest versions</li>
+</ul>
+<p></p>
+<h4>Install Image 20130318-1</h4>
+<p>March 18th, 2013</p>
+<ul>
+<li>Recompiled from a scratch rootfs</li>
+<li>All packages updated to latest versions</li>
+<li>Added ntp, base-devel</li>
+</ul>
+<p></p>
+<h4>Install Image 20130308-1</h4>
+<p>March 8th, 2013</p>
+<ul>
+<li>Initial release, fork of Arch Linux ARM</li>
+<li>Established</li>
+</ul>
+</div>
+<div class="tab-pane" id="genesis">
+<h3>For changes in Genesis versions, please see <a href="https://github.com/cznweb/genesis/releases">the releases on Github</a></h3>
+</div>
+<div class="tab-pane" id="installer">
+<h4>Release v0.3</h4>
+<p>August 15th, 2013</p>
+<ul>
+<li>Added Network Browser to view Raspberry Pis on local network and send commands to RPis running arkOS</li>
+<li>Mac OS X version released</li>
+<li>Migrated from PyGTK to PyQt</li>
+<li>Download/install flow performance fixes and stability improvements</li>
+</ul>
+<h4>Release v0.2</h4>
+<p>June 16th, 2013</p>
+<ul>
+<li>Bugfix: A bad error check for dd caused processes to freeze after writing</li>
+<li>Update references to match new domain (arkos.io)</li>
+<li>Merge permissions checker into the same script</li>
+<li>Now in Python package format</li>
+</ul>
+<h4>Release v0.1</h4>
+<p>March 24th, 2013</p>
+<ul>
+<li>Initial release, support for Linux</li>
+<li>Choose nearest download mirror and download the image to disk</li>
+<li>List block devices on the system and choose which one to write to</li>
+<li>Check the downloaded image via MD5hash</li>
+<li>Write the image automatically to the selected disk</li>
+</ul>
+</div>
+</div>
+</div>

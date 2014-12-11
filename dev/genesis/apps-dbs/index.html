@@ -1,0 +1,431 @@
+---
+layout: page
+pretitle: Development Centre
+title: "Genesis: Webapps and Databases"
+---
+<div class="container">
+  <div class="row">
+    <div class="col-md-3" id="sidenav">
+      <ul class="nav nav-list docs-sidenav" data-spy="affix" data-offset-top="290">
+      <li><a href="#wainit"><i class="icon-chevron-right"></i> Webapps &#8211; Metadata</a></li>
+      <li><a href="#wafunc"><i class="icon-chevron-right"></i> Webapps &#8211; Functions</a></li>
+      <li><a href="#dbinit"><i class="icon-chevron-right"></i> Databases &#8211; Metadata</a></li>
+      <li><a href="#dbfunc"><i class="icon-chevron-right"></i> Databases &#8211; Functions</a></li>
+      </ul>
+    </div>
+    <div id="content" class="col-md-9">
+      <p class="lead">A webapp is an HTML application served over a webserver that contains most of its own configuration options and abilities without having to modify other system files. They have a special method of installation and use, to make them compatible with modular installation via nginx, the chosen server system for arkOS.</p>
+      <section id="wainit">
+        <div class="page-header">
+          <h2>Webapps &#8211; Metadata</h2>
+        </div>
+        <p>The first step to creating a webapp plugin, just like a regular plugin, is in setting up a <code>plugin.json</code>. This file contains certain variables that Genesis reads to create entries in the Applications pane. However, you will see that this file includes some additional information specifically for our webapp. Below is the typical structure of a webapp&#8217;s <code>plugin.json</code>:</p>
+        {% highlight json %}
+        {
+            "name": "WordPress",
+            "type": "webapp",
+            "icon": "fa fa-wordpress",
+            "description": {
+                "short": "Open-source CMS and blogging platform",
+                "long": "WordPress started as just a blogging system, but has evolved to be used as full content management system and so much more through the thousands of plugins, widgets, and themes, WordPress is limited only by your imagination. (And tech chops.)"
+            },
+            "categories": [
+                {
+                    "primary": "Websites",
+                    "secondary": ["Blogs", "Websites", "CMS"]
+                }
+            ],
+            "version": "3.8.2-1",
+            "author": "arkOS",
+            "homepage": "https://arkos.io",
+            "app_author": "Automattic",
+            "app_homepage": "https://wordpress.org",
+            "logo": true,
+            "screenshots": ["screen-1.jpg", "screen-2.jpg", "screen-3.jpg", "screen-4.jpg"],
+            "services": [
+                {
+                    "name": "MariaDB",
+                    "binary": "mysqld",
+                    "ports": []
+                },
+                {
+                    "name": "PHP FastCGI",
+                    "binary": "php-fpm",
+                    "ports": []
+                }
+            ],
+            "modules": ["main"],
+            "platforms": ["any"],
+            "dependencies": {
+                "any": [
+                    {
+                        "type": "app",
+                        "name": "MariaDB",
+                        "package": "mariadb",
+                        "binary": "mysqld"
+                    },
+                    {
+                        "type": "app",
+                        "name": "nginx",
+                        "package": "nginx",
+                        "binary": "nginx"
+                    },
+                    {
+                        "type": "app",
+                        "name": "php",
+                        "package": "php",
+                        "binary": null
+                    },
+                    {
+                        "type": "app",
+                        "name": "PHP FastCGI",
+                        "package": "php-fpm",
+                        "binary": "php-fpm"
+                    },
+                    {
+                        "type": "app",
+                        "name": "PHP xCache",
+                        "package": "php-xcache",
+                        "binary": null
+                    },
+                    {
+                        "type": "plugin",
+                        "name": "MariaDB",
+                        "package": "db-mariadb"
+                    },
+                    {
+                        "type": "plugin",
+                        "name": "PHP",
+                        "package": "php"
+                    }
+                ]
+            },
+            "generation": 1,
+            "website_plugin": "WordPress",
+            "website_updates": false,
+            "download_url": "https://wordpress.org/wordpress-3.8.2.tar.gz",
+            "database_engines": ["MariaDB"],
+            "uses_php": true,
+            "uses_ssl": true
+        }
+        {% endhighlight %}
+        <p>Below you will find the definitions for the extra webapp declarations. For information regarding general metadata structure, such as dependencies and the like, visit the <a href="/dev/genesis/plugstruct">Plugin Structure documentation</a>.</p>
+        <dl class="devsub">
+          <dt>website_plugin</dt>
+            <dd><em>String.</em> The name of the IWebapp instance that will be used when adding or removing a site.</dd>
+          <dt>website_updates</dt>
+            <dd><em>Boolean.</em> Set to true if Genesis should be handling updates for this application (see below).</dd>
+          <dt>download_url</dt>
+            <dd><em>String.</em> The source archive that will be fetched and expanded in the website&#8217;s directory upon new site creation. If no downloads are necessary, this should be an empty string or null.</dd>
+          <dt>database_engines</dt>
+            <dd><em>List.</em> The name(s) of the database engine(s) used by this webapp. Must feature at least one, but if the app supports multiple types, put them all here and Genesis will ask the user which one they prefer to use on install. If no database is required, this should be an empty list.</dd>
+          <dt>uses_php</dt>
+            <dd><em>Boolean.</em> True if this webapp type uses PHP.</dd>
+          <dt>uses_ssl</dt>
+            <dd><em>Boolean.</em> True if this webapp type is capable of using SSL.</dd>
+        </dl>
+      </section>
+      <section id="wafunc" class="docsection">
+        <div class="page-header">
+          <h2>Webapps &#8211; Functions</h2>
+        </div>
+        <p>The plugin must implement the <code>apis.webapps.IWebapp</code> interface, and contain the following functions, called at different stages of the installation/removal process by the Websites framework. All of these functions must be declared in your plugin. If the webapp does not require any particular one, just put <code>pass</code> in the function then move on.</p>
+{% highlight python %}
+class WordPress(Plugin):
+    implements(apis.webapps.IWebapp)
+
+    addtoblock = [
+        nginx.Location('= /favicon.ico',
+            nginx.Key('log_not_found', 'off'),
+            nginx.Key('access_log', 'off')
+            ),
+        nginx.Location('= /robots.txt',
+            nginx.Key('allow', 'all'),
+            nginx.Key('log_not_found', 'off'),
+            nginx.Key('access_log', 'off')
+            ),
+        nginx.Location('/',
+            nginx.Key('try_files', '$uri $uri/ /index.php?$args')
+            ),
+        nginx.Location('~ \.php$',
+            nginx.Key('fastcgi_pass', 'unix:/run/php-fpm/php-fpm.sock'),
+            nginx.Key('fastcgi_index', 'index.php'),
+            nginx.Key('include', 'fastcgi.conf')
+            ),
+        nginx.Location('~* \.(js|css|png|jpg|jpeg|gif|ico)$',
+            nginx.Key('expires', 'max'),
+            nginx.Key('log_not_found', 'off')
+            )
+        ]
+
+    def pre_install(self, name, vars):
+        ...
+
+    def post_install(self, name, path, vars):
+        ...
+
+    def pre_remove(self, name, path):
+        ...
+
+    def post_remove(self, name):
+        ...
+
+    def ssl_enable(self, path, cfile, kfile):
+        ...
+
+    def ssl_disable(self, path):
+        ...
+
+    def update(self, path, pkg, ver):
+        ...
+{% endhighlight %}
+        <dl class="devsub">
+          <dt>addtoblock</dt>
+            <dd>A list of python-nginx elements to be added to the nginx serverblock upon setup. This includes any applicable PHP FastCGI options. No requirements means an empty list.</dd>
+          <dt>pre_install</dt>
+            <dd>Arguments passed: the user&#8217;s chosen name for the webapp, and the <code>vars</code> object containing information from the site add form (see below). This function is called before the package is downloaded and extracted. Typically used for any special form validation (via checking the <code>vars</code> object) that needs to take place before the installation process begins.</dd>
+          <dt>post_install</dt>
+            <dd>Arguments passed: the user&#8217;s chosen name for the webapp, the path on the hard disk where the app source was installed/extracted to, and the <code>vars</code> object containing information from the site add form (see below). This function is called after the source package is downloaded and extracted. Typically used to register and setup database provisioning, and to modify source configuration files based on any data passed in the form.</dd>
+          <dt>pre_remove</dt>
+            <dd>Arguments passed: the user&#8217;s chosen name for the webapp, and the path on the hard disk where the app source was installed/extracted to. This function is called before the webapp source files are removed. Typically used to prepare the application&#8217;s source files for removal and for removing registered databases and database users.</dd>
+          <dt>post_remove</dt>
+            <dd>Argument passed: the user&#8217;s chosen name for the webapp. This function is called after the webapp source files and serverblock have successfully been removed.</dd>
+          <dt>ssl_enable</dt>
+            <dd>Arguments passed: the path on the hard disk where the app source was installed/extracted to, the full path to the certificate file, and the full path to the certificate key file. This function is executed after a certificate is generated, when a user wants to apply an SSL certificate to this webapp. Typically used to enable &#8220;force SSL&#8221; features in webapp configuration files.</dd>
+          <dt>ssl_disable</dt>
+            <dd>Argument passed: the user&#8217;s chosen name for the webapp. This function is called when a user unassigns the SSL certificate to the webapp, and SSL is intended to be disabled. Typically used to remove &#8220;force SSL&#8221; features in webapp configuration files.</dd>
+          <dt>update</dt>
+            <dd>Arguments passed: path, pkg, ver. This function is called when a site is set to be updated by Genesis (rather than updating itself), when there is an update available, and the user clicks the &#8220;Update&#8221; button. This function must properly unpack the new source at <code>pkg</code> and put it into place at <code>path</code> according to the app type&#8217;s specific upgrade instructions, and to execute any additional operation that the app requires on updates. The <code>ver</code> parameter includes the version of the site pre-update, so the function can execute different operations depending on the version being updated from.</dd>
+        </dl>
+        <p>The following is a more expansive explanation of the required functions.</p>
+        <h3>pre_install</h3>
+        <p><code>pre_install</code> is typically used to validate optional form data that is required with your application. You can do this with the <code>vars</code> object that is passed as an argument to this function. Like as follows:</p>
+{% highlight python %}
+dbname = vars.getvalue('wp-dbname', '')
+if ' ' in dbname or '-' in dbname:
+    raise Exception('Database name must not contain spaces or dashes')
+{% endhighlight %}
+        <p>To provide this optional form data, include a file called <code>layout/conf.xml</code> in your plugin directory that resembles the following.</p>
+{% highlight xml %}
+<xml>
+  <label text="All of these options are OPTIONAL, if you do not choose them, then they will be automatically generated for you on install." />
+  <formline text="Database Name" help="A database user with full rights on this database will be created of the same name.">
+      <textinput name="wp-dbname" id="wp-dbname" />
+  </formline>
+  <formline text="Database User Password">
+      <textinput name="wp-dbpasswd" id="wp-dbpasswd" password="True" />
+  </formline>
+</xml>
+{% endhighlight %}
+        <h3>post_install</h3>
+        <p><code>post_install</code> is run after the app source is extracted, and is where the heavy lifting happens. Any install configurations required for your app generally will occur here.</p>
+        <p>We will use extracts from the WordPress webapp&#8217;s <code>post_install</code> as a guide. First, we need to register a database</p>
+{% highlight python %}
+# Get the database object and connection, and determine proper values
+dbase = apis.databases(self.app).get_interface('MariaDB')
+conn = apis.databases(self.app).get_dbconn('MariaDB')
+...
+# Request a database and user to interact with it
+dbase.add(dbname, conn)
+dbase.usermod(dbname, 'add', passwd, conn)
+dbase.chperm(dbname, dbname, 'grant', conn)
+{% endhighlight %}
+        <p>Here we make calls to the Databases framework to give us a database with the specified name, to give us a database user with the specified name and password, then to grant all access on our new database to our new user. The <code>conn</code> object here is a secure database connection that the user already established when logging into Genesis.</p>
+        <p>Now that we have our database, we will write WordPress&#8217; initial configuration file. We know where this is because <code>post_install</code> is passed the <code>path</code> variable, which is the full path on disk to the source install location.</p>
+{% highlight python %}
+# Write a standard WordPress config file
+f = open(os.path.join(path, 'wp-config.php'), 'w')
+f.write('&lt;?php\n'
+    'define(\'DB_NAME\', \''+dbname+'\');\n'
+    'define(\'DB_USER\', \''+dbname+'\');\n'
+    'define(\'DB_PASSWORD\', \''+passwd+'\');\n'
+    'define(\'DB_HOST\', \'localhost\');\n'
+    ...
+{% endhighlight %}
+        <p>Any other operations necessary for the installation, from permissions changes to activating PHP ini modules, should take place here.</p>
+        <h3>pre_remove</h3>
+        <p>This function is called before the application source code is removed, and is good for stopping services or removing the databases before the source is actually removed. The path is passed in as an argument but the database names are not known (as these could have been changed manually since install), so you will need to parse the app&#8217;s configuration files to get the current database and user names.</p>
+{% highlight python %}
+dbase = apis.databases(self.app).get_interface('MariaDB')
+conn = apis.databases(self.app).get_dbconn('MariaDB')
+dbase.remove(dbname, conn)
+dbase.usermod(dbname, 'del', '', conn)
+{% endhighlight %}
+        <h3>post_remove</h3>
+        <p>This function is called after the source of the application is removed, reserved if any cleanup needs to happen after this point. Largely symbolic as most important removal work should have taken place in <code>pre_remove</code>.</p>
+        <h3>ssl_enable</h3>
+        <p>This function is called when SSL is added to this site&#8217;s configuration. All of the necessary steps in nginx are handled by Genesis, but if there are any special settings needed in your webapp itself, like setting force SSL, those can occur here. This is what that looks like in the WordPress plugin:</p>
+{% highlight python %}
+ic = open(os.path.join(path, 'wp-config.php'), 'r').readlines()
+f = open(os.path.join(path, 'wp-config.php'), 'w')
+oc = []
+found = False
+for l in ic:
+    if 'define(\'FORCE_SSL_ADMIN\'' in l:
+        l = 'define(\'FORCE_SSL_ADMIN\', false);\n'
+        oc.append(l)
+        found = True
+    else:
+        oc.append(l)
+if found == False:
+    oc.append('define(\'FORCE_SSL_ADMIN\', true);\n')
+f.writelines(oc)
+f.close()
+{% endhighlight %}
+        <h3>ssl_disable</h3>
+        <p>Fairly self-explanatory; called when SSL is unassigned from the plugin and SSL should be removed from your webapp&#8217;s configurations.</p>
+      </section>
+      <section id="dbinit" class="docsection">
+        <div class="page-header">
+          <h2>Databases &#8211; Initial</h2>
+        </div>
+        <p>The first step to creating a database plugin, just like a regular plugin or a webapp plugin, is in setting up a <code>plugin.json</code>. This file contains certain variables that Genesis reads to create entries in the Applications pane for your new database type. It also contains special options just for databases. Below is the typical structure of a database plugin&#8217;s <code>plugin.json</code>:</p>
+{% highlight json %}
+{
+    "name": "MariaDB",
+    "type": "database",
+    "icon": "gen-database",
+    "description": {
+        "short": "Manage MariaDB/MySQL databases",
+        "long": ""
+    },
+    "categories": [
+        {
+            "primary": "Databases",
+            "secondary": []
+        }
+    ],
+    "version": "2.6",
+    "author": "arkOS",
+    "homepage": "https://arkos.io",
+    "app_author": "MariaDB Foundation",
+    "app_homepage": "https://mariadb.org/",
+    "logo": false,
+    "screenshots": [],
+    "services": [],
+    "modules": ["main"],
+    "platforms": ["any"],
+    "dependencies": {
+        "any": [
+            {
+                "type": "app",
+                "name": "MariaDB",
+                "package": "mariadb",
+                "binary": "mysqld"
+            },
+            {
+                "type": "module",
+                "name": "MySQL-Python",
+                "package": "mysql-python",
+                "binary": "_mysql"
+            }
+        ]
+    },
+    "generation": 1,
+    "database_plugin": "MariaDB",
+    "database_task": "mysqld",
+    "database_multiuser": true,
+    "database_requires_connection": true
+}
+{% endhighlight %}
+        <p>Below you will find the definitions for the extra database declarations. For information regarding general metadata structure, such as dependencies and the like, visit the <a href="/dev/genesis/plugstruct">Plugin Structure documentation</a>.</p>
+        <dl class="devsub">
+          <dt>database_plugin</dt>
+            <dd><em>String.</em> The name of the IDatabase instance that will be used when adding, removing or modifying a database.</dd>
+          <dt>database_task</dt>
+            <dd><em>String.</em> The name of the binary for this database type. If no binary, leave as an empty string.</dd>
+          <dt>database_multiuser</dt>
+            <dd><em>Boolean.</em> True if this database engine manages its own users and access rights.</dd>
+          <dt>database_requires_connection</dt>
+            <dd><em>Boolean.</em> True if this database engine requires an authenticated connection for access.</dd>
+        </dl>
+      </section>
+      <section id="dbfunc" class="docsection">
+        <div class="page-header">
+          <h2>Databases &#8211; Functions</h2>
+        </div>
+        <p>The plugin must implement the <code>apis.databases.IDatabase</code> interface, and contain the following functions, called at different stages of the installation/removal process by the Websites framework. All functions must be declared for multiuser and authenticated databases; non-authenticated database engines only need from &#8216;add&#8217; on until the end. If the database plugin does not require any particular one, just put <code>pass</code> in the function then move on. These functions can contain code that interacts with a Python library binding for the database type, or <code>shell</code> calls with proper commands to be called in each circumstance.</p>
+{% highlight python %}
+class MariaDB(Plugin):
+    implements(apis.databases.IDatabase)
+    db = None
+
+    def connect(self, store, user, passwd, db=None):
+        ...
+
+    def checkpwstat(self):
+        ...
+
+    def chpwstat(self, newpasswd, conn=None):
+        ...
+
+    def validate(self, name='', user='', passwd='', conn=None):
+        ...
+
+    def add(self, dbname):
+        ...
+
+    def remove(self, dbname):
+        ...
+
+    def usermod(self, user, action, passwd):
+        if action == 'add':
+            ...
+        elif action == 'del':
+            ...
+
+    def chperm(self, dbname, user, action):
+        if action == 'check':
+            ...
+        elif action == 'grant':
+            ...
+        elif action == 'revoke':
+            ...
+
+    def execute(self, dbname, command, conn=None):
+        return ''
+
+    def get_dbs(self):
+        return []
+
+    def get_users(self):
+        return []
+
+    def get_size(self, dbname, conn=None):
+        ...
+
+    def dump(self, dbname, conn=None):
+        ...
+{% endhighlight %}
+        <dl class="devsub">
+          <dt>connect</dt>
+            <dd>Required for authenticated database engines. Arguments passed: a session instance (<code>self.app.session</code>) for storing the access rights, the username for authenticating, the password for authenticating, and the database name if a specific database is to be used when connecting. Executed when a user or a Genesis plugin requires any option of an authenticated database engine, and there is no active connection.</dd>
+          <dt>checkpwstat</dt>
+            <dd>Required for authenticated database engines. Attempt to connect to the database type with no username or password (to verify if a root/master password is set). Return False if there is no root/master password set, or return True if a master password is properly set.</dd>
+          <dt>chpwstat</dt>
+            <dd>Required for authenticated database engines. Arguments passed: the new master password, and the connection object (if present). Change the root/master username and password for this database engine.</dd>
+          <dt>validate</dt>
+            <dd><em>Optional.</em> Arguments passed: the user&#8217;s chosen name for the database, the username, the password, and the connection object (if present/required). A place to check for compatibility of the user&#8217;s chosen username/password/database name to make sure they fit with your particular backend&#8217;s naming requirements or conventions.</dd>
+          <dt>add</dt>
+            <dd>Arguments passed: the user&#8217;s chosen name for the database, and the connection object (if present/required). Executed when a user or a Genesis plugin requests a new database. Should fully add and enable said database.</dd>
+          <dt>remove</dt>
+            <dd>Arguments passed: the database name, and the connection object (if present/required). Executed when a user or Genesis plugin deletes an available database. Should completely disable and remove said database.</dd>
+          <dt>usermod</dt>
+            <dd>Arguments passed: the database user name, the action to complete, the database user password, and the connection object (if present/required). Action is either &#8216;add&#8217;, which should create the username and assign the password given; or &#8216;del&#8217;, which should drop the database user entirely.</dd>
+          <dt>chperm</dt>
+            <dd>Arguments passed: the database name, the database username, the action to perform, and the connection object (if present/required). Action is either &#8216;check&#8217;, which should return a list of the database user&#8217;s permissions in string format; &#8216;grant&#8217;, which should grant all permissions to the database user on the named database, or &#8216;revoke&#8217;, which should revoke all privileges for the database user on the named database.</dd>
+          <dt>execute</dt>
+            <dd>Arguments passed: the database name, the database command, and the connection object (if present/required). This function should execute SQL command(s) passed as argument on the named database, and return the output in string format.</dd>
+          <dt>get_dbs</dt>
+            <dd>Returns a list of dictionaries, one for each database of the same type on the system. The dictionaries must have the following keys: &#8216;name&#8217; &#8211; the database name; &#8216;type&#8217; &#8211; the database type (e.g. &#8216;MariaDB&#8217;); and &#8216;class&#8217; &#8211; a reference to the class of the database type itself, from here just <code>self.__class__</code>.</dd>
+          <dt>get_users</dt>
+            <dd>Returns a list of dictionaries, one for each database user of the same type on the system. The dictionaries must have the following keys: &#8216;name&#8217; &#8211; the database name; &#8216;type&#8217; &#8211; the database type (e.g. &#8216;MariaDB&#8217;); and &#8216;class&#8217; &#8211; a reference to the class of the database type itself, from here just <code>self.__class__</code>.</dd>
+          <dt>get_size</dt>
+            <dd>Arguments passed: the database name, and the connection object (if present/required). Must return a string showing the physical size on disk of the database (good to return the utility function <code>str_fsize(float)</code> passing in your value).</dd>
+          <dt>dump</dt>
+            <dd>Arguments passed: the database name, and the connection object (if present/required). Must return a dump of the specified database as a properly formatted string.</dd>
+        </dl>
+      </section>
+    </div>
+  </div>
+</div>
