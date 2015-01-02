@@ -1,0 +1,59 @@
+---
+layout: post
+title:  "2014, Year in Review"
+date:   2015-01-01 20:00:00
+author: "Jacob Cook"
+summary: "Where we've come since our crowdfunding campaign"
+---
+
+Our [2013 crowdfunding campaign](https://fund.arkos.io) finished in December 2013. It was a resounding success which raised over $53,000. This funding, of which approximately $30,000 went straight to the project, was invaluable for supporting our basic operations for 2014. It allowed me to work full-time on the project this year, developing its associated core frameworks, working on new plugins for applications, and expanding its community and technical resources. The support that the crowdfunding campaign has provided has now come to an end.
+
+We achieved many important milestones this year, too many to list here. (Changelogs are available on the [Github releases page.](https://github.com/cznweb/genesis/releases)) However I thought it would be useful to recap the promises made during the funding campaign for transparency purposes and to show where we can make further improvements in 2015.
+
+
+### Efficiency, security and design
+
+One of our goals set during the funding campaign was to put in a lot of work to stabilizing the core software stack. Much of it was jumpstarted by a fork from a web management interface named Ajenti. At the time of our campaign the software was at version 0.4 and still in alpha stage. It had brand-new website and database installation features, but not much else.
+
+In 2014, we brought Genesis to version 0.6.2, where it is presently. Many important features were added to its core, including significant improvements to every subsystem that existed prior and the creation of important new ones. It also represented a near complete rethink of the software's design and visual interface, incorporating some important advice received from our community and create something really unique and powerful.
+
+The largest step yet towards a vision of a stable and secure arkOS ecosystem will be made with the release of arkOS 0.7 within the next few days. 0.7 represents a full rewrite and rethink of the software, how it executes its tasks and how it manages the underlying operating system layer. Work has been underway for a couple months now, and has been supported principally by the resources and lessons that the funding campaign allowed us to procure.
+
+0.7 brings us one BIG step closer to arkOS 1.0, which we are finally able to think about and are targeting to release this year. There are some exciting things in store!
+
+![](/img/20150101001.png)
+![](/img/20150101002.png)
+
+
+### The true centre of your self-hosted Internet
+
+Since the start of our funded work on arkOS in January, many plugins have been added by our team. These include a Mailserver plugin for storing, sending and receiving your mail yourself (for which major improvements are again coming in 0.7 and 0.8), an integrated Calendar and Contacts sync server, a cool new File Sync system powered by [Syncthing](http://syncthing.net), XMPP chat server hosting, and much more. Lots of new website types were added and made stable. More plugins were also added thanks to invaluable contributions by Heiner Tholen, Tom Atkins and others, who have been really instrumental in pushing arkOS forward.
+
+There were some features that were promised in the funding campaign that have not yet been completed, however. Chief among these in my mind are the ability to host arkOS services as Tor Hidden Services, and getting a good backup system such as Tahoe-LAFS properly integrated. There's been so much to do and not enough "hands on keyboards" to help out with it all, so we had to prioritize on the things we could accomplish and put off the things we couldn't. Rest assured though that these are still among the many new features we will be building into arkOS in 2015.
+
+
+### Branching out with arkOS CONNECT
+
+A big part of the goal we set during the funding campaign was the launch of extra services to support the self-hosting experience, that we refer to bundled together as arkOS CONNECT. (We've [written about CONNECT in the past](https://arkos.io/2014/08/new-services-skylark-and-arkos-connect/), if you'd like to hear more about it.) Our initial aim was to have at least one of the CONNECT services ready for use early this fall, but we have a much firmer launch schedule now for early this year. We're happy to report that nearly all of the software to back and administrate the Deluge service  (backed by a partnership we will be announcing shortly) has been developed and is already ready for deployment. There are only a few more details to finalize before we can roll it out to interested users, and the subsequent services will be ready very soon after, likely to coincide with the release of arkOS 0.8.
+
+
+### Running on anything
+
+Another success of the campaign was getting arkOS to be supported (and supportable) on a wider variety of devices. In the beginning of the year, arkOS and Genesis could only be safely run on the Raspberry Pi. Now, thanks to your support, it can be run on additional ARMv7 devices, and official images are available for the Cubieboard series, the ODROID-U series, and more are on the horizon. We will also be inaugurating full x86/64 support shortly after the release of arkOS 0.7.
+
+
+### Plans for 2015
+
+2014 was a great year, but we want to go 1,000% percent further in 2015. We have some big plans on the horizon, including:
+
+ * Bringing arkOS to 1.0, providing normal stability and serving some more advanced use cases, such as API integration and third-party apps
+ * Client-side OS integration with a new "installer" that also serves as a management client and sync system for self-hosted cloud data
+ * Full launch of all arkOS CONNECT services, including encrypted backups and mail transport service
+ * Partnership with [Skylark](https://skylarkcloud.com) for virtual private arkOS instances, and plug-and-play arkOS hardware solutions for order
+ * New outreach campaigns with CitizenWeb to get the general public started with decentralization
+
+This year saw a lot of valuable contributions by community members, whether in terms of code contributions, bug reports, documentation edits and translations, or simple community support. Thank you so much to those who have helped us in 2014. We need even more of you to step up this year in order to successfully continue the work we are doing on the project. To advance new goals and projects we have on the horizon, we need developers (Python, C++, Swift) and graphic designers the most. If you think what we are working on is important and you have skills to contribute, please contact us!
+
+Financial donations are also very much appreciated, and are necessary for the project's ongoing success and independence. We received approximately $750 in donations this year outside of the funding campaign, which in a normal year would only support about 50% of our server and infrastructure bills. We want to not just break even on our infrastructure costs, but to support the work of a couple developers to work on arkOS full time and bring it to the masses, and we know that with your help we can do it. This is why we are launching the arkOS CONNECT services, with the aim of supporting as much of the project as possible with the revenues generated by those important tools. If you don't expect to use one of our CONNECT services in the new year as mentioned above, please consider supporting the project with a donation. On our [Donations page](https://donate.citizenweb.io) we accept Visa/MasterCard/AMEX/Discover cards, PayPal accounts, Bitcoin and ACH bank drafts via Dwolla. Soon we will be setting up a recurring donation service and a web store with some cool knick-knacks as further encouragement to lend us your support. Remember: we can't do it without you.
+
+Once again, thank you so much for your help this year, and together let's make 2015 an even better year for arkOS!
