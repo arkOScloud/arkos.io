@@ -2,21 +2,21 @@
   font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 300;
-  src: local('Fira Sans Light'), local('FiraSans-Light'), url("https://cdn.citizenweb.io/static/fonts/firasanslight.ttf") format('truetype');
+  src: local('Fira Sans Light'), local('FiraSans-Light'), url("https://cdn.citizenweb.io/static/font/firasanslight.ttf") format('truetype');
 }
 
 @font-face {
   font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Fira Sans'), local('FiraSans-Regular'), url("https://cdn.citizenweb.io/static/fonts/firasans.ttf") format('truetype');
+  src: local('Fira Sans'), local('FiraSans-Regular'), url("https://cdn.citizenweb.io/static/font/firasans.ttf") format('truetype');
 }
 
 @font-face {
   font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 700;
-  src: local('Fira Sans Bold'), local('FiraSans-Bold'), url("https://cdn.citizenweb.io/static/fonts/firasansbold.ttf") format('truetype');
+  src: local('Fira Sans Bold'), local('FiraSans-Bold'), url("https://cdn.citizenweb.io/static/font/firasansbold.ttf") format('truetype');
 }
 
 body {

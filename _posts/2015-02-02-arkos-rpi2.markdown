@@ -1,0 +1,15 @@
+---
+layout: post
+title:  "arkOS and the Raspberry Pi 2"
+date:   2015-02-02 12:15:00
+author: "Jacob Cook"
+summary: "Spoiler alert: we're super excited!"
+---
+
+![](/img/20150202001.png)
+
+arkOS is very pleased to welcome the newest member of the Raspberry Pi family into the world, the [Raspberry Pi 2](http://www.raspberrypi.org/raspberry-pi-2-on-sale/). The new Pi, which will be sold at the same price ($35) as the original editions, boasts a solid 1 Gb of RAM, double that of the last model, as well as a much more powerful processor based on the ARMv7 architecture.
+
+We're most excited about this new offering because we feel it will be a boon to users looking to run arkOS. The original edition of the Pi is a fantastic platform but in recent years saw its use outpaced by more solid competitors like the Cubieboard2. Its limited RAM and processing power meant it was a great platform for static sites and basic software, but some suites that are more demanding on server-side execution and database operations like ownCloud and WordPress would occasionally falter. These problems should be distant memories on the Pi 2, as its increased memory and significantly improved processing power will make it the perfect Goldilocks option for home servers at an unbeatable price.
+
+For those of you with the original editions of the Raspberry Pi, don't worry -- arkOS will continue to support the ARMv6 binaries they require for the foreseeable future, and will continue to produce installation images for it. We've got a Pi 2 on the way for testing purposes and will produce an installation image for it as soon as we can (if not in time for the 0.7 release, then shortly after).
