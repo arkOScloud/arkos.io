@@ -1,0 +1,667 @@
+---
+layout: page
+pretitle: Development Centre
+title: "Kraken REST API Reference"
+---
+<div class="container">
+  <div class="row">
+    <div class="col-md-3" id="sidenav">
+      <nav class="docs-sidebar" data-spy="affix" data-offset-top="275">
+        <ul class="nav nav-stacked fixed">
+          <li>
+            <a href="#applications">Applications</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#list-applications">List Applications</a></li>
+              <li><a href="#get-application-details">Get Application Details</a></li>
+              <li><a href="#modify-application">Modify Application</a></li>
+              <li><a href="#get-application-logo">Get Application Logo</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#backups">Backups</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#list-backups">List Backups</a></li>
+              <li><a href="#get-backup-details">Get Backup Details</a></li>
+              <li><a href="#create-backup">Create Backup</a></li>
+              <li><a href="#restore-backup">Restore Backup</a></li>
+              <li><a href="#delete-backup">Delete Backup</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#certificates">Certificates</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#list-certificates">List Certificates</a></li>
+              <li><a href="#get-certificate-details">Get Certificate Details</a></li>
+              <li><a href="#generate-certificate">Generate Certificate</a></li>
+              <li><a href="#upload-certificate">Upload Certificate</a></li>
+              <li><a href="#assign-certificate">Assign Certificate</a></li>
+              <li><a href="#delete-certificate">Delete Certificate</a></li>
+              <li><a href="#list-certificate-authorities">List Certificate Authorities</a></li>
+              <li><a href="#get-certificate-authority-details">Get Certificate Authority Details</a></li>
+              <li><a href="#delete-certificate-authority">Delete Certificate Authority</a></li>
+            </ul>
+          </li>
+        </ul>
+        <a href="#top" class="back-to-top">Back to Top</a>
+      </nav>
+    </div>
+    <div id="content" class="col-md-9">
+      <div class="alert">
+        <h3><i class="fa fa-warning pull-left"></i></h3>
+        <p>This documentation is a work in progress.</p>
+      </div>
+      <h1 id="applications" class="page-header">Applications</h1>
+      
+      <div class="api-item">
+        <h2 id="list-applications">List Applications</h2>
+        <h3><span class="text-success">GET</span> /apps</h3>
+        <p class="lead">Returns a list of all applications present on the system and their status, as well as applications available but not yet installed.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/apps
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>List of application detail objects.</p>
+        
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+    "apps": [
+        {
+            "id": "wallabag",
+            "name": "Wallabag",
+            ...
+        },
+        {
+            "id": "wordpress",
+            "name": "Wordpress",
+            ...
+        }
+    ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="get-application-details">Get Application Details</h2>
+        <h3><span class="text-success">GET</span> /apps/:id</h3>
+        <p class="lead">Returns details on the specified application.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/apps/wordpress
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>Application detail object.</p>
+        
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "app": {
+    "app_author": "Automattic", 
+    "app_homepage": "https://wordpress.org", 
+    "assets": {
+      "logo": 31, 
+      "screens": [
+        32, 
+        33, 
+        34, 
+        35
+      ]
+    }, 
+    "author": "arkOS", 
+    "categories": [
+      {
+        "primary": "Websites", 
+        "secondary": [
+          "Blogs", 
+          "Websites", 
+          "CMS"
+        ]
+      }
+    ], 
+    "database_engines": [
+      "db-mariadb"
+    ], 
+    "dependencies": [
+      {
+        "binary": null, 
+        "name": "php", 
+        "package": "php", 
+        "type": "system"
+      }, 
+      {
+        "binary": null, 
+        "name": "PHP xCache", 
+        "package": "php-xcache", 
+        "type": "system"
+      }, 
+      {
+        "name": "MariaDB", 
+        "package": "db-mariadb", 
+        "type": "app"
+      }
+    ], 
+    "description": {
+      "long": "WordPress started as just a blogging system, but has evolved to be used as full content management system and so much more through the thousands of plugins, widgets, and themes, WordPress is limited only by your imagination. (And tech chops.)", 
+      "short": "Open-source CMS and blogging platform"
+    }, 
+    "download_url": "https://wordpress.org/wordpress-4.1.1.tar.gz", 
+    "error": "", 
+    "generation": 1, 
+    "homepage": "https://arkos.io", 
+    "icon": "fa fa-wordpress", 
+    "id": "wordpress", 
+    "installed": true, 
+    "is_ready": true, 
+    "loadable": true, 
+    "logo": true, 
+    "modules": [
+      "website", 
+      "backup"
+    ], 
+    "name": "WordPress", 
+    "screenshots": [
+      "screen-1.jpg", 
+      "screen-2.jpg", 
+      "screen-3.jpg", 
+      "screen-4.jpg"
+    ], 
+    "services": [
+      {
+        "binary": "mysqld", 
+        "name": "MariaDB", 
+        "ports": []
+      }, 
+      {
+        "binary": "php-fpm", 
+        "name": "PHP FastCGI", 
+        "ports": []
+      }
+    ], 
+    "type": "website", 
+    "upgradable": "", 
+    "uses_php": true, 
+    "uses_ssl": true, 
+    "version": "4.1.1-1", 
+    "website_updates": false
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="modify-application">Modify Application</h2>
+        <h3><span class="text-success">PUT</span> /apps/:id</h3>
+        <p class="lead">Installs or removes an application.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/apps/wordpress --data '{"app": {"operation": "install"}}'
+        {% endhighlight %}
+        
+        <h4>Request Requires</h4>
+        <dl>
+            <dt>operation</dt>
+            <dd>The operation to perform: either `install` or `remove`.</dd>
+        </dl>
+        
+        <h4>Responds With</h4>
+        <p>Application detail object.</p>
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="get-application-logo">Get Application Logo</h2>
+        <h3><span class="text-success">GET</span> /apps/logo/:id</h3>
+        <p class="lead">Get the application logo provided with the application.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/apps/logo/wordpress
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>Raw application logo image (usually a PNG file).</p>
+      </div>      
+      <hr />
+      <br />
+      
+      <h1 id="backups" class="page-header">Backups</h1>
+      
+      <div class="api-item">
+        <h2 id="list-backups">List Backups</h2>
+        <h3><span class="text-success">GET</span> /backups</h3>
+        <p class="lead">Returns a list of created backup archives available in the server's designated storage location.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/backups
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>List of backup detail objects.</p>
+        
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+    "apps": [
+        {
+            "icon": "fa fa-globe", 
+            "id": "testghost/20150317124530", 
+            ...
+        },
+        {
+            "icon": "fa fa-wordpress", 
+            "id": "testpress/20150317102919",
+            ...
+        },
+    ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-backup-details">Get Backup Details</h2>
+        <h3><span class="text-success">GET</span> /backups/:id</h3>
+        <p class="lead">Returns details on the specified backup archive.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Backup ID, composed from the application ID, a slash, and the timestamp.</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/backups/testghost/20150317124530
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>Backup detail object.</p>
+        
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "backup": [
+    {
+      "icon": "fa fa-globe", 
+      "id": "testghost/20150317124530", 
+      "is_ready": true, 
+      "path": "/var/lib/arkos/backups/testghost/testghost-20150317124530.tar.gz", 
+      "pid": "testghost", 
+      "site_type": "ghost", 
+      "size": 14612219, 
+      "time": "2015-03-17T12:45:30-04:00", 
+      "type": "site", 
+      "version": "0.5.10-1"
+    }
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-backup">Create Backup</h2>
+        <h3><span class="text-success">POST</span> /backups/:id</h3>
+        <p class="lead">Adds a backup for the specified application ID type.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Application ID or existing website ID to create the backup for.</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/backups/wordpress
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="restore-backup">Restore Backup</h2>
+        <h3><span class="text-success">PUT</span> /backups/:id</h3>
+        <p class="lead">Restores an existing backup.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Backup ID, composed from the application ID, a slash, and the timestamp.</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/backups/testghost/20150317124530 --data '{"backup": {...}}'
+        {% endhighlight %}
+        
+        <h4>Request Requires</h4>
+        <em>A backup detail object with at least the following parameters:</em>
+        <dl>
+            <dt>pid</dt>
+            <dd>The application ID or existing website ID that the backup was created from.</dd>
+            <dt>type</dt>
+            <dd>Either `app` or `site`.</dd>
+            <dt>site_type</dt>
+            <dd>The application ID of the website type that the backup was created for. <em>(Only if type == "site").</em></dd>
+            <dt>icon</dt>
+            <dd>Icon font class of the website type that the backup was created for. <em>(Only if type == "site").</em></dd>
+        </dl>
+        
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="delete-backup">Delete Backup</h2>
+        <h3><span class="text-success">DELETE</span> /backups/:id</h3>
+        <p class="lead">Deletes an existing backup from the storage location.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Backup ID, composed from the application ID, a slash, and the timestamp.</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/backups/testghost/20150317124530
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+      <br />
+      
+      <h1 id="certificates" class="page-header">Certificates</h1>
+      
+      <div class="api-item">
+        <h2 id="list-certificates">List Certificates</h2>
+        <h3><span class="text-success">GET</span> /certs</h3>
+        <p class="lead">Returns a list of SSL/TLS certificates present on the system.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/certs
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>List of SSL/TLS certificate detail objects.</p>
+        
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+    "certs": [
+        {
+            "assigns": [], 
+            "domain": "secure.testdomain.xyz", 
+            "expiry": "2017-02-03T22:32:22",
+            ...
+        },
+        {
+            "assigns": [], 
+            "domain": "*.mydomain.net", 
+            "expiry": "2017-02-03T22:32:22", 
+            ...
+        }
+    ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="get-certificate-details">Get Certificate Details</h2>
+        <h3><span class="text-success">GET</span> /certs/:id</h3>
+        <p class="lead">Returns details on the specified SSL/TLS certificate.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Certificate name/ID.</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/certs/testcert
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>Certificate detail object.</p>
+        
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "cert": {
+    "assigns": [], 
+    "domain": "secure.testdomain.xyz", 
+    "expiry": "2017-02-03T22:32:22", 
+    "id": "testcert", 
+    "is_ready": true, 
+    "keylength": 4096, 
+    "keytype": "RSA", 
+    "md5": "0E:EB:5D:D4:65:15:28:AC:02:31:94:BE:22:74:6C:D8", 
+    "sha1": "F6:B8:6E:1C:99:42:82:6E:2A:A8:B1:AB:58:8D:F2:E7:43:3E:29:C2"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="generate-certificate">Generate Certificate</h2>
+        <h3><span class="text-success">POST</span> /certs</h3>
+        <p class="lead">Instructs the server to generate a self-signed SSL/TLS certificate.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/certs --data '{"cert": {...}}'
+        {% endhighlight %}
+        
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new certificate.</dd>
+            <dt>domain</dt>
+            <dd>Domain ID that the certificate is to be valid for.</dd>
+            <dt>country</dt>
+            <dd>ISO-3166 (two-letter) country code abbreviation for certificate metadata.</dd>
+            <dt>state</dt>
+            <dd>State, province or region for certificate metadata.</dd>
+            <dt>locale</dt>
+            <dd>City, town or locale for certificate metadata.</dd>
+            <dt>email</dt>
+            <dd>Email address for certificate metadata.</dd>
+            <dt>keytype</dt>
+            <dd>Type of key to generate with the certificate. Can be `rsa` or `dsa`.</dd>
+            <dt>keylength</dt>
+            <dd>Bit-length of key to generate with the certificate.</dd>
+        </dl>
+        
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="upload-certificate">Upload Certificate</h2>
+        <h3><span class="text-success">POST</span> /certs</h3>
+        <p class="lead">Adds an externally-sourced SSL/TLS certificate to the server via an upload from the client.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/certs --form 'id=certname;file[0]=@certfile.pem;file[1]=@keyfile.key'
+        {% endhighlight %}
+        
+        <h4>Request Requires</h4>
+        <em>A multipart form submission with the following items:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new certificate.</dd>
+            <dt>file[0]</dt>
+            <dd>The certificate file in PEM format.</dd>
+            <dt>file[1]</dt>
+            <dd>The non-encrypted key file.</dd>
+            <dt>file[2]</dt>
+            <dd>The certificate chain file to append in PEM format. <em>Optional.</em></dd>
+        </dl>
+        
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="assign-certificate">Assign Certificate</h2>
+        <h3><span class="text-success">PUT</span> /certs/:id</h3>
+        <p class="lead">Assign/unassign the specified certificate to/from a service or website.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Certificate name/ID.</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/certs --data '{"cert": {...}}'
+        {% endhighlight %}
+        
+        <h4>Request Requires</h4>
+        <em>A certificate detail object with at least the following items:</em>
+        <dl>
+            <dt>assigns</dt>
+            <dd>A list of qualified assign objects. Assign objects present here that were not on the object prior will have SSL enabled on their corresponding service/website. Conversely, assigns missing from this list will have SSL disabled if the certificate was assigned to them prior.</dd>
+        </dl>
+        
+        <h4>Responds With</h4>
+        <p>Certificate detail object.</p>
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="delete-certificate">Delete Certificate</h2>
+        <h3><span class="text-success">DELETE</span> /certs/:id</h3>
+        <p class="lead">Deletes an existing SSL/TLS certificate from the server.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Certificate name/ID.</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/certs/testcert
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="list-certificate-authorities">List Certificate Authorities</h2>
+        <h3><span class="text-success">GET</span> /certauths</h3>
+        <p class="lead">Returns a list of SSL/TLS certificate authorities generated by the server to handle self-signed certificates.</p>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/certauths
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>List of SSL/TLS certificate authority detail objects.</p>
+        
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "certauths": [
+    {
+      "expiry": "2020-02-02T22:58:03", 
+      "id": "testdomain.xyz"
+    },
+    {
+      "expiry": "2020-02-02T22:58:03", 
+      "id": "mydomain.net"
+    }
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="get-certificate-authority-details">Get Certificate Authority Details</h2>
+        <h3><span class="text-success">GET</span> /certauths/:id</h3>
+        <p class="lead">Returns details on the specified SSL/TLS certificate authority.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Certificate authority name/ID (i.e., the domain it is effective for).</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/certauths/testdomain.xyz
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>Certificate authority detail object.</p>
+        
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "certauth": {
+    "expiry": "2020-02-02T22:58:03", 
+    "id": "testdomain.xyz"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      
+      <div class="api-item">
+        <h2 id="delete-certificate-authority">Delete Certificate Authority</h2>
+        <h3><span class="text-success">DELETE</span> /certauths/:id</h3>
+        <p class="lead">Deletes a SSL/TLS certificate authority from the server.</p>
+        
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Certificate authority name/ID (i.e., the domain it is effective for).</dd>
+        </dl>
+        
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/certauths/testdomain.xyz
+        {% endhighlight %}
+        
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+    </div>
+  </div>
+</div>
+
+<script>
+    $('body').scrollspy({
+        target: '.docs-sidebar',
+        offset: 40
+    });
+</script>
