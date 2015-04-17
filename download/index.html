@@ -21,7 +21,13 @@ title: Downloads
   <h2>Advanced</h2>
   <h4>arkOS Testing and Development</h4>
   <p>You can install a Vagrant box on any Windows/OS X/Linux computer to begin using arkOS for testing or development purposes. See the appropriate <a href="/dev/docs/vagrant">documentation</a> for help in getting started.</p>
-  <p><select id="gtddrop" onchange="$('#gtdbutton').attr('href', 'https://'+$('#gtddrop').val()+'.mirror.arkos.io/resources/arkos-dev.box');"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select> <a id="gtdbutton" class="btn btn-default" href='https://nyus.mirror.arkos.io/resources/genesis-dev.box'><i class="fa fa-download"></i> Download</a></p>
+  <div class="input-group">
+    <select id="gtddrop" class="form-control" onchange="$('#gtdbutton').attr('href', 'https://'+$('#gtddrop').val()+'.mirror.arkos.io/resources/arkos-dev.box');"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select>
+    <span class="input-group-btn">
+      <a id="gtdbutton" class="btn btn-default" href='https://nyus.mirror.arkos.io/resources/genesis-dev.box'><i class="fa fa-download"></i> Download</a>
+    </span>
+  </div>
+  <br />
   <p><strong>MD5:</strong> <a href="https://pkg.arkos.io/resources/arkos-dev.box.md5.txt">ed22835ccd0f2e8a8bc67178099d7546</a></p>
 
   <h4 style="margin-top:30px;">Install arkOS from Image</h4>

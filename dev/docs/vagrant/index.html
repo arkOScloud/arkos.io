@@ -3,39 +3,48 @@ layout: page-with-sidebar
 pretitle: Development Centre
 title: Setting Up a Dev Environment
 ---
-<p><strong>Vagrant</strong> is a system to allow the rapid setup and deployment of virtual machines (VMs) for testing purposes. Vagrant VMs (or &#8216;boxes&#8217;) can be shared between individuals to have a common starting point when developing software for certain platforms. arkOS has created and uploaded a Vagrant box running Arch Linux and custom-fitted with Genesis and all of its required dependencies. All that remains is to install Vagrant, download and enable the Vagrant box, then sign in to start development for Genesis &#8211; very easy!</p>
+<p><strong>Vagrant</strong> is a system to allow the rapid setup and deployment of virtual machines (VMs) for testing purposes. Vagrant VMs (or &#8216;boxes&#8217;) can be shared between individuals to have a common starting point when developing software for certain platforms. We have created and uploaded a Vagrant box running Arch Linux and custom-fitted with arkOS and all of its required dependencies. All that remains is to install Vagrant, download and enable the Vagrant box, then sign in to start development for arkOS &#8211; very easy!</p>
 
 <h3>Getting Started with Vagrant</h3>
-<p>If you don&#8217;t already have Vagrant on your system, it&#8217;s easy to install. <a href="http://www.vagrantup.com/downloads">Download the latest version of Vagrant</a> for your current operating system or Linux distro</p>
+<p>If you don&#8217;t already have Vagrant on your system, it&#8217;s easy to install. <a href="http://www.vagrantup.com/downloads">Download the latest version of Vagrant</a> for your current operating system or Linux distro.</p>
 <p>See <a href="http://docs.vagrantup.com/v2">the Vagrant documentation</a> for more general information about using Vagrant.</p>
 
-<h3>Installing the Arch/Genesis Vagrant Box</h3>
-<p>Install a base Arch environment with Genesis by downloading the Vagrant box <a href="/download">from the Downloads page</a>, moving the box to a new folder and running the following commands from that folder:</p>
+<h3>Installing the arkOS Vagrant Box</h3>
+<p>Automatically install a base Arch environment with arkOS by creating an empty folder, moving into it and running the following command:</p>
 
 {% highlight bash %}
-# Initialize the Vagrant box
-vagrant init genesis-dev genesis-dev.box
+vagrant init cznweb/arkOS-dev
+{% endhighlight %}
 
+<p>Or, if you prefer to download manually, grab the box <a href="/download">from the Downloads page</a>, move it to the new folder and run the following command:
+
+{% highlight bash %}
+vagrant init arkOS-dev arkos-dev.box
+{% endhighlight %}
+
+<p>Once you are ready to get started with your box, run the following:</p>
+
+{% highlight bash %}
 # Extract, configure and boot (will take a few minutes)
 vagrant up
 
 # SSH into the Vagrant VM
 vagrant ssh
 
-# (from inside the VM) Run Genesis live in stdout. First start will take a minute or two.
-cd genesis
-sudo python2 genesis-panel
+# (from inside the VM) Run arkOS live in stdout.
+sudo ./arkostest.sh
 
 # (from outside the VM) When you are done working and want to exit...
+# (Press Ctrl+C to quit the arkOS server if it is running.)
 vagrant halt
 
-# Repeat steps 2 and 3 each time you want to log back into your development environment.
+# Repeat these steps each time you want to log back into your development environment.
 {% endhighlight %}
 
-<p>To run Genesis as a daemon instead of live in stdout, use <code>sudo python2 genesis-panel -d</code>, then <code>sudo python2 genesis-panel -s</code> to stop the daemon when you are done. Code is located in the <code>genesis</code> subfolder in the home folder for your default user. Any modifications to core or plugin code in this folder will be reloaded when you restart the Genesis process.</p>
+<p>Code is located in the <code>core</code>, <code>kraken</code> and <code>genesis</code> subfolders in the home folder for your default user. Applications are in <code>/var/lib/arkos/applications</code>. Any modifications to core or application code in these folder will be reloaded when you restart the arkOS process.</p>
 
-<h3>Testing Webapps</h3>
-<p>In order to access webapps hosted in your Vagrant machine on your host system, you will need to add forwarded ports to your Vagrantfile before you start the machine. To do this, add these statements right before the <code>end</code> of your Vagrantfile:</p>
+<h3>Testing Websites</h3>
+<p>In order to access websites hosted in your Vagrant machine on your host system, you will need to add forwarded ports to your Vagrantfile before you start the machine. To do this, add these statements right before the <code>end</code> of your Vagrantfile:</p>
 {% highlight text %}
 config.vm.network :forwarded_port, host: 80, guest: 80
 config.vm.network :forwarded_port, host: 443, guest: 443
