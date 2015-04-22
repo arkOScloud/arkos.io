@@ -5,33 +5,11 @@ title: Downloads
 <div class="container">
   <div class="alert">
     <h1><i class="fa fa-warning pull-left"></i></h1>
-    <p><strong>Warning</strong> &#8211; arkOS and Genesis are still in development. Many tools are not yet working, and you should not yet depend on arkOS for anything other than testing at this time. Please stay connected via one of the methods listed on the <a href="/contact">Contact</a> page to get updates on project development.</p>
+    <p><strong>Warning</strong> &#8211; arkOS is still in development. Many tools are not yet working, and you should not yet depend on arkOS for anything other than testing at this time. Please stay connected via one of the methods listed on the <a href="/contact">Contact</a> page to get updates on project development.</p>
   </div>
-  <div class="alert alert-danger">
-    <h1><i class="fa fa-minus-circle pull-left"></i></h1>
-    <p> The arkOS Installer does not work at this time due to changing spec. Only the Network Browser feature is functional. The Installer is subject to a full rewrite and optimization once Genesis 0.6 is released. To install arkOS, please scroll down to &#8220;Install arkOS From Image&#8221;.</p>
-  </div>
-  <h3>arkOS Installer (Raspberry Pi only)</h3>
-  <p>The arkOS Installer is a graphical installation program that downloads the latest installation image for the Raspberry Pi and writes it to an SD card connected to your computer. Download one of these programs to get started with arkOS. <strong>Installs only the Raspberry Pi version at this time.</strong></p>
-  <p>Current version: 0.3.1</p>
-  <p><a class="btn btn-default" href="https://pkg.arkos.io/install/arkOS%20Installer.exe"><i class="fa fa-windows"></i> Windows (XP+)</a> <a class="btn btn-default" href="https://pkg.arkos.io/install/arkos-install-mac.zip"><i class="fa fa-apple"></i> Mac OS X (10.6+)</a> <a class="btn btn-default" href="https://pkg.arkos.io/install/arkos-install-latest.deb"><i class="fa fa-linux"></i> Ubuntu/Debian (.deb)</a> <a class="btn btn-default" href="https://pkg.arkos.io/install/arkos-install-latest.tar.gz"><i class="fa fa-linux"></i> All Linux (.tar.gz)</i></a></p>
-  <p>The &#8220;All Linux&#8221; version of the Installer requires the <code>netifaces</code> Python module.</p>
-  <hr />
-
-  <h2>Advanced</h2>
-  <h4>arkOS Testing and Development</h4>
-  <p>You can install a Vagrant box on any Windows/OS X/Linux computer to begin using arkOS for testing or development purposes. See the appropriate <a href="/dev/docs/vagrant">documentation</a> for help in getting started.</p>
-  <div class="input-group">
-    <select id="gtddrop" class="form-control" onchange="$('#gtdbutton').attr('href', 'https://'+$('#gtddrop').val()+'.mirror.arkos.io/resources/arkos-dev.box');"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select>
-    <span class="input-group-btn">
-      <a id="gtdbutton" class="btn btn-default" href='https://nyus.mirror.arkos.io/resources/genesis-dev.box'><i class="fa fa-download"></i> Download</a>
-    </span>
-  </div>
-  <br />
-  <p><strong>MD5:</strong> <a href="https://pkg.arkos.io/resources/arkos-dev.box.md5.txt">ed22835ccd0f2e8a8bc67178099d7546</a></p>
-
+  
   <h4 style="margin-top:30px;">Install arkOS from Image</h4>
-  <p>Advanced users may prefer to install the arkOS images themselves. These images are located below. <strong>ARMv7 images made possible thanks to Caleb Cooper!</strong> Instructions for writing these images <a href="https://wiki.arkos.io/en:getting_started#Manually_writing_a_disk_image">are available here</a>.</p>
+  <p>While the arkOS Installer undergoes a rewrite, installations can be made manually with the proper software. Instructions on how to install these images can be found <a href="https://wiki.arkos.io/en:getting_started#manually_writing_a_disk_image">on the Wiki</a>.</p>
   <p><strong>Select your download mirror:</strong></p>
   <p><select id="ddrop" class="form-control" onchange="$('.dbutton').each(function(i,e){$(this).attr('href', 'https://'+$('#ddrop').val()+'.mirror.arkos.io/os/latest-'+$(this).attr('a-type')+$(this).attr('a-ext'))});"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select></p>
   <table class="table table-striped">
@@ -66,6 +44,19 @@ title: Downloads
       <td><a a-type="rpisplit" a-ext=".tar.gz" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rpisplit.tar.gz'><i class="fa fa-download"></i> .tar.gz</a> <strong>MD5</strong> <a href="https://pkg.arkos.io/os/latest-rpisplit.tar.gz.md5.txt">4648a4b81fb156a9bb19a9836388ead3</a><br /><a a-type="rpisplit" a-ext=".zip" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rpisplit.zip'><i class="fa fa-download"></i> .zip</a> <strong>MD5</strong> <a href="https://pkg.arkos.io/os/latest-rpisplit.zip.md5.txt">8a5a53de194a569708c1b4c671c86704</a></td>
     </tr>
   </table>
+
+  <h4>arkOS Testing and Development</h4>
+  <p>You can install a Vagrant box on any Windows/OS X/Linux computer to begin using arkOS for testing or development purposes. See the appropriate <a href="/dev/docs/vagrant">documentation</a> for help in getting started.</p>
+  <div class="input-group">
+    <select id="gtddrop" class="form-control" onchange="$('#gtdbutton').attr('href', 'https://'+$('#gtddrop').val()+'.mirror.arkos.io/resources/arkos-dev.box');"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select>
+    <span class="input-group-btn">
+      <a id="gtdbutton" class="btn btn-default" href='https://nyus.mirror.arkos.io/resources/genesis-dev.box'><i class="fa fa-download"></i> Download</a>
+    </span>
+  </div>
+  <br />
+  <p><strong>MD5:</strong> <a href="https://pkg.arkos.io/resources/arkos-dev.box.md5.txt">ed22835ccd0f2e8a8bc67178099d7546</a></p>
+
+  
   <hr />
   <small>Raspberry Pi is a trademark of the <a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a>.</small></p>
 </div>
