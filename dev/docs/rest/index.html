@@ -38,6 +38,7 @@ title: "Kraken REST API Reference"
               <li><a href="#delete-certificate">Delete Certificate</a></li>
               <li><a href="#list-certificate-authorities">List Certificate Authorities</a></li>
               <li><a href="#get-certificate-authority-details">Get Certificate Authority Details</a></li>
+              <li><a href="#download-certificate-authority">Download Certificate Authority</a></li>
               <li><a href="#delete-certificate-authority">Delete Certificate Authority</a></li>
             </ul>
           </li>
@@ -51,20 +52,20 @@ title: "Kraken REST API Reference"
         <p>This documentation is a work in progress.</p>
       </div>
       <h1 id="applications" class="page-header">Applications</h1>
-      
+
       <div class="api-item">
         <h2 id="list-applications">List Applications</h2>
-        <h3><span class="text-success">GET</span> /apps</h3>
+        <h3><span class="text-success">GET</span> /api/apps</h3>
         <p class="lead">Returns a list of all applications present on the system and their status, as well as applications available but not yet installed.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/apps
+        curl -H 'Authorization: Bearer <token>' <url>/api/apps
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>List of application detail objects.</p>
-        
+
         <h4>Example Response</h4>
         {% highlight json %}
 {
@@ -84,180 +85,180 @@ title: "Kraken REST API Reference"
         {% endhighlight %}
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="get-application-details">Get Application Details</h2>
-        <h3><span class="text-success">GET</span> /apps/:id</h3>
+        <h3><span class="text-success">GET</span> /api/apps/:id</h3>
         <p class="lead">Returns details on the specified application.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/apps/wordpress
+        curl -H 'Authorization: Bearer <token>' <url>/api/apps/wordpress
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>Application detail object.</p>
-        
+
         <h4>Example Response</h4>
         {% highlight json %}
 {
   "app": {
-    "app_author": "Automattic", 
-    "app_homepage": "https://wordpress.org", 
+    "app_author": "Automattic",
+    "app_homepage": "https://wordpress.org",
     "assets": {
-      "logo": 31, 
+      "logo": 31,
       "screens": [
-        32, 
-        33, 
-        34, 
+        32,
+        33,
+        34,
         35
       ]
-    }, 
-    "author": "arkOS", 
+    },
+    "author": "arkOS",
     "categories": [
       {
-        "primary": "Websites", 
+        "primary": "Websites",
         "secondary": [
-          "Blogs", 
-          "Websites", 
+          "Blogs",
+          "Websites",
           "CMS"
         ]
       }
-    ], 
+    ],
     "database_engines": [
       "db-mariadb"
-    ], 
+    ],
     "dependencies": [
       {
-        "binary": null, 
-        "name": "php", 
-        "package": "php", 
+        "binary": null,
+        "name": "php",
+        "package": "php",
         "type": "system"
-      }, 
+      },
       {
-        "binary": null, 
-        "name": "PHP xCache", 
-        "package": "php-xcache", 
+        "binary": null,
+        "name": "PHP xCache",
+        "package": "php-xcache",
         "type": "system"
-      }, 
+      },
       {
-        "name": "MariaDB", 
-        "package": "db-mariadb", 
+        "name": "MariaDB",
+        "package": "db-mariadb",
         "type": "app"
       }
-    ], 
+    ],
     "description": {
-      "long": "WordPress started as just a blogging system, but has evolved to be used as full content management system and so much more through the thousands of plugins, widgets, and themes, WordPress is limited only by your imagination. (And tech chops.)", 
+      "long": "WordPress started as just a blogging system, but has evolved to be used as full content management system and so much more through the thousands of plugins, widgets, and themes, WordPress is limited only by your imagination. (And tech chops.)",
       "short": "Open-source CMS and blogging platform"
-    }, 
-    "download_url": "https://wordpress.org/wordpress-4.1.1.tar.gz", 
-    "error": "", 
-    "generation": 1, 
-    "homepage": "https://arkos.io", 
-    "icon": "fa fa-wordpress", 
-    "id": "wordpress", 
-    "installed": true, 
-    "is_ready": true, 
-    "loadable": true, 
-    "logo": true, 
+    },
+    "download_url": "https://wordpress.org/wordpress-4.1.1.tar.gz",
+    "error": "",
+    "generation": 1,
+    "homepage": "https://arkos.io",
+    "icon": "fa fa-wordpress",
+    "id": "wordpress",
+    "installed": true,
+    "is_ready": true,
+    "loadable": true,
+    "logo": true,
     "modules": [
-      "website", 
+      "website",
       "backup"
-    ], 
-    "name": "WordPress", 
+    ],
+    "name": "WordPress",
     "screenshots": [
-      "screen-1.jpg", 
-      "screen-2.jpg", 
-      "screen-3.jpg", 
+      "screen-1.jpg",
+      "screen-2.jpg",
+      "screen-3.jpg",
       "screen-4.jpg"
-    ], 
+    ],
     "services": [
       {
-        "binary": "mysqld", 
-        "name": "MariaDB", 
+        "binary": "mysqld",
+        "name": "MariaDB",
         "ports": []
-      }, 
+      },
       {
-        "binary": "php-fpm", 
-        "name": "PHP FastCGI", 
+        "binary": "php-fpm",
+        "name": "PHP FastCGI",
         "ports": []
       }
-    ], 
-    "type": "website", 
-    "upgradable": "", 
-    "uses_php": true, 
-    "uses_ssl": true, 
-    "version": "4.1.1-1", 
+    ],
+    "type": "website",
+    "upgradable": "",
+    "uses_php": true,
+    "uses_ssl": true,
+    "version": "4.1.1-1",
     "website_updates": false
   }
 }
         {% endhighlight %}
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="modify-application">Modify Application</h2>
-        <h3><span class="text-success">PUT</span> /apps/:id</h3>
+        <h3><span class="text-success">PUT</span> /api/apps/:id</h3>
         <p class="lead">Installs or removes an application.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/apps/wordpress --data '{"app": {"operation": "install"}}'
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/apps/wordpress --data '{"app": {"operation": "install"}}'
         {% endhighlight %}
-        
+
         <h4>Request Requires</h4>
         <dl>
             <dt>operation</dt>
             <dd>The operation to perform: either `install` or `remove`.</dd>
         </dl>
-        
+
         <h4>Responds With</h4>
         <p>Application detail object.</p>
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="get-application-logo">Get Application Logo</h2>
-        <h3><span class="text-success">GET</span> /apps/logo/:id</h3>
+        <h3><span class="text-success">GET</span> /api/apps/logo/:id</h3>
         <p class="lead">Get the application logo provided with the application.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/apps/logo/wordpress
+        curl <url>/api/apps/logo/wordpress
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>Raw application logo image (usually a PNG file).</p>
-      </div>      
+      </div>
       <hr />
       <br />
-      
+
       <h1 id="backups" class="page-header">Backups</h1>
-      
+
       <div class="api-item">
         <h2 id="list-backups">List Backups</h2>
-        <h3><span class="text-success">GET</span> /backups</h3>
+        <h3><span class="text-success">GET</span> /api/backups</h3>
         <p class="lead">Returns a list of created backup archives available in the server's designated storage location.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/backups
+        curl -H 'Authorization: Bearer <token>' <url>/api/backups
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>List of backup detail objects.</p>
-        
+
         <h4>Example Response</h4>
         {% highlight json %}
 {
     "apps": [
         {
-            "icon": "fa fa-globe", 
-            "id": "testghost/20150317124530", 
+            "icon": "fa fa-globe",
+            "id": "testghost/20150317124530",
             ...
         },
         {
-            "icon": "fa fa-wordpress", 
+            "icon": "fa fa-wordpress",
             "id": "testpress/20150317102919",
             ...
         },
@@ -269,37 +270,37 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="get-backup-details">Get Backup Details</h2>
-        <h3><span class="text-success">GET</span> /backups/:id</h3>
+        <h3><span class="text-success">GET</span> /api/backups/:id</h3>
         <p class="lead">Returns details on the specified backup archive.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Backup ID, composed from the application ID, a slash, and the timestamp.</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/backups/testghost/20150317124530
+        curl -H 'Authorization: Bearer <token>' <url>/api/backups/testghost/20150317124530
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>Backup detail object.</p>
-        
+
         <h4>Example Response</h4>
         {% highlight json %}
 {
   "backup": [
     {
-      "icon": "fa fa-globe", 
-      "id": "testghost/20150317124530", 
-      "is_ready": true, 
-      "path": "/var/lib/arkos/backups/testghost/testghost-20150317124530.tar.gz", 
-      "pid": "testghost", 
-      "site_type": "ghost", 
-      "size": 14612219, 
-      "time": "2015-03-17T12:45:30-04:00", 
-      "type": "site", 
+      "icon": "fa fa-globe",
+      "id": "testghost/20150317124530",
+      "is_ready": true,
+      "path": "/var/lib/arkos/backups/testghost/testghost-20150317124530.tar.gz",
+      "pid": "testghost",
+      "site_type": "ghost",
+      "size": 14612219,
+      "time": "2015-03-17T12:45:30-04:00",
+      "type": "site",
       "version": "0.5.10-1"
     }
   ]
@@ -310,41 +311,41 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="create-backup">Create Backup</h2>
-        <h3><span class="text-success">POST</span> /backups/:id</h3>
+        <h3><span class="text-success">POST</span> /api/backups/:id</h3>
         <p class="lead">Adds a backup for the specified application ID type.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Application ID or existing website ID to create the backup for.</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' -X POST <url>/backups/wordpress
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/backups/wordpress
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="restore-backup">Restore Backup</h2>
-        <h3><span class="text-success">PUT</span> /backups/:id</h3>
+        <h3><span class="text-success">PUT</span> /api/backups/:id</h3>
         <p class="lead">Restores an existing backup.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Backup ID, composed from the application ID, a slash, and the timestamp.</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/backups/testghost/20150317124530 --data '{"backup": {...}}'
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/backups/testghost/20150317124530 --data '{"backup": {...}}'
         {% endhighlight %}
-        
+
         <h4>Request Requires</h4>
         <em>A backup detail object with at least the following parameters:</em>
         <dl>
@@ -357,63 +358,63 @@ title: "Kraken REST API Reference"
             <dt>icon</dt>
             <dd>Icon font class of the website type that the backup was created for. <em>(Only if type == "site").</em></dd>
         </dl>
-        
+
         <h4>Responds With</h4>
         <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="delete-backup">Delete Backup</h2>
-        <h3><span class="text-success">DELETE</span> /backups/:id</h3>
+        <h3><span class="text-success">DELETE</span> /api/backups/:id</h3>
         <p class="lead">Deletes an existing backup from the storage location.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Backup ID, composed from the application ID, a slash, and the timestamp.</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/backups/testghost/20150317124530
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/backups/testghost/20150317124530
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>HTTP 204.</p>
       </div>
       <hr />
       <br />
-      
+
       <h1 id="certificates" class="page-header">Certificates</h1>
-      
+
       <div class="api-item">
         <h2 id="list-certificates">List Certificates</h2>
-        <h3><span class="text-success">GET</span> /certs</h3>
+        <h3><span class="text-success">GET</span> /api/certs</h3>
         <p class="lead">Returns a list of SSL/TLS certificates present on the system.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/certs
+        curl -H 'Authorization: Bearer <token>' <url>/api/certs
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>List of SSL/TLS certificate detail objects.</p>
-        
+
         <h4>Example Response</h4>
         {% highlight json %}
 {
     "certs": [
         {
-            "assigns": [], 
-            "domain": "secure.testdomain.xyz", 
+            "assigns": [],
+            "domain": "secure.testdomain.xyz",
             "expiry": "2017-02-03T22:32:22",
             ...
         },
         {
-            "assigns": [], 
-            "domain": "*.mydomain.net", 
-            "expiry": "2017-02-03T22:32:22", 
+            "assigns": [],
+            "domain": "*.mydomain.net",
+            "expiry": "2017-02-03T22:32:22",
             ...
         }
     ]
@@ -421,55 +422,55 @@ title: "Kraken REST API Reference"
         {% endhighlight %}
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="get-certificate-details">Get Certificate Details</h2>
-        <h3><span class="text-success">GET</span> /certs/:id</h3>
+        <h3><span class="text-success">GET</span> /api/certs/:id</h3>
         <p class="lead">Returns details on the specified SSL/TLS certificate.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Certificate name/ID.</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/certs/testcert
+        curl -H 'Authorization: Bearer <token>' <url>/api/certs/testcert
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>Certificate detail object.</p>
-        
+
         <h4>Example Response</h4>
         {% highlight json %}
 {
   "cert": {
-    "assigns": [], 
-    "domain": "secure.testdomain.xyz", 
-    "expiry": "2017-02-03T22:32:22", 
-    "id": "testcert", 
-    "is_ready": true, 
-    "keylength": 4096, 
-    "keytype": "RSA", 
-    "md5": "0E:EB:5D:D4:65:15:28:AC:02:31:94:BE:22:74:6C:D8", 
+    "assigns": [],
+    "domain": "secure.testdomain.xyz",
+    "expiry": "2017-02-03T22:32:22",
+    "id": "testcert",
+    "is_ready": true,
+    "keylength": 4096,
+    "keytype": "RSA",
+    "md5": "0E:EB:5D:D4:65:15:28:AC:02:31:94:BE:22:74:6C:D8",
     "sha1": "F6:B8:6E:1C:99:42:82:6E:2A:A8:B1:AB:58:8D:F2:E7:43:3E:29:C2"
   }
 }
         {% endhighlight %}
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="generate-certificate">Generate Certificate</h2>
-        <h3><span class="text-success">POST</span> /certs</h3>
+        <h3><span class="text-success">POST</span> /api/certs</h3>
         <p class="lead">Instructs the server to generate a self-signed SSL/TLS certificate.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/certs --data '{"cert": {...}}'
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/certs --data '{"cert": {...}}'
         {% endhighlight %}
-        
+
         <h4>Request Requires</h4>
         <em>An object with at least the following parameters:</em>
         <dl>
@@ -490,22 +491,22 @@ title: "Kraken REST API Reference"
             <dt>keylength</dt>
             <dd>Bit-length of key to generate with the certificate.</dd>
         </dl>
-        
+
         <h4>Responds With</h4>
         <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="upload-certificate">Upload Certificate</h2>
-        <h3><span class="text-success">POST</span> /certs</h3>
+        <h3><span class="text-success">POST</span> /api/certs</h3>
         <p class="lead">Adds an externally-sourced SSL/TLS certificate to the server via an upload from the client.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' -X POST <url>/certs --form 'id=certname;file[0]=@certfile.pem;file[1]=@keyfile.key'
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/certs --form 'id=certname;file[0]=@certfile.pem;file[1]=@keyfile.key'
         {% endhighlight %}
-        
+
         <h4>Request Requires</h4>
         <em>A multipart form submission with the following items:</em>
         <dl>
@@ -518,84 +519,84 @@ title: "Kraken REST API Reference"
             <dt>file[2]</dt>
             <dd>The certificate chain file to append in PEM format. <em>Optional.</em></dd>
         </dl>
-        
+
         <h4>Responds With</h4>
         <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="assign-certificate">Assign Certificate</h2>
-        <h3><span class="text-success">PUT</span> /certs/:id</h3>
+        <h3><span class="text-success">PUT</span> /api/certs/:id</h3>
         <p class="lead">Assign/unassign the specified certificate to/from a service or website.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Certificate name/ID.</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/certs --data '{"cert": {...}}'
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/certs --data '{"cert": {...}}'
         {% endhighlight %}
-        
+
         <h4>Request Requires</h4>
         <em>A certificate detail object with at least the following items:</em>
         <dl>
             <dt>assigns</dt>
             <dd>A list of qualified assign objects. Assign objects present here that were not on the object prior will have SSL enabled on their corresponding service/website. Conversely, assigns missing from this list will have SSL disabled if the certificate was assigned to them prior.</dd>
         </dl>
-        
+
         <h4>Responds With</h4>
         <p>Certificate detail object.</p>
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="delete-certificate">Delete Certificate</h2>
-        <h3><span class="text-success">DELETE</span> /certs/:id</h3>
+        <h3><span class="text-success">DELETE</span> /api/certs/:id</h3>
         <p class="lead">Deletes an existing SSL/TLS certificate from the server.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Certificate name/ID.</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/certs/testcert
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/certs/testcert
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>HTTP 204.</p>
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="list-certificate-authorities">List Certificate Authorities</h2>
-        <h3><span class="text-success">GET</span> /certauths</h3>
+        <h3><span class="text-success">GET</span> /api/certauths</h3>
         <p class="lead">Returns a list of SSL/TLS certificate authorities generated by the server to handle self-signed certificates.</p>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/certauths
+        curl -H 'Authorization: Bearer <token>' <url>/api/certauths
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>List of SSL/TLS certificate authority detail objects.</p>
-        
+
         <h4>Example Response</h4>
         {% highlight json %}
 {
   "certauths": [
     {
-      "expiry": "2020-02-02T22:58:03", 
+      "expiry": "2020-02-02T22:58:03",
       "id": "testdomain.xyz"
     },
     {
-      "expiry": "2020-02-02T22:58:03", 
+      "expiry": "2020-02-02T22:58:03",
       "id": "mydomain.net"
     }
   ]
@@ -603,54 +604,69 @@ title: "Kraken REST API Reference"
         {% endhighlight %}
       </div>
       <hr />
-      
+
       <div class="api-item">
         <h2 id="get-certificate-authority-details">Get Certificate Authority Details</h2>
-        <h3><span class="text-success">GET</span> /certauths/:id</h3>
+        <h3><span class="text-success">GET</span> /api/certauths/:id</h3>
         <p class="lead">Returns details on the specified SSL/TLS certificate authority.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Certificate authority name/ID (i.e., the domain it is effective for).</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/certauths/testdomain.xyz
+        curl -H 'Authorization: Bearer <token>' <url>/api/certauths/testdomain.xyz
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>Certificate authority detail object.</p>
-        
+
         <h4>Example Response</h4>
         {% highlight json %}
 {
   "certauth": {
-    "expiry": "2020-02-02T22:58:03", 
+    "expiry": "2020-02-02T22:58:03",
     "id": "testdomain.xyz"
   }
 }
         {% endhighlight %}
       </div>
       <hr />
-      
+
+      <div class="api-item">
+        <h2 id="download-certificate-authority">Download Certificate Authority</h2>
+        <h3><span class="text-success">GET</span> /api/certauths/:id?download=true</h3>
+        <p class="lead">Downloads the certificate authority X509 file.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl <url>/api/certauths/testdomain.xyz?download=true
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Raw certificate file in PEM format.</p>
+      </div>
+      <hr />
+
       <div class="api-item">
         <h2 id="delete-certificate-authority">Delete Certificate Authority</h2>
-        <h3><span class="text-success">DELETE</span> /certauths/:id</h3>
+        <h3><span class="text-success">DELETE</span> /api/certauths/:id</h3>
         <p class="lead">Deletes a SSL/TLS certificate authority from the server.</p>
-        
+
         <h4>Parameters</h4>
         <dl>
             <dt>id</dt>
             <dd>Certificate authority name/ID (i.e., the domain it is effective for).</dd>
         </dl>
-        
+
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/certauths/testdomain.xyz
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/certauths/testdomain.xyz
         {% endhighlight %}
-        
+
         <h4>Responds With</h4>
         <p>HTTP 204.</p>
       </div>
