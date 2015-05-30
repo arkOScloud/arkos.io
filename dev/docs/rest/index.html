@@ -671,6 +671,658 @@ title: "Kraken REST API Reference"
         <p>HTTP 204.</p>
       </div>
       <hr />
+      <br />
+
+      <h1 id="configuration" class="page-header">Configuration</h1>
+
+      <div class="api-item">
+        <h2 id="get-arkos-configuration">Get arkOS Configuration</h2>
+        <h3><span class="text-success">GET</span> /api/config</h3>
+        <p class="lead">Returns the arkOS configuration file, usually located at `/etc/arkos/settings.json`.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/config
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>arkOS configuration as JSON object, as well as system hostname and timezone settings.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "config": {
+    "apps": {
+      "app_dir": "/var/lib/arkos/applications",
+      "purge": true
+    },
+    "backups": {
+      "driver": "filesystem",
+      "location": "/var/lib/arkos/backups"
+    },
+    ...
+  },
+  "hostname": "arkosdev",
+  "timezone": {
+    "region": "America",
+    "zone": "Montreal"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="update-arkos-configuration">Update arkOS Configuration</h2>
+        <h3><span class="text-success">PUT</span> /api/config</h3>
+        <p class="lead">Replace entire arkOS configuration with a JSON object you provide.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/config --data '{"config": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A JSON object in proper arkOS configuration format.</em>
+
+        <h4>Responds With</h4>
+        <p>arkOS configuration after the changes, as if called via GET.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="patch-arkos-configuration">Patch arkOS Configuration</h2>
+        <h3><span class="text-success">PATCH</span> /api/config</h3>
+        <p class="lead">Change individual values on the arkOS system configuration.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PATCH <url>/api/config --data '{"config": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A JSON object with the sections, keys and values of the arkOS configuration that you want to change.</em>
+
+        <h4>Responds With</h4>
+        <p>arkOS configuration after the changes, as if called via GET.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-arkos-system-time">Get arkOS System Time</h2>
+        <h3><span class="text-success">GET</span> /api/config/datetime</h3>
+        <p class="lead">Get the current arkOS system time and NTP offset.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/config/datetime
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>arkOS system time in ISO-8601 format and NTP offset in seconds.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "datetime": {
+    "datetime": "2015-05-30T12:07:26.270941-04:00",
+    "offset": 0.2051558494567871
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="update-arkos-system-time">Update arkOS System Time</h2>
+        <h3><span class="text-success">PUT</span> /api/config/systemtime</h3>
+        <p class="lead">Tell arkOS to update its system time via its default NTP server.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X PUT <url>/api/config/systemtime
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>System time and offset after the update, as if called via GET.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="shutdown-system">Shutdown System</h2>
+        <h3><span class="text-success">POST</span> /api/config/shutdown</h3>
+        <p class="lead">Tell arkOS to immediately shut down.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/config/shutdown
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="reboot-system">Reboot System</h2>
+        <h3><span class="text-success">POST</span> /api/config/reboot</h3>
+        <p class="lead">Tell arkOS to immediately reboot.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/config/reboot
+        {% endhighlight %}
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="databases" class="page-header">Databases</h1>
+
+      <div class="api-item">
+        <h2 id="get-databases">Get Databases</h2>
+        <h3><span class="text-success">GET</span> /api/databases</h3>
+        <p class="lead">Get all databases registered with arkOS on the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/databases
+        {% endhighlight %}
+
+        <h4>Optional URL Parameters</h4>
+        <dl>
+            <dt>rescan</dt>
+            <dd>If true, force a server-side rescan of system databases.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>List of database detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "databases": [
+    {
+      "id": "testdb",
+      "is_ready": true,
+      "size": 0,
+      "type_id": "db-sqlite3",
+      "type_name": "SQLite3"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-database-details">Get Database Details</h2>
+        <h3><span class="text-success">GET</span> /api/databases/:id</h3>
+        <p class="lead">Returns details on the specified database.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Database name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/databases/testlite
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Database detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "database": {
+    "id": "testdb",
+    "is_ready": true,
+    "size": 0,
+    "type_id": "db-sqlite3",
+    "type_name": "SQLite3"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-database">Create Database</h2>
+        <h3><span class="text-success">POST</span> /api/databases</h3>
+        <p class="lead">Add a new database to the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/databases --data '{"database": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new database.</dd>
+            <dt>type_id</dt>
+            <dd>The ID of the database type (see database type methods below).</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Database detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="execute-sql-on-database">Execute SQL on Database</h2>
+        <h3><span class="text-success">PUT</span> /api/databases/:id</h3>
+        <p class="lead">Execute provided SQL code on a database of your choice.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/databases/testdb --data '{"database": {...}}'
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Database user name/ID.</dd>
+        </dl>
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameter:</em>
+        <dl>
+            <dt>execute</dt>
+            <dd>A string of properly formatted SQL code to execute.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>A JSON object with two keys: <code>id</code> with the ID of the database, and <code>result</code>, a string of the result text taken from the database engine.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="download-database">Download Database</h2>
+        <h3><span class="text-success">GET</span> /api/databases/:id?download=true</h3>
+        <p class="lead">Dumps the database to a SQL file and downloads.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl <url>/api/databases/testdb?download=true
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Raw database file in SQL format.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-database">Delete Database</h2>
+        <h3><span class="text-success">DELETE</span> /api/databases/:id</h3>
+        <p class="lead">Deletes a database from the server.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Database name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/databases/testdb
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-database-users">Get Database Users</h2>
+        <h3><span class="text-success">GET</span> /api/database_users</h3>
+        <p class="lead">Get all database users registered with arkOS on the system. Only applicable for database engines like MariaDB that feature user management.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/database_users
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of database user detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "database_users": [
+    {
+      "id": "testuser",
+      "is_ready": true,
+      "permissions": "GRANT USAGE ON *.* TO 'testuser'@'localhost'\n",
+      "type_id": "db-mariadb",
+      "type_name": "MariaDB"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-database-user-details">Get Database User Details</h2>
+        <h3><span class="text-success">GET</span> /api/database_users/:id</h3>
+        <p class="lead">Returns details on the specified database user.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Database user name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/database_users/testuser
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Database user detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "database_user": {
+    "id": "testuser",
+    "is_ready": true,
+    "permissions": "GRANT USAGE ON *.* TO 'testuser'@'localhost'\n",
+    "type_id": "db-mariadb",
+    "type_name": "MariaDB"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-database-user">Create Database User</h2>
+        <h3><span class="text-success">POST</span> /api/database_users</h3>
+        <p class="lead">Add a new database user to the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/database_users --data '{"database_user": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new database user.</dd>
+            <dt>type</dt>
+            <dd>The ID of the database type (see database type methods below).</dd>
+            <dt>passwd</dt>
+            <dd>Password for the new database user.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Database user detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="change-database-user-permissions">Change Database User Permissions</h2>
+        <h3><span class="text-success">PUT</span> /api/database_users/:id</h3>
+        <p class="lead">GRANT or REVOKE access for a database user to specific databases.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/database_users/testuser --data '{"database_user": {...}}'
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Database user name/ID.</dd>
+        </dl>
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameter:</em>
+        <dl>
+            <dt>operation</dt>
+            <dd><code>check</code> to obtain a list of all GRANTs, <code>grant</code> to GRANT ALL to a database, or <code>revoke</code> to REVOKE ALL on a database.</dd>
+            <dt>database</dt>
+            <dd>The ID of the database to perform this operation with.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Database user detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-database-user">Delete Database User</h2>
+        <h3><span class="text-success">DELETE</span> /api/database_users/:id</h3>
+        <p class="lead">Deletes a database user from the server.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Database user name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/database_users/testuser
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-database-types">Get Database Types</h2>
+        <h3><span class="text-success">GET</span> /api/database_types</h3>
+        <p class="lead">Get all available database engines installed in arkOS, as well as their running status.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/database_types
+        {% endhighlight %}
+
+        <h4>Optional URL Parameters</h4>
+        <dl>
+            <dt>rescan</dt>
+            <dd>If true, force a server-side rescan of database engines.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>List of database type detail objects. <code>state</code> is True if the database engine is running or does not require an active process.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "database_types": [
+    {
+      "id": "db-sqlite3",
+      "name": "SQLite3",
+      "state": true,
+      "supports_users": false
+    },
+    {
+      "id": "db-mariadb",
+      "name": "MariaDB",
+      "state": true,
+      "supports_users": true
+    }
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="file-manager" class="page-header">File Manager</h1>
+
+      <div class="api-item">
+        <h2 id="list-files-and-folders">List Files and Folders</h2>
+        <h3><span class="text-success">GET</span> /api/files/:path</h3>
+        <p class="lead">Get all databases registered with arkOS on the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/files/Lw**
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>path</dt>
+            <dd>Base64-encoded safe string of an absolute path on the filesystem to look inside.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>List of file detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "files": [
+    {
+      "binary": false,
+      "folder": true,
+      "group": "root",
+      "hidden": false,
+      "icon": "fa-folder-o",
+      "id": "L3Zhcg**",
+      "mimetype": null,
+      "name": "var",
+      ...
+    },
+    {
+      "binary": false,
+      "folder": true,
+      "group": "root",
+      "hidden": false,
+      "icon": "fa-folder-o",
+      "id": "L3Nydg**",
+      "mimetype": null,
+      "name": "srv",
+      ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-file-details">Get File/Folder Details</h2>
+        <h3><span class="text-success">GET</span> /api/files/:path</h3>
+        <p class="lead">Returns details on the specified system file or folder.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>path</dt>
+            <dd>Base64-encoded safe string of an absolute path on the filesystem.</dd>
+        </dl>
+
+        <h4>Optional URL Parameters</h4>
+        <dl>
+            <dt>content</dt>
+            <dd>If true and the path points to a text file, the call also returns the contents of the file.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/files/L2xpYjY0
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>File/folder detail object. If <code>content</code> is true, also returns a key named <code>content</code> containing text file contents.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "file": {
+      "binary": false,
+      "folder": true,
+      "group": "root",
+      "hidden": false,
+      "icon": "fa-link",
+      "id": "L2xpYjY0",
+      "mimetype": null,
+      "name": "lib64",
+      "path": "/lib64",
+      "perms": {
+        "oct": "0777",
+        "str": "rwxrwxrwx"
+      },
+      "realpath": "/usr/lib",
+      "selected": false,
+      "size": 7,
+      "type": "link",
+      "user": "root"
+    }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-file">Create File or Folder</h2>
+        <h3><span class="text-success">POST</span> /api/files/:path</h3>
+        <p class="lead">Adds a new file or folder inside the specified path. Path must be a folder.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/files/Lw** --data '{"file": {...}}'
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>path</dt>
+            <dd>Base64-encoded safe string of an absolute path on the filesystem to create inside.</dd>
+        </dl>
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>folder</dt>
+            <dd>True or False depending if you want the new item to be a folder or a regular file.</dd>
+            <dt>name</dt>
+            <dd>The name of the file or folder to create.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>File/folder detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="upload-file">Upload File</h2>
+        <h3><span class="text-success">POST</span> /api/files/:path</h3>
+        <p class="lead">Uploads file(s) of your choice to the specified path. Path must be a folder.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/files/Lw** --form 'file[0]=@filename.txt;file[1]=@secondfile.zip;...'
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>path</dt>
+            <dd>Base64-encoded safe string of an absolute path on the filesystem to create inside.</dd>
+        </dl>
+
+        <h4>Request Requires</h4>
+        <em>A multipart form submission with the following items:</em>
+        <dl>
+            <dt>file[0]</dt>
+            <dd>The first file to upload.</dd>
+            <dt>file[1]</dt>
+            <dd>Optional subsequent files to upload, with the array index increased each time.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>File/folder detail object.</p>
+      </div>
+      <hr />
+
     </div>
   </div>
 </div>
