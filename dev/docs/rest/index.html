@@ -80,6 +80,56 @@ title: "Kraken REST API Reference"
               <li><a href="#upload-file">Upload File</a></li>
             </ul>
           </li>
+          <li>
+            <a href="#filesystems">Filesystems</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-filesystems">Get Filesystems</a></li>
+              <li><a href="#get-filesystem-details">Get Filesystem Details</a></li>
+              <li><a href="#create-virtual-disk">Create Virtual Disk</a></li>
+              <li><a href="#filesystem-operations">Filesystem Operations</a></li>
+              <li><a href="#delete-virtual-disk">Delete Virtual Disk</a></li>
+              <li><a href="#get-points-of-interest">Get Points of Interest</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#networks">Networks</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-networks">Get Networks</a></li>
+              <li><a href="#get-network-details">Get Network Details</a></li>
+              <li><a href="#add-network">Add Network</a></li>
+              <li><a href="#network-operations">Network Operations</a></li>
+              <li><a href="#delete-network">Delete Network</a></li>
+              <li><a href="#get-network-interfaces">Get Network Interfaces</a></li>
+              <li><a href="#get-network-interface-details">Get Network Interface Details</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#packages">System Packages</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-packages">Get Packages</a></li>
+              <li><a href="#get-package-details">Get Package Details</a></li>
+              <li><a href="#package-operations">Package Operations</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#roles">Roles</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-users">Get Users</a></li>
+              <li><a href="#get-user-details">Get User Details</a></li>
+              <li><a href="#add-user">Add User</a></li>
+              <li><a href="#update-user">Update User</a></li>
+              <li><a href="#delete-user">Delete User</a></li>
+              <li><a href="#get-groups">Get Groups</a></li>
+              <li><a href="#get-group-details">Get Group Details</a></li>
+              <li><a href="#add-group">Add Group</a></li>
+              <li><a href="#update-group">Update Group</a></li>
+              <li><a href="#delete-group">Delete Group</a></li>
+              <li><a href="#get-domains">Get Domains</a></li>
+              <li><a href="#get-domain-details">Get Domain Details</a></li>
+              <li><a href="#add-domain">Add Domain</a></li>
+              <li><a href="#delete-domain">Delete Domain</a></li>
+            </ul>
+          </li>
         </ul>
         <a href="#top" class="back-to-top">Back to Top</a>
       </nav>
@@ -139,6 +189,7 @@ title: "Kraken REST API Reference"
 
         <h4>Example Response</h4>
         {% highlight json %}
+// see app dev documentation for field explanations
 {
   "app": {
     "app_author": "Automattic",
@@ -330,16 +381,16 @@ title: "Kraken REST API Reference"
 {
   "backup": [
     {
-      "icon": "fa fa-globe",
-      "id": "testghost/20150317124530",
-      "is_ready": true,
+      "icon": "fa fa-globe",                // string - icon class
+      "id": "testghost/20150317124530",     // string - unique identifier (name/datestamp)
+      "is_ready": true,                     // boolean - genesis use only
       "path": "/var/lib/arkos/backups/testghost/testghost-20150317124530.tar.gz",
-      "pid": "testghost",
-      "site_type": "ghost",
-      "size": 14612219,
-      "time": "2015-03-17T12:45:30-04:00",
-      "type": "site",
-      "version": "0.5.10-1"
+      "pid": "testghost",                   // string - id of app or site name
+      "site_type": "ghost",                 // string - site type (if for a website)
+      "size": 14612219,                     // integer - backup size in bytes
+      "time": "2015-03-17T12:45:30-04:00",  // string - time of backup in ISO-8601 format
+      "type": "site",                       // string - backup type (site, app, internal)
+      "version": "0.5.10-1"                 // string - version of app/site at time of backup
     }
   ]
 }
@@ -484,13 +535,13 @@ title: "Kraken REST API Reference"
         {% highlight json %}
 {
   "cert": {
-    "assigns": [],
-    "domain": "secure.testdomain.xyz",
-    "expiry": "2017-02-03T22:32:22",
-    "id": "testcert",
-    "is_ready": true,
-    "keylength": 4096,
-    "keytype": "RSA",
+    "assigns": [],                      // array - items the cert is assigned to
+    "domain": "secure.testdomain.xyz",  // string - address cert is valid for
+    "expiry": "2017-02-03T22:32:22",    // string - expiry date in ISO-8601 format
+    "id": "testcert",                   // string - unique identifier (name)
+    "is_ready": true,                   // boolean - genesis use only
+    "keylength": 4096,                  // integer - keylength in bits
+    "keytype": "RSA",                   // string - key type (RSA, DSA)
     "md5": "0E:EB:5D:D4:65:15:28:AC:02:31:94:BE:22:74:6C:D8",
     "sha1": "F6:B8:6E:1C:99:42:82:6E:2A:A8:B1:AB:58:8D:F2:E7:43:3E:29:C2"
   }
@@ -576,7 +627,7 @@ title: "Kraken REST API Reference"
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/certs --data '{"cert": {...}}'
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/certs/testcert --data '{"cert": {...}}'
         {% endhighlight %}
 
         <h4>Request Requires</h4>
@@ -666,8 +717,8 @@ title: "Kraken REST API Reference"
         {% highlight json %}
 {
   "certauth": {
-    "expiry": "2020-02-02T22:58:03",
-    "id": "testdomain.xyz"
+    "expiry": "2020-02-02T22:58:03",  // string - expiry date in ISO-8601 format
+    "id": "testdomain.xyz"            // string - unique identifier (domain name)
   }
 }
         {% endhighlight %}
@@ -803,8 +854,8 @@ title: "Kraken REST API Reference"
         {% highlight json %}
 {
   "datetime": {
-    "datetime": "2015-05-30T12:07:26.270941-04:00",
-    "offset": 0.2051558494567871
+    "datetime": "2015-05-30T12:07:26.270941-04:00",   // string - ISO-8601 format
+    "offset": 0.2051558494567871                      // float - seconds
   }
 }
         {% endhighlight %}
@@ -913,11 +964,11 @@ title: "Kraken REST API Reference"
         {% highlight json %}
 {
   "database": {
-    "id": "testdb",
-    "is_ready": true,
-    "size": 0,
-    "type_id": "db-sqlite3",
-    "type_name": "SQLite3"
+    "id": "testdb",            // string - unique identifier (name)
+    "is_ready": true,          // boolean - genesis use only
+    "size": 0,                 // integer - size of the database on disk in bytes
+    "type_id": "db-sqlite3",   // string - database type id for this user
+    "type_name": "SQLite3"     // string - pretty database type name
   }
 }
         {% endhighlight %}
@@ -1066,11 +1117,11 @@ title: "Kraken REST API Reference"
         {% highlight json %}
 {
   "database_user": {
-    "id": "testuser",
-    "is_ready": true,
+    "id": "testuser",         // string - unique identifier
+    "is_ready": true,         // boolean - genesis use only
     "permissions": "GRANT USAGE ON *.* TO 'testuser'@'localhost'\n",
-    "type_id": "db-mariadb",
-    "type_name": "MariaDB"
+    "type_id": "db-mariadb",  // string - database type id for this user
+    "type_name": "MariaDB"    // string - pretty database type name
   }
 }
         {% endhighlight %}
@@ -1171,17 +1222,17 @@ title: "Kraken REST API Reference"
         </dl>
 
         <h4>Responds With</h4>
-        <p>List of database type detail objects. <code>state</code> is True if the database engine is running or does not require an active process.</p>
+        <p>List of database type detail objects.</p>
 
         <h4>Example Response</h4>
         {% highlight json %}
 {
   "database_types": [
     {
-      "id": "db-sqlite3",
-      "name": "SQLite3",
-      "state": true,
-      "supports_users": false
+      "id": "db-sqlite3",       // string - unique identifier
+      "name": "SQLite3",        // string - pretty name
+      "state": true,            // boolean - true if engine is running/available
+      "supports_users": false   // boolean - true if this type uses users
     },
     {
       "id": "db-mariadb",
@@ -1277,24 +1328,24 @@ title: "Kraken REST API Reference"
         {% highlight json %}
 {
   "file": {
-      "binary": false,
-      "folder": true,
-      "group": "root",
-      "hidden": false,
-      "icon": "fa-link",
-      "id": "L2xpYjY0",
-      "mimetype": null,
-      "name": "lib64",
-      "path": "/lib64",
+      "binary": false,          // boolean - true if file can't be opened in notepad
+      "folder": true,           // boolean - true if folder, false if file
+      "group": "root",          // string - group owner
+      "hidden": false,          // boolean - true if file name starts with "."
+      "icon": "fa-link",        // string - fontawesome icon class
+      "id": "L2xpYjY0",         // string - unique identifier (base64-encoded path)
+      "mimetype": null,         // string - mimetype of file (null if folder or unknown)
+      "name": "lib64",          // string - base filename
+      "path": "/lib64",         // path - fully-expanded path to item on disk
       "perms": {
-        "oct": "0777",
-        "str": "rwxrwxrwx"
+        "oct": "0777",          // string - octal permission bits
+        "str": "rwxrwxrwx"      // string - visual representation of permissions
       },
-      "realpath": "/usr/lib",
-      "selected": false,
-      "size": 7,
-      "type": "link",
-      "user": "root"
+      "realpath": "/usr/lib",   // path - if item is symlink, the path it points to
+      "selected": false,        // boolean - genesis use only
+      "size": 7,                // integer - size of item in bytes
+      "type": "link",           // string - item type (folder, link, file, etc)
+      "user": "root"            // string - user owner
     }
 }
         {% endhighlight %}
@@ -1358,6 +1409,905 @@ title: "Kraken REST API Reference"
 
         <h4>Responds With</h4>
         <p>File/folder detail object.</p>
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="filesystems" class="page-header">Filesystems</h1>
+
+      <div class="api-item">
+        <h2 id="get-filesystems">Get Filesystems</h2>
+        <h3><span class="text-success">GET</span> /api/system/filesystems</h3>
+        <p class="lead">Get all filesystems (physical and virtual) registered with arkOS on the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/filesystems
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of filesystem detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "filesystems": [
+    {
+      "crypt": false,
+      "enabled": true,
+      "fstype": "ext4",
+      "id": "sda1",
+      "is_ready": true,
+      "mountpoint": "/",
+      "path": "/dev/sda1",
+      "size": 8588886016,
+      "type": "physical"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-filesystem-details">Get Filesystem Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/filesystems/:id</h3>
+        <p class="lead">Returns details on the specified filesystem.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Filesystem name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/filesystems/sda1
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Filesystem detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "filesystem": {
+    "crypt": false,       // boolean - true if encrypted FS
+    "enabled": true,      // boolean - true if loaded on boot
+    "fstype": "ext4",     // string - filesystem type (ext4, ntfs, etc)
+    "id": "sda1",         // string - unique identifier
+    "is_ready": true,     // boolean - genesis use only
+    "mountpoint": "/",    // path - directory fs is mounted on, null if not mounted
+    "path": "/dev/sda1",  // path - path to fs device or image file
+    "size": 8588886016,   // integer - disk size in bytes
+    "type": "physical"    // string - 'physical' or 'virtual'
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-virtual-disk">Create Virtual Disk</h2>
+        <h3><span class="text-success">POST</span> /api/system/filesystems</h3>
+        <p class="lead">Create a new virtual disk image file.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/system/filesystems --data '{"filesystem": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new virtual disk.</dd>
+            <dt>size</dt>
+            <dd>Size of the new disk in bytes.</dd>
+            <dt>crypt</dt>
+            <dd>True if the virtual disk should be encrypted after creation..</dd>
+            <dt>passwd</dt>
+            <dd>Password to encrypt disk with. Required if crypt is true.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="filesystem-operations">Filesystem Operations</h2>
+        <h3><span class="text-success">PUT</span> /api/system/filesystems/:id</h3>
+        <p class="lead">Perform a specific operation on a filesystem.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Filesystem name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/system/filesystems/testdisk --data '{"filesystem": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <dl>
+            <dt>operation</dt>
+            <dd>One of the following operations to perform: `mount`, `umount`, `enable` mount on boot, `disable` mount on boot.</dd>
+            <dt>passwd</dt>
+            <dd>Required if `mount` operation specified on an encrypted filesystem.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Filesystem detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-virtual-disk">Delete Virtual Disk</h2>
+        <h3><span class="text-success">DELETE</span> /api/system/filesystems/:id</h3>
+        <p class="lead">Deletes a virtual disk from the server. Has no effect on physical disks.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Filesystem name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/system/filesystems/testdisk
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-points-of-interest">Get Points of Interest</h2>
+        <h3><span class="text-success">GET</span> /api/points</h3>
+        <p class="lead">Get paths of interest (website data directories, filesystem mount points, etc) registered with arkOS on the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/points
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of point of interest detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "points": [
+    {
+      "icon": "fa-hdd-o",           // string - fontawesome icon class
+      "id": "testcrypt",            // string - unique identifier (name)
+      "path": "/media/testcrypt",   // path - mountpoint or data directory
+      "type": "crypt"               // string - type of item (website, disk, crypt, etc)
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="networks" class="page-header">Networks</h1>
+
+      <div class="api-item">
+        <h2 id="get-networks">Get Networks</h2>
+        <h3><span class="text-success">GET</span> /api/system/networks</h3>
+        <p class="lead">Get all networks registered on the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/networks
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of network detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "networks": [
+    {
+      "config": {
+        "connection": "ethernet",
+        "description": "'A basic dhcp ethernet connection'",
+        "interface": "enp0s3",
+        "ip": "dhcp"
+      },
+      "connected": true,
+      "enabled": true,
+      "id": "etherwow",
+      "is_ready": true
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-network-details">Get Network Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/networks/:id</h3>
+        <p class="lead">Returns details on the specified network.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Network name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/networks/etherwow
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Network detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "network": {
+    "config": {           // hash - list of lines in netctl config
+      "connection": "ethernet",
+      "description": "'A basic dhcp ethernet connection'",
+      "interface": "enp0s3",
+      "ip": "dhcp"
+    },
+    "connected": true,    // boolean - is system connected to this network
+    "enabled": true,      // boolean - is network started on boot
+    "id": "etherwow",     // string - unique identifier (name)
+    "is_ready": true      // boolean - genesis use only
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="add-network">Add Network</h2>
+        <h3><span class="text-success">POST</span> /api/system/networks</h3>
+        <p class="lead">Add a new network configuration.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/system/networks --data '{"network": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A network detail object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new network.</dd>
+            <dt>config</dt>
+            <dd>An object with netctl properties and values See the Arch Linux netctl definitions for more information.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Network detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="network-operations">Network Operations</h2>
+        <h3><span class="text-success">PUT</span> /api/system/networks/:id</h3>
+        <p class="lead">Perform a specific operation on a network.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Network name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/system/networks/etherwow --data '{"network": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <dl>
+            <dt>operation</dt>
+            <dd>One of the following operations to perform: `connect`, `disconnect`, `enable` connection on boot, `disable` connection on boot.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Network detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-network">Delete Network</h2>
+        <h3><span class="text-success">DELETE</span> /api/system/networks/:id</h3>
+        <p class="lead">Deletes a network connection configuration from the server.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Network name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/system/networks/etherwow
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-network-interfaces">Get Network Interfaces</h2>
+        <h3><span class="text-success">GET</span> /api/system/netifaces</h3>
+        <p class="lead">Get all network interfaces for the device.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/netifaces
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of network interface detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "netifaces": [
+    {
+      "id": "lo",
+      "ip": [
+        {
+          "addr": "127.0.0.1",
+          "netmask": "255.0.0.0",
+          "peer": "127.0.0.1"
+        }
+      ],
+      "rx": 109471,
+      "tx": 109471,
+      "type": "loopback",
+      "up": true
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-network-interface-details">Get Network Interface Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/netifaces/:id</h3>
+        <p class="lead">Returns details on the specified network interface.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Network interface ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/netifaces/enp0s3
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Network interface detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "netiface": {
+    "id": "enp0s3",                  // string - interface name
+    "ip": [                          // array - ip addresses for this interface
+      {
+        "addr": "10.0.2.15",         // string - ip address
+        "broadcast": "10.0.2.255",   // string - broadcast address
+        "netmask": "255.255.255.0"   // string - full netmask
+      }
+    ],
+    "rx": 35388,                     // integer - bytes received since up
+    "tx": 46777,                     // integer - bytes sent since up
+    "type": "ethernet",              // string - wireless, ethernet, loopback, etc
+    "up": true                       // boolean - is the interface up
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="packages" class="page-header">System Packages</h1>
+
+      <div class="api-item">
+        <h2 id="get-packages">Get Packages</h2>
+        <h3><span class="text-success">GET</span> /api/system/packages</h3>
+        <p class="lead">Get all system packages available or installed.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/packages
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of system package detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "packages": [
+    {
+      "id": "b43-fwcutter",
+      "installed": false,
+      "repo": "core",
+      "upgradable": false,
+      "version": "019-1"
+    },
+    {
+      "id": "bridge-utils",
+      "installed": false,
+      "repo": "core",
+      "upgradable": false,
+      "version": "1.5-2"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-package-details">Get Package Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/packages/:id</h3>
+        <p class="lead">Returns details on the specified system package.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>System package name.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/packages/arkos-core
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>System package detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "package": {
+    "architecture": "any",
+    "build_date": "Mon May 11 10:21:41 2015",
+    "conflicts_with": "None",
+    "depends_on": "binutils  python2  python2-ntplib  python2-passlib  python2-pyopenssl  python2-iptables  python2-nginx  python2-dbus  python2-cryptsetup  python2-pyparted  python2-ldap  python2-psutil  python2-netifaces  python2-gitpython  python2-gnupg  python2-pacman  arkos-openldap  nginx  git  fail2ban  supervisor",
+    "description": "Python system management libraries for arkOS",
+    "groups": "None",
+    "id": "arkos-core",
+    "install_date": "Sat Jun 20 10:49:38 2015",
+    "install_reason": "Explicitly installed",
+    "install_script": "No",
+    "installed_size": "656.00 KiB",
+    "licenses": "GPLv3",
+    "optional_deps": "None",
+    "optional_for": "None",
+    "packager": "Unknown Packager",
+    "provides": "arkos-core",
+    "replaces": "None",
+    "required_by": "None",
+    "upgradable": false,
+    "url": "https://arkos.io/",
+    "validated_by": "Signature",
+    "version": "0.7.0beta3-1"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="package-operations">Package Operations</h2>
+        <h3><span class="text-success">POST</span> /api/system/packages</h3>
+        <p class="lead">Perform a specific operation on a system package.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/system/packages --data '{"package": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An array of objects containing the following, which will be performed in batch:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>System package name.</dd>
+            <dt>operation</dt>
+            <dd>One of the following operations to perform: `install` or `remove`.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="roles" class="page-header">Roles</h1>
+
+      <div class="api-item">
+        <h2 id="get-users">Get Users</h2>
+        <h3><span class="text-success">GET</span> /api/system/users</h3>
+        <p class="lead">Get all users registered to the arkOS LDAP service.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/users
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of user detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "users": [
+    {
+      "admin": true,
+      "domain": "testdomain.xyz",
+      "first_name": "Jacob",
+      "id": 1005,
+      "is_ready": true,
+      "last_name": "Cook",
+      "mail_addresses": [
+        "jacob@testdomain.xyz"
+      ],
+      "name": "jacob",
+      "sudo": true
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-user-details">Get User Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/users/:id</h3>
+        <p class="lead">Returns details on the specified arkOS LDAP user.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>User ID number (uid).</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/users/1005
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>User detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "user": {
+    "admin": true,                // boolean - can user use the Kraken API
+    "domain": "testdomain.xyz",   // string - domain assigned to user
+    "first_name": "Jacob",        // string - user first name or pseudonym
+    "id": 1005,                   // integer - user ID number (uid)
+    "is_ready": true,             // boolean - genesis use only
+    "last_name": "Cook",          // string - user last name or null
+    "mail_addresses": [           // array - mail addresses and aliases
+      "jacob@testdomain.xyz"
+    ],
+    "name": "jacob",              // string - username
+    "sudo": true                  // boolean - can user execute cmds as sudo
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="add-user">Add User</h2>
+        <h3><span class="text-success">POST</span> /api/system/users</h3>
+        <p class="lead">Add a new user to arkOS LDAP.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/system/users --data '{"user": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A user detail object with at least the following parameters:</em>
+        <dl>
+            <dt>name</dt>
+            <dd>The username for the new user.</dd>
+            <dt>first_name</dt>
+            <dd>First name or pseudonym of user.</dd>
+            <dt>last_name</dt>
+            <dd>Last name of user. Can be left blank.</dd>
+            <dt>domain</dt>
+            <dd>Domain name (string) of an existing domain on the system to assign to this user.</dd>
+            <dt>admin</dt>
+            <dd>True if the user should be allowed to manage the system via Genesis or the Kraken API.</dd>
+            <dt>sudo</dt>
+            <dd>True if the user should be allowed to execute command-line programs as root.</dd>
+            <dt>passwd</dt>
+            <dd>The user's initial password.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>User detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="update-user">Update User</h2>
+        <h3><span class="text-success">PUT</span> /api/system/users/:id</h3>
+        <p class="lead">Update details of an arkOS LDAP user.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>User ID number (uid).</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/system/users/1005 --data '{"user": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A user detail object with at least the following items:</em>
+        <dl>
+            <dt>first_name</dt>
+            <dd>First name or pseudonym of user.</dd>
+            <dt>last_name</dt>
+            <dd>Last name of user. Can be left blank.</dd>
+            <dt>domain</dt>
+            <dd>Domain name (string) of an existing domain on the system to assign to this user.</dd>
+            <dt>admin</dt>
+            <dd>True if the user should be allowed to manage the system via Genesis or the Kraken API.</dd>
+            <dt>sudo</dt>
+            <dd>True if the user should be allowed to execute command-line programs as root.</dd>
+            <dt>mail_addresses</dt>
+            <dd>A list of usernames to use as aliases for mail accounts (e.g. if the user's domain is `testdomain.xyz` and this array contains `myaddr` an alias of `myaddr@testdomain.xyz` will be added).</dd>
+            <dt>passwd</dt>
+            <dd>A new password for the user. Leave blank if you do not want to change the password.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>User detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-user">Delete User</h2>
+        <h3><span class="text-success">DELETE</span> /api/system/users/:id</h3>
+        <p class="lead">Deletes a user from arkOS LDAP.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>User ID number (uid).</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/system/users/1005
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-groups">Get Groups</h2>
+        <h3><span class="text-success">GET</span> /api/system/groups</h3>
+        <p class="lead">Get all groups registered to the arkOS LDAP service.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/groups
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of group detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "groups": [
+    {
+      "id": 4005,
+      "is_ready": true,
+      "name": "testgroup",
+      "users": [
+        "testuser"
+      ]
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-group-details">Get Group Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/groups/:id</h3>
+        <p class="lead">Returns details on the specified arkOS LDAP group.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Group ID number (gid).</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/groups/4005
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Group detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "group": {
+    "id": 4005,             // integer - group ID number (gid)
+    "is_ready": true,       // boolean - genesis use only
+    "name": "testgroup",    // string - group name
+    "users": [              // array - member usernames
+      "testuser"
+    ]
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="update-group">Update Group</h2>
+        <h3><span class="text-success">PUT</span> /api/system/groups/:id</h3>
+        <p class="lead">Update details of an arkOS LDAP group.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Group ID number (gid).</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/system/groups/4005 --data '{"group": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <dl>
+            <dt>users</dt>
+            <dd>An array of usernames to set as members of this group.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Group detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-group">Delete Group</h2>
+        <h3><span class="text-success">DELETE</span> /api/system/groups/:id</h3>
+        <p class="lead">Deletes a group from arkOS LDAP.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Group ID number (gid).</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/system/groups/4005
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-domains">Get Domains</h2>
+        <h3><span class="text-success">GET</span> /api/system/domains</h3>
+        <p class="lead">Get all domains registered to arkOS and its LDAP service.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/domains
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of domain detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "domains": [
+    {
+      "id": "testdomain.xyz",
+      "is_ready": true
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-domain-details">Get Domain Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/domains/:id</h3>
+        <p class="lead">Returns details on the specified arkOS domain.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Domain name.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/domains/testdomain.xyz
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Domain detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "domain": {
+    "id": "testdomain.xyz",   // string - domain name
+    "is_ready": true          // boolean - genesis use only
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-domain">Delete Domain</h2>
+        <h3><span class="text-success">DELETE</span> /api/system/domains/:id</h3>
+        <p class="lead">Deletes a domain from arkOS.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Domain name.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/system/domains/testdomain.xyz
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
       </div>
       <hr />
 
