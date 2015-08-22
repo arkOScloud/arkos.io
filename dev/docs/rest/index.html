@@ -441,7 +441,7 @@ title: "Kraken REST API Reference"
             <dt>pid</dt>
             <dd>The application ID or existing website ID that the backup was created from.</dd>
             <dt>type</dt>
-            <dd>Either `app` or `site`.</dd>
+            <dd>Either <code>app</code> or <code>site</code>.</dd>
             <dt>site_type</dt>
             <dd>The application ID of the website type that the backup was created for. <em>(Only if type == "site").</em></dd>
             <dt>icon</dt>
@@ -576,7 +576,7 @@ title: "Kraken REST API Reference"
             <dt>email</dt>
             <dd>Email address for certificate metadata.</dd>
             <dt>keytype</dt>
-            <dd>Type of key to generate with the certificate. Can be `rsa` or `dsa`.</dd>
+            <dd>Type of key to generate with the certificate. Can be <code>rsa</code> or <code>dsa</code>.</dd>
             <dt>keylength</dt>
             <dd>Bit-length of key to generate with the certificate.</dd>
         </dl>
@@ -767,7 +767,7 @@ title: "Kraken REST API Reference"
       <div class="api-item">
         <h2 id="get-arkos-configuration">Get arkOS Configuration</h2>
         <h3><span class="text-success">GET</span> /api/config</h3>
-        <p class="lead">Returns the arkOS configuration file, usually located at `/etc/arkos/settings.json`.</p>
+        <p class="lead">Returns the arkOS configuration file, usually located at <code>/etc/arkos/settings.json</code>.</p>
 
         <h4>Example</h4>
         {% highlight bash %}
@@ -1535,9 +1535,9 @@ title: "Kraken REST API Reference"
         <h4>Request Requires</h4>
         <dl>
             <dt>operation</dt>
-            <dd>One of the following operations to perform: `mount`, `umount`, `enable` mount on boot, `disable` mount on boot.</dd>
+            <dd>One of the following operations to perform: <code>mount</code>, <code>umount</code>, <code>enable</code> mount on boot, <code>disable</code> mount on boot.</dd>
             <dt>passwd</dt>
-            <dd>Required if `mount` operation specified on an encrypted filesystem.</dd>
+            <dd>Required if <code>mount</code> operation specified on an encrypted filesystem.</dd>
         </dl>
 
         <h4>Responds With</h4>
@@ -1717,7 +1717,7 @@ title: "Kraken REST API Reference"
         <h4>Request Requires</h4>
         <dl>
             <dt>operation</dt>
-            <dd>One of the following operations to perform: `connect`, `disconnect`, `enable` connection on boot, `disable` connection on boot.</dd>
+            <dd>One of the following operations to perform: <code>connect</code>, <code>disconnect</code>, <code>enable</code> connection on boot, <code>disable</code> connection on boot.</dd>
         </dl>
 
         <h4>Responds With</h4>
@@ -1933,7 +1933,7 @@ title: "Kraken REST API Reference"
             <dt>id</dt>
             <dd>System package name.</dd>
             <dt>operation</dt>
-            <dd>One of the following operations to perform: `install` or `remove`.</dd>
+            <dd>One of the following operations to perform: <code>install</code> or <code>remove</code>.</dd>
         </dl>
 
         <h4>Responds With</h4>
@@ -2085,7 +2085,7 @@ title: "Kraken REST API Reference"
             <dt>sudo</dt>
             <dd>True if the user should be allowed to execute command-line programs as root.</dd>
             <dt>mail_addresses</dt>
-            <dd>A list of usernames to use as aliases for mail accounts (e.g. if the user's domain is `testdomain.xyz` and this array contains `myaddr` an alias of `myaddr@testdomain.xyz` will be added).</dd>
+            <dd>A list of usernames to use as aliases for mail accounts (e.g. if the user's domain is <code>testdomain.xyz</code> and this array contains <code>myaddr</code> an alias of <code>myaddr@testdomain.xyz</code> will be added).</dd>
             <dt>passwd</dt>
             <dd>A new password for the user. Leave blank if you do not want to change the password.</dd>
         </dl>
