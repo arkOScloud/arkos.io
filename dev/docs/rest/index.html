@@ -9,6 +9,17 @@ title: "Kraken REST API Reference"
       <nav class="docs-sidebar" data-spy="affix" data-offset-top="275">
         <ul class="nav nav-stacked fixed">
           <li>
+            <a href="#authentication">Authentication</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#about-kraken-auth">About Kraken Authentication</a></li>
+              <li><a href="#generate-token">Generate Token</a></li>
+              <li><a href="#generate-refresh-token">Generate Refresh Token</a></li>
+              <li><a href="#get-api-keys">Get API Keys</a></li>
+              <li><a href="#generate-api-keys">Generate API Key</a></li>
+              <li><a href="#revoke-api-key">Revoke API Key</a></li>
+            </ul>
+          </li>
+          <li>
             <a href="#applications">Applications</a>
             <ul class="nav nav-stacked">
               <li><a href="#list-applications">List Applications</a></li>
@@ -78,6 +89,14 @@ title: "Kraken REST API Reference"
               <li><a href="#get-file-details">Get File/Folder Details</a></li>
               <li><a href="#create-file">Create File or Folder</a></li>
               <li><a href="#upload-file">Upload File</a></li>
+              <li><a href="#manage-file">Manage File</a></li>
+              <li><a href="#delete-file">Delete File</a></li>
+              <li><a href="#get-fileshare-links">Get Fileshare Links</a></li>
+              <li><a href="#get-fileshare-link-details">Get Fileshare Link Details</a></li>
+              <li><a href="#create-fileshare-link">Create Fileshare Link</a></li>
+              <li><a href="#download-shared-file">Download Shared File</a></li>
+              <li><a href="#update-fileshare-link">Update Fileshare Link</a></li>
+              <li><a href="#remove-fileshare-link">Remove Fileshare Link</a></li>
             </ul>
           </li>
           <li>
@@ -130,6 +149,43 @@ title: "Kraken REST API Reference"
               <li><a href="#delete-domain">Delete Domain</a></li>
             </ul>
           </li>
+          <li>
+            <a href="#security">Security</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-policies">Get Policies</a></li>
+              <li><a href="#get-policy-details">Get Policy Details</a></li>
+              <li><a href="#update-policy">Update Policy</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#services">System Services</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-services">Get Services</a></li>
+              <li><a href="#get-service-details">Get Service Details</a></li>
+              <li><a href="#create-service">Create Service</a></li>
+              <li><a href="#manage-service">Manage Service</a></li>
+              <li><a href="#delete-service">Delete Service</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#updates">Updates</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-updates">Get Updates</a></li>
+              <li><a href="#get-update-details">Get Update Details</a></li>
+              <li><a href="#apply-updates">Apply Updates</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#websites">Websites</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-websites">Get Websites</a></li>
+              <li><a href="#get-website-details">Get Website Details</a></li>
+              <li><a href="#create-website">Create Website</a></li>
+              <li><a href="#manage-website">Manage Website</a></li>
+              <li><a href="#perform-website-action">Perform Website Action</a></li>
+              <li><a href="#remove-website">Remove Website</a></li>
+            </ul>
+          </li>
         </ul>
         <a href="#top" class="back-to-top">Back to Top</a>
       </nav>
@@ -139,6 +195,151 @@ title: "Kraken REST API Reference"
         <h3><i class="fa fa-warning pull-left"></i></h3>
         <p>This documentation is a work in progress.</p>
       </div>
+      <h1 id="authentication" class="page-header">Authentication</h1>
+
+      <div class="api-item">
+        <h2 id="about-kraken-auth">About Kraken Authentication</h2>
+        <p class="lead">Before you can work with the Kraken REST API, you must have the proper authorization to do so.</p>
+        <p>Kraken gives out two different forms of authorization credentials: tokens (specifically JSON Web Tokens (JWT)) or API keys.</p>
+        <p>Tokens are ephemeral and designed to be used for one-off sessions, expiring one hour after being issued. This time can be extended without requiring a new login by using the token to generate a refresh token sometime before it expires.</p>
+        <p>API keys are designed for permanent use in connected applications, such as in mobile apps and web services. They can be generated via the API (using an initial token) and revoked at any time by the user.</p>
+        <h4>Using Tokens</h4>
+        <p>To authenticate with a standard token, <span class="text-success">POST</span> <code>/api/token</code> with the <code>username</code> and <code>password</code> keys filled out in the submitted object. Provided the credentials are correct, the server will respond with an object containing a <code>token</code> key to use. This token is submitted in all future requests to the server in the <code>Authorization</code> HTTP header, like follows:</p>
+        <code>Authorization: Bearer <token-goes-here></code>
+        <p>The token contains a base64-encoded JSON object with information about the currently logged-in user. To access this information, split the token at <code>.</code> and decode the middle section as base64. The resulting object will have the following keys:</p>
+        <ul>
+          <li><code>uid</code> the username</li>
+          <li><code>ufn</code> the user's first name or pseudonym</li>
+          <li><code>uln</code> the user's last name (if provided)</li>
+          <li><code>iat</code> epoch timestamp of the time when the token was generated</li>
+          <li><code>exp</code> epoch timestamp of the time when the token will expire</li>
+        </ul>
+        <p>Refresh tokens can be generated with a prior token, as long as that prior token has not yet expired. This will allow sessions to last longer than the default expiry time of one hour. To generate, <span class="text-success">POST</span> <code>/api/token/refresh</code> with the <code>token</code> key filled out in the submitted object. A new token will be returned and this token can be used in the place of the original one for future requests (for another hour, at which point a new refresh token would need to be created).</p>
+        <p>Note that, if anonymous user capability is enabled in Kraken, tokens must still be generated for requests, but the submitted <code>username</code> and <code>password</code> can be set to anything (or blank) and a token will still be returned for use. Also note that it is advisable to submit a refresh token request at least a couple of minutes before the original token's expiration, to account for time drift between the client and server.</p>
+        <hr>Using API Keys</h4>
+        <p>To authenticate with an API key, use it as the <code>X-API-Key</code> HTTP header in every request.</p>
+        <p>To generate an API key from the API itself, first follow the steps above for logging in to obtain a standard token. Then use this token with a request to <span class="text-success">POST</span> <code>/api/api_keys</code>. This request must have an object with the <code>user</code> key, corresponding to the username to which this key should be associated (remember you can get this from the <code>uid</code> key of the base64-decoded JWT).</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="generate-token">Generate Token</h2>
+        <h3><span class="text-success">POST</span> /api/token</h3>
+        <p class="lead">Return a JSON Web Token (JWT) to authorize requests to the API, for a period of one hour.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -X POST <url>/api/token --data '{"username": "testuser", "password": "xxxxxxxx"}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <dl>
+            <dt>username</dt>
+            <dd>The username of the user to authenticate as.</dd>
+            <dt>password</dt>
+            <dd>The password of the aforementioned user.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 200 with a <code>token</code> key to use in future requests, or HTTP 401 with a <code>message</code> key explaining why the token couldn't be issued.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="generate-refresh-token">Generate Refresh Token</h2>
+        <h3><span class="text-success">POST</span> /api/token/refresh</h3>
+        <p class="lead">Generate a new JSON Web Token to use with requests, without requiring the user to re-enter their username or password.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -X POST <url>/api/token --data '{"token": "xxxxxxxx"}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <dl>
+            <dt>token</dt>
+            <dd>The valid token obtained prior.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 200 with a <code>token</code> key to use in future requests, or HTTP 401 with a <code>message</code> key explaining why the token couldn't be issued.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-api-keys">Get API Keys</h2>
+        <h3><span class="text-success">GET</span> /api/api_keys</h3>
+        <p class="lead">Returns a list of API keys created for use with Kraken, and their associated users.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/api_keys
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of API key detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+    "api_keys": [
+        {
+            "user": "testuser",
+            "key": "xxxxxxxx",
+        },
+        {
+            "id": "testusertwo",
+            "name": "xxxxxxxx",
+        }
+    ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="generate-api-key">Generate API Key</h2>
+        <h3><span class="text-success">POST</span> /api/api_keys</h3>
+        <p class="lead">Return a permanent API key to use with applications or services.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/api_keys --data '{"user": "testuser"}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <dl>
+            <dt>user</dt>
+            <dd>The username of the user to associate with this key.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>An object with <code>user</code> and <code>key</code> keys, corresponding to the newly-generated key.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="revoke-api-key">Revoke API Key</h2>
+        <h3><span class="text-success">DELETE</span> /api/api_keys/:key</h3>
+        <p class="lead">Revokes an existing API key, preventing it from being used to authorize future requests.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>key</dt>
+            <dd>API key to revoke.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/api_keys/xxxxxxxx
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+      <br />
+
       <h1 id="applications" class="page-header">Applications</h1>
 
       <div class="api-item">
