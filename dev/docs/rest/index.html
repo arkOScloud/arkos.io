@@ -20,6 +20,15 @@ title: "Kraken REST API Reference"
             </ul>
           </li>
           <li>
+            <a href="#messaging">Messaging, Records and Jobs</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#messages">Messages</a></li>
+              <li><a href="#purges">Record Purges</a></li>
+              <li><a href="#pushes">Record Pushes</a></li>
+              <li><a href="#jobs">Background Jobs</a></li>
+            </ul>
+          </li>
+          <li>
             <a href="#applications">Applications</a>
             <ul class="nav nav-stacked">
               <li><a href="#list-applications">List Applications</a></li>
@@ -332,6 +341,82 @@ title: "Kraken REST API Reference"
 
         <h4>Responds With</h4>
         <p>HTTP 204.</p>
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="authentication" class="page-header">Authentication</h1>
+
+      <div class="api-item">
+        <h2 id="messages">Messages</h2>
+        <p class="lead">Messages allow you to determine the state of running or recently completed operations.</p>
+        <p>arkOS has many operations that must run in background threads, so that the state of the webserver is interrupted and to allow it to continue to respond to requests. Many requests simply pass messages to the client by adding a <code>message</code> key to the response object, but that is not sufficient for threaded or long-running operations. This means a separate endpoint at <code>/api/genesis</code> exists to track messages and other information delivered in parallel.</p>
+        <p><span class="text-success">GET</span> <code>/api/genesis</code> returns an object with three keys, one of them being <code>messages</code>. This endpoint is designed to be fetched every few seconds, to allow for pseudo-realtime display of system status in your application. <code>messages</code> is a list with objects. When a message is available, it looks like this:</p>
+        {% highlight json %}
+{
+  "class": "info",
+  "complete": false,
+  "headline": null,
+  "id": "34853c64c3",
+  "message": "Please wait..."
+}
+        {% endhighlight %}
+        <p>Here is a brief rundown of the significance of these keys:</p>
+        <ul>
+          <li><code>id</code> : This is a random string that can be tracked for the life of the message object. That means if more messages are delivered in relation to this message in the future (i.e. given with the same ID), they can supersede the display of this message.</li>
+          <li><code>headline</code> : The title of the message.</li>
+          <li><code>message</code> : The actual text of the message.</li>
+          <li><code>class</code> : The class of the message. One of <code>info</code>, <code>success</code>, <code>warn</code> or <code>error</code>. Helps for associating the message with an appropriate visual display></li>
+          <li><code>complete</code> : True if this is the last message you will find associated with this ID. In Genesis, this is the point when the message will start to automatically disappear.</li>
+        </ul>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="purges">Record Purges</h2>
+        <p class="lead">Record purges inform your client of records that no longer exist.</p>
+        <p>If your client application caches the information returned from <span class="text-success">GET</span> calls to Kraken endpoints, and a record is removed from the system by an action initiated directly from the server, your client will not know this unless it rescans the endpoint of the model in question. This can be done automatically in the background by periodically tracking the <code>purges</code> key of <span class="text-success">GET</span> <code>/api/genesis</code>. When an object appears in this list, use the <code>model</code> key to associate the record type to remove, and the <code>id</code> to remove the specific object that no longer exists.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="purges">Record Pushes</h2>
+        <p class="lead">Record pushes inform your client of records that were created serverside.</p>
+        <p>In the same way, if your client application caches the information returned from <span class="text-success">GET</span> calls to Kraken endpoints, and a record is created by an action initiated directly from the server, your client will not know this unless it rescans the endpoint of the model in question. This can also be done automatically in the background by periodically tracking the <code>pushes</code> key of <span class="text-success">GET</span> <code>/api/genesis</code>. A typical <code>pushes</code> key can look like this within the greater object:</p>
+        {% highlight json %}
+{
+  "messages": [],
+  "purges": [],
+  "pushes": {
+    "website": [
+      {
+        "addr": "localhost",
+        "certificate": null,
+        "database": null,
+        "enabled": true,
+        "has_actions": null,
+        "id": "testsite",
+        "is_ready": true,
+        "path": "/srv/http/webapps/testsite",
+        "php": false,
+        "port": 80,
+        "site_icon": "fa fa-globe",
+        "site_name": "Basic Website",
+        "site_type": "basicsite",
+        "version": null
+      }
+    ]
+  }
+}
+        {% endhighlight %}
+        <p>Here the website I added from a previous call to <span class="text-success">POST</span> <code>/api/websites</code> has completed, and the record is ready to be added to the system. It is keyed to the <code>pushes</code> object by the name of the record type itself. A <code>pushes</code> object can have multiple record types per call, in turn with multiple records matching each type.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="jobs">Background Jobs</h2>
+        <p class="lead">Background job tracking provides an alternate way aside from messages to manage system operations.</p>
+        <p>When you request that arkOS perform a long-running operation, such as installing an application or creating a new website, this original call will likely come back with an HTTP 202 response. This response will include a <code>Location</code> header, specifying an endpoint on the API to track, something like <code>/api/jobs/b82eceb0b8</code>. Making a periodic <span class="text-success">GET</span> call to this address will inform you of the background job's status at any given point in time. The endpoint will return an object with <code>status</code> key being one of 200 (the job is currently running), 400 (the job failed because of a request error), 500 (the job failed because of a server exception), or the job's specific success code (by default 201). The job endpoint will expire 43200 seconds (12 hours) after the job has exited. The base <code>/api/jobs</code> endpoint should also provide you a list of all background jobs currently being run.</p>
       </div>
       <hr />
       <br />
