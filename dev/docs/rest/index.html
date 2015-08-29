@@ -380,7 +380,7 @@ title: "Kraken REST API Reference"
       <hr />
 
       <div class="api-item">
-        <h2 id="purges">Record Pushes</h2>
+        <h2 id="pushes">Record Pushes</h2>
         <p class="lead">Record pushes inform your client of records that were created serverside.</p>
         <p>In the same way, if your client application caches the information returned from <span class="text-success">GET</span> calls to Kraken endpoints, and a record is created by an action initiated directly from the server, your client will not know this unless it rescans the endpoint of the model in question. This can also be done automatically in the background by periodically tracking the <code>pushes</code> key of <span class="text-success">GET</span> <code>/api/genesis</code>. A typical <code>pushes</code> key can look like this within the greater object:</p>
         {% highlight json %}
