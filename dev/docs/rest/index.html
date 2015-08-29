@@ -15,7 +15,7 @@ title: "Kraken REST API Reference"
               <li><a href="#generate-token">Generate Token</a></li>
               <li><a href="#generate-refresh-token">Generate Refresh Token</a></li>
               <li><a href="#get-api-keys">Get API Keys</a></li>
-              <li><a href="#generate-api-keys">Generate API Key</a></li>
+              <li><a href="#generate-api-key">Generate API Key</a></li>
               <li><a href="#revoke-api-key">Revoke API Key</a></li>
             </ul>
           </li>
@@ -191,10 +191,6 @@ title: "Kraken REST API Reference"
       </nav>
     </div>
     <div id="content" class="col-md-9">
-      <div class="alert">
-        <h3><i class="fa fa-warning pull-left"></i></h3>
-        <p>This documentation is a work in progress.</p>
-      </div>
       <h1 id="authentication" class="page-header">Authentication</h1>
 
       <div class="api-item">
@@ -205,7 +201,7 @@ title: "Kraken REST API Reference"
         <p>API keys are designed for permanent use in connected applications, such as in mobile apps and web services. They can be generated via the API (using an initial token) and revoked at any time by the user.</p>
         <h4>Using Tokens</h4>
         <p>To authenticate with a standard token, <span class="text-success">POST</span> <code>/api/token</code> with the <code>username</code> and <code>password</code> keys filled out in the submitted object. Provided the credentials are correct, the server will respond with an object containing a <code>token</code> key to use. This token is submitted in all future requests to the server in the <code>Authorization</code> HTTP header, like follows:</p>
-        <code>Authorization: Bearer <token-goes-here></code>
+        <code>Authorization: Bearer &lt;token-goes-here&gt;</code>
         <p>The token contains a base64-encoded JSON object with information about the currently logged-in user. To access this information, split the token at <code>.</code> and decode the middle section as base64. The resulting object will have the following keys:</p>
         <ul>
           <li><code>uid</code> the username</li>
@@ -216,7 +212,7 @@ title: "Kraken REST API Reference"
         </ul>
         <p>Refresh tokens can be generated with a prior token, as long as that prior token has not yet expired. This will allow sessions to last longer than the default expiry time of one hour. To generate, <span class="text-success">POST</span> <code>/api/token/refresh</code> with the <code>token</code> key filled out in the submitted object. A new token will be returned and this token can be used in the place of the original one for future requests (for another hour, at which point a new refresh token would need to be created).</p>
         <p>Note that, if anonymous user capability is enabled in Kraken, tokens must still be generated for requests, but the submitted <code>username</code> and <code>password</code> can be set to anything (or blank) and a token will still be returned for use. Also note that it is advisable to submit a refresh token request at least a couple of minutes before the original token's expiration, to account for time drift between the client and server.</p>
-        <hr>Using API Keys</h4>
+        <h4>Using API Keys</h4>
         <p>To authenticate with an API key, use it as the <code>X-API-Key</code> HTTP header in every request.</p>
         <p>To generate an API key from the API itself, first follow the steps above for logging in to obtain a standard token. Then use this token with a request to <span class="text-success">POST</span> <code>/api/api_keys</code>. This request must have an object with the <code>user</code> key, corresponding to the username to which this key should be associated (remember you can get this from the <code>uid</code> key of the base64-decoded JWT).</p>
       </div>
@@ -1612,6 +1608,224 @@ title: "Kraken REST API Reference"
         <p>File/folder detail object.</p>
       </div>
       <hr />
+
+      <div class="api-item">
+        <h2 id="manage-file">Manage File</h2>
+        <h3><span class="text-success">PUT</span> /api/files/:path</h3>
+        <p class="lead">Performs one of a variety of actions on a file/folder.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/files/Lw** --data '{"file": {...}}'
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>path</dt>
+            <dd>Base64-encoded safe string of an absolute path on the filesystem to manage.</dd>
+        </dl>
+
+        <h4>Request Requires</h4>
+        <em>A multipart form submission with the following items:</em>
+        <dl>
+            <dt>operation</dt>
+            <dd>One of: <code>copy</code>, <code>rename</code>, <code>edit</code>, <code>extract</code>, or <code>props</code>.</dd>
+            <dt>newdir</dt>
+            <dd>(if copy) The new directory the file should be copied to.</dd>
+            <dt>name</dt>
+            <dd>(if copy or rename) The name of the file to be created, or the new name of the file to rename to.</dd>
+            <dt>data</dt>
+            <dd>(if edit) The contents of the file to overwrite with.</dd>
+            <dt>user (and/or) group</dt>
+            <dd>(if props) The user and/or group to change ownership to.</dd>
+            <dt>perms['oct']</dt>
+            <dd>(if props) Permissions in octal format that the file should have.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>File/folder detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-file">Delete File</h2>
+        <h3><span class="text-success">DELETE</span> /api/files/:path</h3>
+        <p class="lead">Deletes a file/folder from the filesystem.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/files/Lw**
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>path</dt>
+            <dd>Base64-encoded safe string of an absolute path on the filesystem to delete.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-fileshare-links">Get Fileshare Links</h2>
+        <h3><span class="text-success">GET</span> /api/shares</h3>
+        <p class="lead">Get all fileshare links created and currently authorized.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/shares
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of fileshare link detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "shares": [
+    {
+      "expires": true,
+      "expires_at": "2015-08-30T20:46:15+00:00",
+      "fetch_count": 0,
+      "id": "4d4fa3117ab4df19489ac2e19e7d7003d219cb26",
+      "path": "/etc/nginx/nginx.conf"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-fileshare-link-details">Get Fileshare Link Details</h2>
+        <h3><span class="text-success">GET</span> /api/shares/:id</h3>
+        <p class="lead">Returns details on the specified fileshare link.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Filesystem name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/shares/4d4fa3117ab4df19489ac2e19e7d7003d219cb26
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Fileshare link detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "share": {
+    "expires": true,
+    "expires_at": "2015-08-30T20:46:15+00:00",
+    "fetch_count": 0,
+    "id": "4d4fa3117ab4df19489ac2e19e7d7003d219cb26",
+    "path": "/etc/nginx/nginx.conf"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-fileshare-link">Create Fileshare Link</h2>
+        <h3><span class="text-success">POST</span> /api/shares</h3>
+        <p class="lead">Create a link to share a downloadable file with someone.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/shares --data '{"share": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>path</dt>
+            <dd>The path, accessible on the server, of the file/folder to share.</dd>
+            <dt>expires</dt>
+            <dd>(optional) Time since the epoch (Unix time) of when the link should expire and no longer be accessible. Default is 0, meaning it expires after the first download.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Fileshare link detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="download-shared-file">Download Shared File</h2>
+        <h3><span class="text-success">GET</span> /shared/:id</h3>
+        <p class="lead">Initiates a download of a shared file.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Fileshare link name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        wget <url>/shared/4d4fa3117ab4df19489ac2e19e7d7003d219cb26
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Raw file contents.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="update-fileshare-link">Update Fileshare Link</h2>
+        <h3><span class="text-success">PUT</span> /api/shares/:id</h3>
+        <p class="lead">Change the expiry of an existing and non-expired fileshare link.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/shares/4d4fa3117ab4df19489ac2e19e7d7003d219cb26 --data '{"share": {...}}'
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Fileshare link name/ID.</dd>
+        </dl>
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>expires</dt>
+            <dd>Time since the epoch (Unix time) of when the link should expire and no longer be accessible. A value of 0 means the link will expire after the first download.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Fileshare link detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="remove-fileshare-link">Remove Fileshare Link</h2>
+        <h3><span class="text-success">DELETE</span> /api/shares/:id</h3>
+        <p class="lead">Instantly expire a fileshare link, removing the possibility to download the file.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/shares/4d4fa3117ab4df19489ac2e19e7d7003d219cb26
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Fileshare link name/ID.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
       <br />
 
       <h1 id="filesystems" class="page-header">Filesystems</h1>
@@ -2385,6 +2599,30 @@ title: "Kraken REST API Reference"
       <hr />
 
       <div class="api-item">
+        <h2 id="add-group">Add Group</h2>
+        <h3><span class="text-success">POST</span> /api/system/groups</h3>
+        <p class="lead">Add a new group to arkOS LDAP.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/system/groups --data '{"group": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A group detail object with at least the following parameters:</em>
+        <dl>
+            <dt>name</dt>
+            <dd>The name for the new group.</dd>
+            <dt>users</dt>
+            <dd>A list of usernames to add as members of this group.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Group detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
         <h2 id="update-group">Update Group</h2>
         <h3><span class="text-success">PUT</span> /api/system/groups/:id</h3>
         <p class="lead">Update details of an arkOS LDAP group.</p>
@@ -2492,6 +2730,28 @@ title: "Kraken REST API Reference"
       <hr />
 
       <div class="api-item">
+        <h2 id="add-domain">Add Domain</h2>
+        <h3><span class="text-success">POST</span> /api/system/domains</h3>
+        <p class="lead">Add a new domain to arkOS LDAP.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/system/domains --data '{"domain": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A domain detail object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The fully qualified domain name.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Domain detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
         <h2 id="delete-domain">Delete Domain</h2>
         <h3><span class="text-success">DELETE</span> /api/system/domains/:id</h3>
         <p class="lead">Deletes a domain from arkOS.</p>
@@ -2511,7 +2771,549 @@ title: "Kraken REST API Reference"
         <p>HTTP 204.</p>
       </div>
       <hr />
+      <br />
 
+      <h1 id="security" class="page-header">Security</h1>
+
+      <div class="api-item">
+        <h2 id="get-policies">Get Policies</h2>
+        <h3><span class="text-success">GET</span> /api/system/policies</h3>
+        <p class="lead">Get all firewall policies for installed applications.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/policies
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of firewall policy detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "policies": [
+    {
+      "icon": "fa fa-refresh",
+      "id": "syncthing@syncthing",
+      "is_ready": true,
+      "name": "File Sync",
+      "policy": 2,
+      "ports": [
+        [
+          "tcp",
+          22000
+        ],
+        [
+          "udp",
+          21025
+        ]
+      ],
+      "type": "syncthing"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-policy-details">Get Policy Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/policies/:id</h3>
+        <p class="lead">Returns details on the specified firewall policy.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>id or name of the website/app for which the firewall policy applies.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/policies/arkos
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Firewall policy detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "policy": {
+    "icon": "fa fa-desktop",
+    "id": "arkos",
+    "is_ready": true,
+    "name": "System Management (Genesis/APIs)",
+    "policy": 2,
+    "ports": [
+      [
+        "tcp",
+        8000
+      ]
+    ],
+    "type": "arkos"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="update-policy">Update Policy</h2>
+        <h3><span class="text-success">PUT</span> /api/system/policies/:id</h3>
+        <p class="lead">Change firewall rule for an arkOS app or website.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>id or name of the website/app for which the firewall policy applies.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/system/policies/arkos --data '{"policy": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <dl>
+            <dt>policy</dt>
+            <dd>An integer representing the policy to enact for this app or website. <code>0</code> blocks to all visitors, <code>1</code> allows access on the local network only, and <code>2</code> allows access from all networks.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Firewall policy detail object.</p>
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="services" class="page-header">System Services</h1>
+
+      <div class="api-item">
+        <h2 id="get-services">Get Services</h2>
+        <h3><span class="text-success">GET</span> /api/system/services</h3>
+        <p class="lead">Get all system services and daemons registered to SystemD or Supervisor.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/services
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of system service detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "services": [
+    {
+      "cfg": {},
+      "enabled": true,
+      "id": "arkos-redis",
+      "is_ready": true,
+      "running": true,
+      "state": "running",
+      "type": "system"
+    },
+    {
+      "cfg": {},
+      "enabled": false,
+      "id": "auditd",
+      "is_ready": true,
+      "running": false,
+      "state": "stopped",
+      "type": "system"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-service-details">Get Service Details</h2>
+        <h3><span class="text-success">GET</span> /api/system/services/:id</h3>
+        <p class="lead">Returns details on the specified system service.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>id or name of the system service (daemon).</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/system/services/arkos-redis
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>System service detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "service": {
+    "cfg": {},
+    "enabled": true,
+    "id": "arkos-redis",
+    "is_ready": true,
+    "running": true,
+    "state": "running",
+    "type": "system"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-service">Create Service</h2>
+        <h3><span class="text-success">POST</span> /api/system/services</h3>
+        <p class="lead">Create a new Supervisor service.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/system/services --data '{"service": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A service detail object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The name for the new service.</dd>
+            <dt>cfg</dt>
+            <dd>An object of key/values to be added to the Supervisor configuration (INI).</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Service detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="manage-service">Manage Service</h2>
+        <h3><span class="text-success">PUT</span> /api/system/services/:id</h3>
+        <p class="lead">Perform an action on a service.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/system/services/php-fpm --data '{"service": {...}}'
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>id or name of the service.</dd>
+        </dl>
+
+        <h4>Request Requires</h4>
+        <em>A service detail object with at least the following parameters:</em>
+        <dl>
+            <dt>operation</dt>
+            <dd>The operation to perform on the service: <code>start</code>, <code>stop</code>, <code>restart</code>, <code>real_restart</code>, <code>enable</code>, or <code>disable</code>.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Service detail object after state change.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-service">Delete Service</h2>
+        <h3><span class="text-success">DELETE</span> /api/system/services/:id</h3>
+        <p class="lead">Remove a Supervisor service from the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/system/services/testghost
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>id or name of the service.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="updates" class="page-header">Updates</h1>
+
+      <div class="api-item">
+        <h2 id="get-updates">Get Updates</h2>
+        <h3><span class="text-success">GET</span> /api/updates</h3>
+        <p class="lead">Get updates as available from arkOS central servers.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/updates
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of update detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "updates": [
+    {
+      "id": 1,
+      "name": "Test Update",
+      "date": "2015-08-30T20:46:15+00:00",
+      "info": "This is a test update for your system.",
+      "tasks": {}
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-update-details">Get Update Details</h2>
+        <h3><span class="text-success">GET</span> /api/updates/:id</h3>
+        <p class="lead">Returns details on the specified system update.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>id of the update.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/updates/1
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Update detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "update": {
+    "id": 1,
+    "name": "Test Update",
+    "date": "2015-08-30T20:46:15+00:00",
+    "info": "This is a test update for your system.",
+    "tasks": {}
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="apply-updates">Apply Updates</h2>
+        <h3><span class="text-success">POST</span> /api/updates</h3>
+        <p class="lead">Downloads and enables all updates from arkOS central servers.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/updates
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+      <br />
+
+      <h1 id="websites" class="page-header">Websites</h1>
+
+      <div class="api-item">
+        <h2 id="get-websites">Get Websites</h2>
+        <h3><span class="text-success">GET</span> /api/websites</h3>
+        <p class="lead">Get all websites created on the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/websites
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of website detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "websites": [
+    {
+      "addr": "localhost",
+      "certificate": null,
+      "database": null,
+      "enabled": true,
+      "id": "radicale",
+      ...
+    },
+    {
+      "addr": "localhost",
+      "certificate": null,
+      "database": null,
+      "enabled": true,
+      "has_actions": null,
+      "id": "testpress",
+      ...
+    }
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-website-details">Get Website Details</h2>
+        <h3><span class="text-success">GET</span> /api/websites/:id</h3>
+        <p class="lead">Returns details on the specified website.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Name of the website.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/websites/testpress
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Website detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "website": {
+    "addr": "localhost",
+    "certificate": null,
+    "database": null,
+    "enabled": true,
+    "has_actions": null,
+    "id": "testpress",
+    "is_ready": true,
+    "path": "/srv/http/webapps/testpress",
+    "php": true,
+    "port": 8765,
+    "site_icon": "fa fa-wordpress",
+    "site_name": "WordPress",
+    "site_type": "wordpress",
+    "version": "None"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-website">Create Website</h2>
+        <h3><span class="text-success">POST</span> /api/websites</h3>
+        <p class="lead">Add a new website to the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/websites --data '{"website": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A website detail object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The name for the new website.</dd>
+            <dt>site_type</dt>
+            <dd>The id of the Website Application to use for creating this site.</dd>
+            <dt>addr</dt>
+            <dd>The address to make this website respond to.</dd>
+            <dt>port</dt>
+            <dd>The port to make this website respond on.</dd>
+            <dt>extra_data</dt>
+            <dd>An object with keys/values corresponding to the values required to add a new instance of the specific website type.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="manage-website">Manage Website</h2>
+        <h3><span class="text-success">PUT</span> /api/websites/:id</h3>
+        <p class="lead">Edit details of the website, or perform an action on it.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/websites/testpress --data '{"website": {...}}'
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Name of the website.</dd>
+        </dl>
+
+        <h4>Request Requires</h4>
+        <em>A website detail object with at least the following parameters:</em>
+        <dl>
+            <dt>operation</dt>
+            <dd>The operation to perform: <code>enable</code>, <code>disable</code>, <code>enable_ssl</code>, <code>disable_ssl</code>, <code>update</code>. If just editing the website, leave this field blank.</dd>
+            <dt>addr</dt>
+            <dd>(if editing) The address to make this website respond to.</dd>
+            <dt>port</dt>
+            <dd>(if editing) The port to make this website respond on.</dd>
+            <dt>new_name</dt>
+            <dd>(if editing) A new name to rename this site to, if any.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Website detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="perform-website-action">Perform Website Action</h2>
+        <h3><span class="text-success">POST</span> /api/websites/actions/:id/:action</h3>
+        <p class="lead">Perform an action on a qualifying website.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/websites/testjekyll
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Name of the website.</dd>
+            <dt>action</dt>
+            <dd>The action to perform.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 200.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="remove-website">Remove Website</h2>
+        <h3><span class="text-success">DELETE</span> /api/websites/:id</h3>
+        <p class="lead">Remove a website, its data and associated databases/configurations.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/websites/testpress
+        {% endhighlight %}
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Name of the website.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+      </div>
     </div>
   </div>
 </div>
