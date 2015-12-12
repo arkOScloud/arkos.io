@@ -291,10 +291,12 @@ title: "Kraken REST API Reference"
         {
             "user": "testuser",
             "key": "xxxxxxxx",
+            "comment": "pyarkOSclient"
         },
         {
-            "id": "testusertwo",
-            "name": "xxxxxxxx",
+            "user": "testusertwo",
+            "key": "xxxxxxxx",
+            "comment": "My arkOS Client App"
         }
     ]
 }
@@ -316,10 +318,12 @@ title: "Kraken REST API Reference"
         <dl>
             <dt>user</dt>
             <dd>The username of the user to associate with this key.</dd>
+            <dt>comment</dt>
+            <dd>A comment to associate with this key. Typically the name of the app you are developing that requires the use of the API key.</dd>
         </dl>
 
         <h4>Responds With</h4>
-        <p>An object with <code>user</code> and <code>key</code> keys, corresponding to the newly-generated key.</p>
+        <p>An object with <code>user</code>, <code>comment</code> and <code>key</code> keys, corresponding to the newly-generated key.</p>
       </div>
       <hr />
 
@@ -350,7 +354,7 @@ title: "Kraken REST API Reference"
       <div class="api-item">
         <h2 id="messages">Messages</h2>
         <p class="lead">Messages allow you to determine the state of running or recently completed operations.</p>
-        <p>arkOS has many operations that must run in background threads, so that the state of the webserver is interrupted and to allow it to continue to respond to requests. Many requests simply pass messages to the client by adding a <code>message</code> key to the response object, but that is not sufficient for threaded or long-running operations. This means a separate endpoint at <code>/api/genesis</code> exists to track messages and other information delivered in parallel.</p>
+        <p>arkOS has many operations that must run in background threads, to allow it to continue to respond to requests when also processing other important things. Many requests simply pass messages to the client by adding a <code>message</code> key to the response object, but that is not sufficient for threaded or long-running operations. This means a separate endpoint at <code>/api/genesis</code> exists to track messages and other information delivered in parallel.</p>
         <p><span class="text-success">GET</span> <code>/api/genesis</code> returns an object with three keys, one of them being <code>messages</code>. This endpoint is designed to be fetched every few seconds, to allow for pseudo-realtime display of system status in your application. <code>messages</code> is a list with objects. When a message is available, it looks like this:</p>
         {% highlight json %}
 {
@@ -366,7 +370,7 @@ title: "Kraken REST API Reference"
           <li><code>id</code> : This is a random string that can be tracked for the life of the message object. That means if more messages are delivered in relation to this message in the future (i.e. given with the same ID), they can supersede the display of this message.</li>
           <li><code>headline</code> : The title of the message.</li>
           <li><code>message</code> : The actual text of the message.</li>
-          <li><code>class</code> : The class of the message. One of <code>info</code>, <code>success</code>, <code>warn</code> or <code>error</code>. Helps for associating the message with an appropriate visual display></li>
+          <li><code>class</code> : The class of the message. One of <code>info</code>, <code>success</code>, <code>warn</code> or <code>error</code>. Helps for associating the message with an appropriate visual display.</li>
           <li><code>complete</code> : True if this is the last message you will find associated with this ID. In Genesis, this is the point when the message will start to automatically disappear.</li>
         </ul>
       </div>
@@ -416,7 +420,7 @@ title: "Kraken REST API Reference"
       <div class="api-item">
         <h2 id="jobs">Background Jobs</h2>
         <p class="lead">Background job tracking provides an alternate way aside from messages to manage system operations.</p>
-        <p>When you request that arkOS perform a long-running operation, such as installing an application or creating a new website, this original call will likely come back with an HTTP 202 response. This response will include a <code>Location</code> header, specifying an endpoint on the API to track, something like <code>/api/jobs/b82eceb0b8</code>. Making a periodic <span class="text-success">GET</span> call to this address will inform you of the background job's status at any given point in time. The endpoint will return an object with <code>status</code> key being one of 200 (the job is currently running), 400 (the job failed because of a request error), 500 (the job failed because of a server exception), or the job's specific success code (by default 201). The job endpoint will expire 43200 seconds (12 hours) after the job has exited. The base <code>/api/jobs</code> endpoint should also provide you a list of all background jobs currently being run.</p>
+        <p>When you request that arkOS perform a long-running operation, such as installing an application or creating a new website, this original call will likely come back with an HTTP 202 response. This response will include a <code>Location</code> header, specifying an endpoint on the API to track, something like <code>/api/jobs/b82eceb0b8</code>. Making a periodic <span class="text-success">GET</span> call to this address will inform you of the background job's status at any given point in time. The HTTP status code of this call being one of 200 (the job is currently running), 400 (the job failed because of a request error), 500 (the job failed because of a server exception), or the job's specific success code (by default 201). The job endpoint will expire 43200 seconds (12 hours) after the job has exited. The base <code>/api/jobs</code> endpoint should also provide you a list of all background jobs currently being run.</p>
       </div>
       <hr />
       <br />
@@ -697,7 +701,7 @@ title: "Kraken REST API Reference"
         {% endhighlight %}
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
 
@@ -731,7 +735,7 @@ title: "Kraken REST API Reference"
         </dl>
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
 
@@ -864,7 +868,7 @@ title: "Kraken REST API Reference"
         </dl>
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
 
@@ -892,7 +896,7 @@ title: "Kraken REST API Reference"
         </dl>
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
 
@@ -1534,7 +1538,7 @@ title: "Kraken REST API Reference"
       <div class="api-item">
         <h2 id="list-files-and-folders">List Files and Folders</h2>
         <h3><span class="text-success">GET</span> /api/files/:path</h3>
-        <p class="lead">Get all databases registered with arkOS on the system.</p>
+        <p class="lead">List all files and folders present under a certain path.</p>
 
         <h4>Example</h4>
         {% highlight bash %}
@@ -2012,7 +2016,7 @@ title: "Kraken REST API Reference"
         </dl>
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
 
@@ -2437,7 +2441,7 @@ title: "Kraken REST API Reference"
         </dl>
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
       <br />
@@ -3203,7 +3207,7 @@ title: "Kraken REST API Reference"
         {% endhighlight %}
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
       <br />
@@ -3319,7 +3323,7 @@ title: "Kraken REST API Reference"
         </dl>
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
       <hr />
 
@@ -3344,6 +3348,8 @@ title: "Kraken REST API Reference"
         <dl>
             <dt>operation</dt>
             <dd>The operation to perform: <code>enable</code>, <code>disable</code>, <code>enable_ssl</code>, <code>disable_ssl</code>, <code>update</code>. If just editing the website, leave this field blank.</dd>
+            <dt>cert</dt>
+            <dd>(if <code>enable_ssl</code>) The name of the certificate to assign to this website.</dd>
             <dt>addr</dt>
             <dd>(if editing) The address to make this website respond to.</dd>
             <dt>port</dt>
@@ -3397,7 +3403,7 @@ title: "Kraken REST API Reference"
         </dl>
 
         <h4>Responds With</h4>
-        <p>HTTP 201, with Location header specifying Job endpoint to track.</p>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
       </div>
     </div>
   </div>
