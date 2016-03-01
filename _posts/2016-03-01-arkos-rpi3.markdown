@@ -1,0 +1,25 @@
+---
+layout: post
+title:  "Raspberry Pi 3, CLI and Other Announcements"
+date:   2016-03-01 17:45:00
+author: "Jacob Cook"
+summary: "New board and new software coming soon."
+---
+
+![](/img/20150202001.png)
+
+arkOS is happy to report that the latest iteration of the Raspberry Pi family, the **[Raspberry Pi 3](https://www.raspberrypi.org/blog/raspberry-pi-3-on-sale/)**, has been released. The Pi 3 comes in at the same price ($35) as the original editions, and has a similar hardware profile to the Raspberry Pi 2, but with a few notable additions: the processor moves to an ARMv8 (aarch64) 64-bit multicore embedded processor, as well as featuring on-board WiFi and Bluetooth.
+
+I am working to get a Raspberry Pi 3 here as soon as possible for testing and arkOS repo-creation purposes -- not an easy task given it has already sold out almost everywhere! Software repos and an install image should be expected for the RPi3 within the next few weeks.
+
+
+### arkOS CLI
+
+The final touches are being put on the new **[command-line interface package](https://git.coderouge.co/arkOS/cli)** for arkOS. This tool will allow you to manage your arkOS server and perform all functions, including installing apps and websites, directly from the command line. It will be useful for those who want to accomplish tasks quickly and easily via a quick command, or those who do not wish to use Genesis for performance or automation reasons. Perhaps the coolest feature of this new CLI package is that it can be run either locally or remotely, meaning that you will be able to run the same package on your arkOS server (accessed with monitor/keyboard or SSH) as you will remotely on your Windows / Mac OS / Linux client computer, functioning as a partial replacement for SSH.
+
+The first version of arkOS CLI is expected to be released by March 5th for general testing.
+
+
+### New Apps Policy
+
+Since we have quite a big backlog of desired apps, a new strategy is being conceived to bring new ones to our platform. The new target will be to **releasing one new app a week**. The majority of these will be web apps, but the occasional system app (like the long-awaited Mailserver app) will also be integrated. Keep in mind that this is just a target, and it may take a bit longer to port some apps over. But this gives us something great and achievable to shoot for, all the while maintaining focus on increasing stability for the platform as a whole.
