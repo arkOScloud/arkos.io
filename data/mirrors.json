@@ -1,0 +1,34 @@
+{
+  "mirrors": [
+    {
+      "id": "nyus",
+      "name": "New York (USA)",
+      "url": "https://nyus.mirror.arkos.io"
+    },
+    {
+      "id": "sfus",
+      "name": "San Francisco (USA)",
+      "url": "https://sfus.mirror.arkos.io"
+    },
+    {
+      "id": "louk",
+      "name": "London (UK)",
+      "url": "https://louk.mirror.arkos.io"
+    },
+    {
+      "id": "amnl",
+      "name": "Amsterdam (EU)",
+      "url": "https://amnl.mirror.arkos.io"
+    },
+    {
+      "id": "frde",
+      "name": "Frankfurt (EU)",
+      "url": "https://frde.mirror.arkos.io"
+    },
+    {
+      "id": "sgsg",
+      "name": "Singapore (Asia)",
+      "url": "https://sgsg.mirror.arkos.io"
+    }
+  ]
+}

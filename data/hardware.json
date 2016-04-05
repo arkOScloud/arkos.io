@@ -1,0 +1,89 @@
+{
+  "hardware": [
+    {
+      "id": "cb2",
+      "name": "Cubieboard2",
+      "logo": "https://cdn.citizenweb.io/static/img/icon-cubieboard.png",
+      "images": [
+        {
+          "id": "cb2",
+          "type": "default",
+          "path": "/os/latest-cb2.zip"
+        },
+        {
+          "id": "cb2split",
+          "type": "split",
+          "path": "/os/latest-cb2split.zip"
+        }
+      ]
+    },
+    {
+      "id": "cb3",
+      "name": "Cubietruck",
+      "logo": "https://cdn.citizenweb.io/static/img/icon-cubieboard.png",
+      "images": [
+        {
+          "id": "cb3",
+          "type": "default",
+          "path": "/os/latest-cb3.zip"
+        },
+        {
+          "id": "cb3split",
+          "type": "split",
+          "path": "/os/latest-cb3split.zip"
+        }
+      ]
+    },
+    {
+      "id": "odu",
+      "name": "ODROID U-Series",
+      "logo": "https://cdn.citizenweb.io/static/img/icon-odroid.png",
+      "images": [
+        {
+          "id": "odu",
+          "type": "default",
+          "path": "/os/latest-odu.zip"
+        },
+        {
+          "id": "odusplit",
+          "type": "split",
+          "path": "/os/latest-odusplit.zip"
+        }
+      ]
+    },
+    {
+      "id": "rpi",
+      "name": "Raspberry Pi (Original)",
+      "logo": "https://cdn.citizenweb.io/static/img/icon-raspberrypi.png",
+      "images": [
+        {
+          "id": "rpi",
+          "type": "default",
+          "path": "/os/latest-rpi.zip"
+        },
+        {
+          "id": "rpisplit",
+          "type": "split",
+          "path": "/os/latest-rpisplit.zip"
+        }
+      ]
+    },
+    {
+      "id": "rp2",
+      "name": "Raspberry Pi 2",
+      "logo": "https://cdn.citizenweb.io/static/img/icon-raspberrypi.png",
+      "images": [
+        {
+          "id": "rp2",
+          "type": "default",
+          "path": "/os/latest-rp2.zip"
+        },
+        {
+          "id": "rp2split",
+          "type": "split",
+          "path": "/os/latest-rp2split.zip"
+        }
+      ]
+    }
+  ]
+}
