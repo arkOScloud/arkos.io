@@ -8,84 +8,132 @@ title: Downloads
     <p><strong>Warning</strong> &#8211; arkOS is still in development. Many tools are not yet working, and you should not yet depend on arkOS for anything other than testing at this time. Please stay connected via one of the methods listed on the <a href="/contact">Contact</a> page to get updates on project development.</p>
   </div>
 
-  <h4 style="margin-top:30px;">Install arkOS from Image</h4>
-  <p>While the arkOS Installer undergoes a rewrite, installations can be made manually with the proper software. Instructions on how to install these images can be found <a href="https://wiki.arkos.io/en:getting_started#manually_writing_a_disk_image">on the Wiki</a>.</p>
-  <p><strong>Select your download mirror:</strong></p>
-  <p><select id="ddrop" class="form-control" onchange="$('.dbutton').each(function(i,e){$(this).attr('href', 'https://'+$('#ddrop').val()+'.mirror.arkos.io/os/latest-'+$(this).attr('a-type')+'.zip')});"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select></p>
-  <table class="table table-striped">
-    <tr>
-      <th>Device</th>
-      <th>Download &#8211; Default (SD Card)</th>
-      <th>Download &#8211; Split Boot/Data (SD Card + USB Drive)</th>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.citizenweb.io/static/img/icon-cubieboard.png" /> Cubieboard2</td>
-      <td><a a-type="cb2" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-cb2.zip'><i class="fa fa-download"></i> Download</a></td>
-      <td><a a-type="cb2split" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-cb2split.zip'><i class="fa fa-download"></i> Download</a></td>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.citizenweb.io/static/img/icon-cubieboard.png" /> Cubietruck</td>
-      <td><a a-type="cb3" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-cb3.zip'><i class="fa fa-download"></i> Download</a></td>
-      <td><a a-type="cb3split" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-cb3split.zip'><i class="fa fa-download"></i> Download</a></td>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.citizenweb.io/static/img/icon-odroid.png" /> ODROID U-Series</td>
-      <td><a a-type="odu" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-odu.zip'><i class="fa fa-download"></i> Download</a></td>
-      <td><a a-type="odusplit" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-odusplit.zip'><i class="fa fa-download"></i> Download</a></td>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi (original)</td>
-      <td><a a-type="rpi" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rpi.zip'><i class="fa fa-download"></i> Download</a></td>
-      <td><a a-type="rpisplit" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rpisplit.zip'><i class="fa fa-download"></i> Download</a></td>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi 2</td>
-      <td><a a-type="rp2" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rp2.zip'><i class="fa fa-download"></i> Download</a></td>
-      <td><a a-type="rp2split" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rp2split.zip'><i class="fa fa-download"></i> Download</a></td>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi 3</td>
-      <td>Coming Soon</td>
-      <td>Coming Soon</td>
-    </tr>
-  </table>
+  <section class="page-section">
+    <h2>Download via arkOS Assistant</h2>
+    <p>arkOS Assistant is an application that runs on your home computer that allows you to install arkOS to an SD card and, if desired, an accompanying USB drive. It also scans your network for running arkOS servers and allows you to easily connect to their respective management interfaces. The arkOS Assistant is the default recommended way for installing arkOS to a variety of devices.</p>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="btn-lg-download disabled">
+          <a href="https://pkg.arkos.io/resources/arkOS Assistant Setup.exe">
+            <h2>Windows</h2>
+            <p><i class="fa fa-4x fa-fw fa-windows"></i></p>
+            <p class="text-muted"><em>Windows 7 and up</em></p>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="btn-lg-download">
+          <a href="https://pkg.arkos.io/resources/arkOS Assistant.dmg">
+            <h2>MacOS</h2>
+            <p><i class="fa fa-4x fa-fw fa-apple"></i></p>
+            <p class="text-muted"><em>Snow Leopard and up</em></p>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="btn-lg-download">
+          <a href="https://pkg.arkos.io/resources/arkos-assistant-linux.tar.gz">
+            <h2>Linux</h2>
+            <p><i class="fa fa-4x fa-fw fa-linux"></i></p>
+            <p class="text-muted"><em>Debian/Ubuntu</em></p>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="btn-lg-download">
+          <a href="https://pkg.arkos.io/resources/arkos-assistant-linux.tar.gz">
+            <h2>Linux</h2>
+            <p><i class="fa fa-4x fa-fw fa-linux"></i></p>
+            <p class="text-muted"><em>All Distros</em></p>
+          </a>
+        </div>
+      </div>
+    </div>
+    <br />
+    <p>Source for the arkOS Assistant can be found <a href="https://git.coderouge.co/arkOS/assistant">on our Gitlab</a>.</p>
+  </section>
 
-  <h4>arkOS Testing and Development</h4>
-  <p>You can install a Vagrant box on any Windows/OS X/Linux computer to begin using arkOS for testing or development purposes. See the appropriate <a href="/dev/docs/vagrant">documentation</a> for help in getting started.</p>
-  <div class="input-group">
-    <select id="gtddrop" class="form-control" onchange="$('#gtdbutton').attr('href', 'https://'+$('#gtddrop').val()+'.mirror.arkos.io/resources/arkos-dev.box');"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select>
-    <span class="input-group-btn">
-      <a id="gtdbutton" class="btn btn-default" href='https://nyus.mirror.arkos.io/resources/arkos-dev.box'><i class="fa fa-download"></i> Download</a>
-    </span>
-  </div>
-  <br />
-  <p><strong>SHA256:</strong> <a href="https://pkg.arkos.io/resources/arkos-dev.box.sha256.txt">162da128ee056583deabdbf72d0950ba0e6eb880d09d76d3c80becf53613f0ed</a></p>
+  <section class="page-section">
+    <h2>Install arkOS from Image</h2>
+    <p>If you do not wish to use the arkOS Assistant, you can still install arkOS by manually flashing the images to your devices. Instructions on how to install these images can be found <a href="https://wiki.arkos.io/en:getting_started#manually_writing_a_disk_image">on the Wiki</a>.</p>
+    <p><strong>Select your download mirror:</strong></p>
+    <p><select id="ddrop" class="form-control" onchange="$('.dbutton').each(function(i,e){$(this).attr('href', 'https://'+$('#ddrop').val()+'.mirror.arkos.io/os/latest-'+$(this).attr('a-type')+'.zip')});"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select></p>
+    <table class="table table-striped">
+      <tr>
+        <th>Device</th>
+        <th>Download &#8211; Default (SD Card)</th>
+        <th>Download &#8211; Split Boot/Data (SD Card + USB Drive)</th>
+      </tr>
+      <tr>
+        <td><img src="https://cdn.citizenweb.io/static/img/icon-cubieboard.png" /> Cubieboard2</td>
+        <td><a a-type="cb2" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-cb2.zip'><i class="fa fa-download"></i> Download</a></td>
+        <td><a a-type="cb2split" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-cb2split.zip'><i class="fa fa-download"></i> Download</a></td>
+      </tr>
+      <tr>
+        <td><img src="https://cdn.citizenweb.io/static/img/icon-cubieboard.png" /> Cubietruck</td>
+        <td><a a-type="cb3" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-cb3.zip'><i class="fa fa-download"></i> Download</a></td>
+        <td><a a-type="cb3split" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-cb3split.zip'><i class="fa fa-download"></i> Download</a></td>
+      </tr>
+      <tr>
+        <td><img src="https://cdn.citizenweb.io/static/img/icon-odroid.png" /> ODROID U-Series</td>
+        <td><a a-type="odu" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-odu.zip'><i class="fa fa-download"></i> Download</a></td>
+        <td><a a-type="odusplit" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-odusplit.zip'><i class="fa fa-download"></i> Download</a></td>
+      </tr>
+      <tr>
+        <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi (original)</td>
+        <td><a a-type="rpi" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rpi.zip'><i class="fa fa-download"></i> Download</a></td>
+        <td><a a-type="rpisplit" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rpisplit.zip'><i class="fa fa-download"></i> Download</a></td>
+      </tr>
+      <tr>
+        <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi 2</td>
+        <td><a a-type="rp2" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rp2.zip'><i class="fa fa-download"></i> Download</a></td>
+        <td><a a-type="rp2split" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rp2split.zip'><i class="fa fa-download"></i> Download</a></td>
+      </tr>
+      <tr>
+        <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi 3</td>
+        <td>Coming Soon</td>
+        <td>Coming Soon</td>
+      </tr>
+    </table>
+  </section>
 
-  <hr />
+  <section class="page-section">
+    <h2>arkOS Testing and Development</h2>
+    <p>You can install a Vagrant box on any Windows/OS X/Linux computer to begin using arkOS for testing or development purposes. See the appropriate <a href="/dev/docs/vagrant">documentation</a> for help in getting started.</p>
+    <div class="input-group">
+      <select id="gtddrop" class="form-control" onchange="$('#gtdbutton').attr('href', 'https://'+$('#gtddrop').val()+'.mirror.arkos.io/resources/arkos-dev.box');"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select>
+      <span class="input-group-btn">
+        <a id="gtdbutton" class="btn btn-default" href='https://nyus.mirror.arkos.io/resources/arkos-dev.box'><i class="fa fa-download"></i> Download</a>
+      </span>
+    </div>
+    <br />
+    <p><strong>SHA256:</strong> <a href="https://pkg.arkos.io/resources/arkos-dev.box.sha256.txt">162da128ee056583deabdbf72d0950ba0e6eb880d09d76d3c80becf53613f0ed</a></p>
+  </section>
 
-  <h4>Image Verification</h4>
-  <p>To verify GPG signatures, add <a href="http://pgp.mit.edu/pks/lookup?op=vindex&search=0x0155ED1E0585F850">0x0155ED1E0585F850</a> to your keyring.</p>
-  <table class="table">
-    <tr>
-      <th>Device</th>
-      <th>Image</th>
-      <th>SHA256sum</th>
-      <th>GPG Signature</th>
-    </tr>
-    <tr><td rowspan=2><strong>Cubieboard2</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-cb2.zip.sha256.txt">ea755d98cbd791bedb1d6d20ffe94af7a7a532e8ece60a57e0a20de24e4d03e3</a></td><td><a href="https://pkg.arkos.io/os/latest-cb2.zip.sig">GPG Signature</a></td></tr>
-      <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-cb2split.zip.sha256.txt">a9baa8346553ec6141c609d1ac2eecdfdecf9888d14e2ddeb97721f2107b7688</a></td><td><a href="https://pkg.arkos.io/os/latest-cb2split.zip.sig">GPG Signature</a></td></tr>
-    <tr><td rowspan=2><strong>Cubietruck</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-cb3.zip.sha256.txt">87618dded7d5b55063f16e1aaa36e0bff9f1cd80b6fa31d609703331571bf4fe</a></td><td><a href="https://pkg.arkos.io/os/latest-cb3.zip.sig">GPG Signature</a></td></tr>
-      <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-cb3split.zip.sha256.txt">b111b2e875860297ff2b2737ba7650eddb142c3a6ddf319f464a5467ad37d6b8</a></td><td><a href="https://pkg.arkos.io/os/latest-cb3split.zip.sig">GPG Signature</a></td></tr>
-    <tr><td rowspan=2><strong>ODROID U Series</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-odu.zip.sha256.txt">d98ee4940ef0aa578cc7e8b18d4844f252e32f5ac57f916d7edda0d79a774596</a></td><td><a href="https://pkg.arkos.io/os/latest-odu.zip.sig">GPG Signature</a></td></tr>
-      <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-odusplit.zip.sha256.txt">cb87700da0af0eded150aac8aecf191b74e13bbfedfb3c21daa2fe684edced75</a></td><td><a href="https://pkg.arkos.io/os/latest-odusplit.zip.sig">GPG Signature</a></td></tr>
-    <tr><td rowspan=2><strong>Raspberry Pi</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-rpi.zip.sha256.txt">65601ca0465923e3b60f060194144789d71155d73f79f0933579a2ce4e6cfb1a</a></td><td><a href="https://pkg.arkos.io/os/latest-rpi.zip.sig">GPG Signature</a></td></tr>
-      <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-rpisplit.zip.sha256.txt">a3e1a15b09bfe052dddf55e1baea6ff1cc56d4a95a8a0ffa824fbca1c3fa8a61</a></td><td><a href="https://pkg.arkos.io/os/latest-rpisplit.zip.sig">GPG Signature</a></td></tr>
-    <tr><td rowspan=2><strong>Raspberry Pi 2</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-rp2.zip.sha256.txt">53ba47885473d99cfe16c80eb7c62284ec66de89f25390152905ba0d59cea22b</a></td><td><a href="https://pkg.arkos.io/os/latest-rp2.zip.sig">GPG Signature</a></td></tr>
-      <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-rp2split.zip.sha256.txt">8e5feb6b68985484e236abe7f1b2cdbc6b53204d7983e64541db7f703ab275a2</a></td><td><a href="https://pkg.arkos.io/os/latest-rp2split.zip.sig">GPG Signature</a></td></tr>
-    <tr><td rowspan=2><strong>Raspberry Pi 3</strong></td><td>Default</td><td>Coming Soon</td><td>Coming Soon</td></tr>
-      <tr><td>Split</td><td>Coming Soon</td><td>Coming Soon</td></tr>
-  </table>
+  <section class="page-section">
+    <h2>Image Verification</h2>
+    <p>To verify GPG signatures, add <a href="http://pgp.mit.edu/pks/lookup?op=vindex&search=0x0155ED1E0585F850">0x0155ED1E0585F850</a> to your keyring.</p>
+    <table class="table">
+      <tr>
+        <th>Device</th>
+        <th>Image</th>
+        <th>SHA256sum</th>
+        <th>GPG Signature</th>
+      </tr>
+      <tr><td rowspan=2><strong>Cubieboard2</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-cb2.zip.sha256.txt">ea755d98cbd791bedb1d6d20ffe94af7a7a532e8ece60a57e0a20de24e4d03e3</a></td><td><a href="https://pkg.arkos.io/os/latest-cb2.zip.sig">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-cb2split.zip.sha256.txt">a9baa8346553ec6141c609d1ac2eecdfdecf9888d14e2ddeb97721f2107b7688</a></td><td><a href="https://pkg.arkos.io/os/latest-cb2split.zip.sig">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>Cubietruck</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-cb3.zip.sha256.txt">87618dded7d5b55063f16e1aaa36e0bff9f1cd80b6fa31d609703331571bf4fe</a></td><td><a href="https://pkg.arkos.io/os/latest-cb3.zip.sig">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-cb3split.zip.sha256.txt">b111b2e875860297ff2b2737ba7650eddb142c3a6ddf319f464a5467ad37d6b8</a></td><td><a href="https://pkg.arkos.io/os/latest-cb3split.zip.sig">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>ODROID U Series</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-odu.zip.sha256.txt">d98ee4940ef0aa578cc7e8b18d4844f252e32f5ac57f916d7edda0d79a774596</a></td><td><a href="https://pkg.arkos.io/os/latest-odu.zip.sig">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-odusplit.zip.sha256.txt">cb87700da0af0eded150aac8aecf191b74e13bbfedfb3c21daa2fe684edced75</a></td><td><a href="https://pkg.arkos.io/os/latest-odusplit.zip.sig">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>Raspberry Pi</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-rpi.zip.sha256.txt">65601ca0465923e3b60f060194144789d71155d73f79f0933579a2ce4e6cfb1a</a></td><td><a href="https://pkg.arkos.io/os/latest-rpi.zip.sig">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-rpisplit.zip.sha256.txt">a3e1a15b09bfe052dddf55e1baea6ff1cc56d4a95a8a0ffa824fbca1c3fa8a61</a></td><td><a href="https://pkg.arkos.io/os/latest-rpisplit.zip.sig">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>Raspberry Pi 2</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-rp2.zip.sha256.txt">53ba47885473d99cfe16c80eb7c62284ec66de89f25390152905ba0d59cea22b</a></td><td><a href="https://pkg.arkos.io/os/latest-rp2.zip.sig">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-rp2split.zip.sha256.txt">8e5feb6b68985484e236abe7f1b2cdbc6b53204d7983e64541db7f703ab275a2</a></td><td><a href="https://pkg.arkos.io/os/latest-rp2split.zip.sig">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>Raspberry Pi 3</strong></td><td>Default</td><td>Coming Soon</td><td>Coming Soon</td></tr>
+        <tr><td>Split</td><td>Coming Soon</td><td>Coming Soon</td></tr>
+    </table>
+  </section>
 
-  <hr />
   <small>Raspberry Pi is a trademark of the <a href="http://www.raspberrypi.org/">Raspberry Pi Foundation</a>.</small></p>
 </div>
