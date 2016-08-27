@@ -8,7 +8,7 @@ title: Downloads
     <p><strong>Warning</strong> &#8211; arkOS is still in development. Many tools are not yet working, and you should not yet depend on arkOS for anything other than testing at this time. Please stay connected via one of the methods listed on the <a href="/contact">Contact</a> page to get updates on project development.</p>
   </div>
 
-  <section class="page-section">
+  <section id="assistant" class="page-section">
     <h2>Download via arkOS Assistant</h2>
     <p>arkOS Assistant is an application that runs on your home computer that allows you to install arkOS to an SD card and, if desired, an accompanying USB drive. It also scans your network for running arkOS servers and allows you to easily connect to their respective management interfaces. The arkOS Assistant is the default recommended way for installing arkOS to a variety of devices.</p>
     <div class="row">
@@ -53,7 +53,22 @@ title: Downloads
     <p>Source for the arkOS Assistant can be found <a href="https://git.coderouge.co/arkOS/assistant">on our Gitlab</a>.</p>
   </section>
 
-  <section class="page-section">
+  <section id="arch-convert" class="page-section">
+    <h2>Install on an Arch Linux-compatible PC or device</h2>
+    <p>If you are able to run Arch Linux on a PC or a type of embedded device that we don't currently have images for, chances are you are also able to run arkOS on it! Once you have Arch installed, run:</p>
+    {% highlight bash %}curl -s https://pkg.arkos.io/resources/install_arch.py | sudo python{% endhighlight %}
+    <p>The installation process will begin to convert your system to arkOS. Please note that this script performs a <strong>full system conversion</strong> to arkOS, meaning that it may change many system settings to match what an initial arkOS install is supposed to look like. Make sure this is really what you want (and that you are willing to essentially sacrifice the current Arch install) before you proceed.</p>
+  </section>
+
+  <section id="cli" class="page-section">
+    <h2>Install arkOS CLI</h2>
+    <p>arkOS CLI is a command-line interface for local and remote management of arkOS servers. It provides a quick and easy alternative to managing your server via the Genesis web interface. It can be installed on your local client computer and run through the Terminal.</p>
+    <p>Installation of the CLI requires <code>pip</code>, installable through Python for Windows, Homebrew for MacOS, or the default package manager for your Linux distribution. To install the CLI, run:</p>
+    {% highlight bash %}sudo pip install arkos-cli{% endhighlight %}
+    <p>For information on how to use the CLI, see <a href="https://wiki.arkos.io/en:managing_arkos">the documentation</a>.</p>
+  </section>
+
+  <section id="from-image" class="page-section">
     <h2>Install arkOS from Image</h2>
     <p>If you do not wish to use the arkOS Assistant, you can still install arkOS by manually flashing the images to your devices. Instructions on how to install these images can be found <a href="https://wiki.arkos.io/en:getting_started#manually_writing_a_disk_image">on the Wiki</a>.</p>
     <p><strong>Select your download mirror:</strong></p>
