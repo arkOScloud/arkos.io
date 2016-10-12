@@ -20,9 +20,9 @@ title: "Kraken REST API Reference"
             </ul>
           </li>
           <li>
-            <a href="#messaging">Messaging, Records and Jobs</a>
+            <a href="#messaging">Notifications, Records and Jobs</a>
             <ul class="nav nav-stacked">
-              <li><a href="#messages">Messages</a></li>
+              <li><a href="#notifications-ws">Notifications via WebSockets</a></li>
               <li><a href="#purges">Record Purges</a></li>
               <li><a href="#pushes">Record Pushes</a></li>
               <li><a href="#jobs">Background Jobs</a></li>
@@ -34,7 +34,7 @@ title: "Kraken REST API Reference"
               <li><a href="#list-applications">List Applications</a></li>
               <li><a href="#get-application-details">Get Application Details</a></li>
               <li><a href="#modify-application">Modify Application</a></li>
-              <li><a href="#get-application-logo">Get Application Logo</a></li>
+              <li><a href="#get-application-asset">Get Application Asset</a></li>
             </ul>
           </li>
           <li>
@@ -53,6 +53,7 @@ title: "Kraken REST API Reference"
               <li><a href="#list-certificates">List Certificates</a></li>
               <li><a href="#get-certificate-details">Get Certificate Details</a></li>
               <li><a href="#generate-certificate">Generate Certificate</a></li>
+              <li><a href="#request-acme-certificate">Request ACME Certificate</a></li>
               <li><a href="#upload-certificate">Upload Certificate</a></li>
               <li><a href="#assign-certificate">Assign Certificate</a></li>
               <li><a href="#delete-certificate">Delete Certificate</a></li>
@@ -60,6 +61,7 @@ title: "Kraken REST API Reference"
               <li><a href="#get-certificate-authority-details">Get Certificate Authority Details</a></li>
               <li><a href="#download-certificate-authority">Download Certificate Authority</a></li>
               <li><a href="#delete-certificate-authority">Delete Certificate Authority</a></li>
+              <li><a href="#get-possible-assignments">Get Possible Assignments</a></li>
             </ul>
           </li>
           <li>
@@ -132,6 +134,16 @@ title: "Kraken REST API Reference"
             </ul>
           </li>
           <li>
+            <a href="#notifications">Notifications</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-notifications">Get All Notifications</a></li>
+              <li><a href="#get-notification-details">Get Notification Details</a></li>
+              <li><a href="#create-notification">Create Notification</a></li>
+              <li><a href="#delete-notification">Delete Notification</a></li>
+              <li><a href="#delete-all-notifications">Delete All Notifications</a></li>
+            </ul>
+          </li>
+          <li>
             <a href="#packages">System Packages</a>
             <ul class="nav nav-stacked">
               <li><a href="#get-packages">Get Packages</a></li>
@@ -163,7 +175,9 @@ title: "Kraken REST API Reference"
             <ul class="nav nav-stacked">
               <li><a href="#get-policies">Get Policies</a></li>
               <li><a href="#get-policy-details">Get Policy Details</a></li>
+              <li><a href="#create-custom-policy">Create Custom Policy</a></li>
               <li><a href="#update-policy">Update Policy</a></li>
+              <li><a href="#delete-custom-policy">Delete Custom Policy</a></li>
             </ul>
           </li>
           <li>
@@ -174,6 +188,20 @@ title: "Kraken REST API Reference"
               <li><a href="#create-service">Create Service</a></li>
               <li><a href="#manage-service">Manage Service</a></li>
               <li><a href="#delete-service">Delete Service</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#shares">Shares</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#get-shares">Get Shares</a></li>
+              <li><a href="#get-share-details">Get Share Details</a></li>
+              <li><a href="#create-share">Create Share</a></li>
+              <li><a href="#delete-share">Delete Share</a></li>
+              <li><a href="#get-mounts">Get Fileshare Mounts</a></li>
+              <li><a href="#get-mount-details">Get Mount Details</a></li>
+              <li><a href="#mount-fileshare">Mount Fileshare</a></li>
+              <li><a href="#unmount-fileshare">Unmount Fileshare</a></li>
+              <li><a href="#get-share-types">Get Share Types</a></li>
             </ul>
           </li>
           <li>
@@ -352,25 +380,33 @@ title: "Kraken REST API Reference"
       <h1 id="messaging" class="page-header">Messaging, Records and Jobs</h1>
 
       <div class="api-item">
-        <h2 id="messages">Messages</h2>
-        <p class="lead">Messages allow you to determine the state of running or recently completed operations.</p>
-        <p>arkOS has many operations that must run in background threads, to allow it to continue to respond to requests when also processing other important things. Many requests simply pass messages to the client by adding a <code>message</code> key to the response object, but that is not sufficient for threaded or long-running operations. This means a separate endpoint at <code>/api/genesis</code> exists to track messages and other information delivered in parallel.</p>
-        <p><span class="text-success">GET</span> <code>/api/genesis</code> returns an object with three keys, one of them being <code>messages</code>. This endpoint is designed to be fetched every few seconds, to allow for pseudo-realtime display of system status in your application. <code>messages</code> is a list with objects. When a message is available, it looks like this:</p>
+        <h2 id="notifications-ws">Notifications via WebSockets</h2>
+        <p class="lead">Notifications allow you to determine the state of running or recently completed operations.</p>
+        <p>arkOS has many operations that must run in background threads, to allow it to continue to respond to requests when also processing other important things. Many requests simply pass error messages to the client by setting an <code>errors</code> key in the response object, but that is not sufficient for threaded or long-running operations, or ones that didn't end in error, of course. This means a WebSockets (Socket.IO) endpoint exists at the root (<code>/</code>) of the server, to track notifications and other information delivered in parallel.</p>
+        <p>The <code>sendNotification</code> event includes a notification object, sent to your client as JSON. When a notification is available, it looks like this:</p>
         {% highlight json %}
 {
-  "class": "info",
+  "level": "info",
   "complete": false,
-  "headline": null,
+  "title": null,
+  "message_id": "34853c64c3",
   "id": "34853c64c3",
-  "message": "Please wait..."
+  "message": "Please wait...",
+  "time": "2016-10-12T23:00:00",
+  "cls": "notify",
+  "comp": "Sites"
 }
         {% endhighlight %}
         <p>Here is a brief rundown of the significance of these keys:</p>
         <ul>
           <li><code>id</code> : This is a random string that can be tracked for the life of the message object. That means if more messages are delivered in relation to this message in the future (i.e. given with the same ID), they can supersede the display of this message.</li>
-          <li><code>headline</code> : The title of the message.</li>
+          <li><code>message_id</code> : An ID for the message itself. This will only be different from <code>ID</code> when the message is the not the first in a message thread. This way, you can collect messages in a specific thread and show a history of them, if you'd like.</li>
+          <li><code>title</code> : The title of the message.</li>
           <li><code>message</code> : The actual text of the message.</li>
-          <li><code>class</code> : The class of the message. One of <code>info</code>, <code>success</code>, <code>warn</code> or <code>error</code>. Helps for associating the message with an appropriate visual display.</li>
+          <li><code>level</code> : The class of the message. One of <code>info</code>, <code>success</code>, <code>warning</code> or <code>error</code>. Helps for associating the message with an appropriate visual display.</li>
+          <li><code>time</code> : ISO-8601 timestamp of when the message was generated.</li>
+          <li><code>cls</code> : Message class. Will always be <code>notify</code>.</li>
+          <li><code>comp</code> : The component of arkOS that emitted the message.</li>
           <li><code>complete</code> : True if this is the last message you will find associated with this ID. In Genesis, this is the point when the message will start to automatically disappear.</li>
         </ul>
       </div>
@@ -379,41 +415,37 @@ title: "Kraken REST API Reference"
       <div class="api-item">
         <h2 id="purges">Record Purges</h2>
         <p class="lead">Record purges inform your client of records that no longer exist.</p>
-        <p>If your client application caches the information returned from <span class="text-success">GET</span> calls to Kraken endpoints, and a record is removed from the system by an action initiated directly from the server, your client will not know this unless it rescans the endpoint of the model in question. This can be done automatically in the background by periodically tracking the <code>purges</code> key of <span class="text-success">GET</span> <code>/api/genesis</code>. When an object appears in this list, use the <code>model</code> key to associate the record type to remove, and the <code>id</code> to remove the specific object that no longer exists.</p>
+        <p>If your client application caches the information returned from <span class="text-success">GET</span> calls to Kraken endpoints, and a record is removed from the system by an action initiated directly from the server, your client will not know this unless it rescans the endpoint of the model in question. This can be done automatically in the background by listening to the <code>modelPurge</code> event on WebSockets. When an object is emitted under this event, use the <code>model</code> key to associate the record type to remove, and the <code>id</code> to remove the specific object that no longer exists.</p>
       </div>
       <hr />
 
       <div class="api-item">
         <h2 id="pushes">Record Pushes</h2>
         <p class="lead">Record pushes inform your client of records that were created serverside.</p>
-        <p>In the same way, if your client application caches the information returned from <span class="text-success">GET</span> calls to Kraken endpoints, and a record is created by an action initiated directly from the server, your client will not know this unless it rescans the endpoint of the model in question. This can also be done automatically in the background by periodically tracking the <code>pushes</code> key of <span class="text-success">GET</span> <code>/api/genesis</code>. A typical <code>pushes</code> key can look like this within the greater object:</p>
+        <p>In the same way, if your client application caches the information returned from <span class="text-success">GET</span> calls to Kraken endpoints, and a record is created by an action initiated directly from the server, your client will not know this unless it rescans the endpoint of the model in question. This can also be done automatically in the background by listening to the <code>modelPush</code> event on WebSockets. A typical response could look like this: </p>
         {% highlight json %}
 {
-  "messages": [],
-  "purges": [],
-  "pushes": {
-    "website": [
-      {
-        "addr": "localhost",
-        "certificate": null,
-        "database": null,
-        "enabled": true,
-        "has_actions": null,
-        "id": "testsite",
-        "is_ready": true,
-        "path": "/srv/http/webapps/testsite",
-        "php": false,
-        "port": 80,
-        "site_icon": "fa fa-globe",
-        "site_name": "Basic Website",
-        "site_type": "basicsite",
-        "version": null
-      }
-    ]
-  }
+  "website": [
+    {
+      "addr": "localhost",
+      "certificate": null,
+      "database": null,
+      "enabled": true,
+      "has_actions": null,
+      "id": "testsite",
+      "is_ready": true,
+      "path": "/srv/http/webapps/testsite",
+      "php": false,
+      "port": 80,
+      "site_icon": "fa fa-globe",
+      "site_name": "Basic Website",
+      "site_type": "basicsite",
+      "version": null
+    }
+  ]
 }
         {% endhighlight %}
-        <p>Here the website I added from a previous call to <span class="text-success">POST</span> <code>/api/websites</code> has completed, and the record is ready to be added to the system. It is keyed to the <code>pushes</code> object by the name of the record type itself. A <code>pushes</code> object can have multiple record types per call, in turn with multiple records matching each type.</p>
+        <p>Here the website I added from a previous call to <span class="text-success">POST</span> <code>/api/websites</code> has completed, and the record is ready to be added to the system. It is keyed to the event object by the name of the record type itself.</p>
       </div>
       <hr />
 
@@ -593,17 +625,17 @@ title: "Kraken REST API Reference"
       <hr />
 
       <div class="api-item">
-        <h2 id="get-application-logo">Get Application Logo</h2>
-        <h3><span class="text-success">GET</span> /api/apps/logo/:id</h3>
-        <p class="lead">Get the application logo provided with the application.</p>
+        <h2 id="get-application-asset">Get Application Asset</h2>
+        <h3><span class="text-success">GET</span> /api/apps/assets/:id/:asset_name</h3>
+        <p class="lead">Get an application logo or screenshot provided with the application.</p>
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl <url>/api/apps/logo/wordpress
+        curl <url>/api/apps/assets/wordpress/logo.png
         {% endhighlight %}
 
         <h4>Responds With</h4>
-        <p>Raw application logo image (usually a PNG file).</p>
+        <p>Raw image (usually a PNG or JPG file).</p>
       </div>
       <hr />
       <br />
@@ -765,12 +797,12 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="list-certificates">List Certificates</h2>
-        <h3><span class="text-success">GET</span> /api/certs</h3>
+        <h3><span class="text-success">GET</span> /api/certificates</h3>
         <p class="lead">Returns a list of SSL/TLS certificates present on the system.</p>
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/api/certs
+        curl -H 'Authorization: Bearer <token>' <url>/api/certificates
         {% endhighlight %}
 
         <h4>Responds With</h4>
@@ -779,7 +811,7 @@ title: "Kraken REST API Reference"
         <h4>Example Response</h4>
         {% highlight json %}
 {
-    "certs": [
+    "certificates": [
         {
             "assigns": [],
             "domain": "secure.testdomain.xyz",
@@ -800,7 +832,7 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="get-certificate-details">Get Certificate Details</h2>
-        <h3><span class="text-success">GET</span> /api/certs/:id</h3>
+        <h3><span class="text-success">GET</span> /api/certificates/:id</h3>
         <p class="lead">Returns details on the specified SSL/TLS certificate.</p>
 
         <h4>Parameters</h4>
@@ -811,7 +843,7 @@ title: "Kraken REST API Reference"
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/api/certs/testcert
+        curl -H 'Authorization: Bearer <token>' <url>/api/certificates/testcert
         {% endhighlight %}
 
         <h4>Responds With</h4>
@@ -820,12 +852,13 @@ title: "Kraken REST API Reference"
         <h4>Example Response</h4>
         {% highlight json %}
 {
-  "cert": {
+  "certificate": {
     "assigns": [],                      // array - items the cert is assigned to
     "domain": "secure.testdomain.xyz",  // string - address cert is valid for
     "expiry": "2017-02-03T22:32:22",    // string - expiry date in ISO-8601 format
     "id": "testcert",                   // string - unique identifier (name)
     "is_ready": true,                   // boolean - genesis use only
+    "is_acme": true,                    // boolean - was given by Let's Encrypt?
     "keylength": 4096,                  // integer - keylength in bits
     "keytype": "RSA",                   // string - key type (RSA, DSA)
     "md5": "0E:EB:5D:D4:65:15:28:AC:02:31:94:BE:22:74:6C:D8",
@@ -838,12 +871,12 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="generate-certificate">Generate Certificate</h2>
-        <h3><span class="text-success">POST</span> /api/certs</h3>
+        <h3><span class="text-success">POST</span> /api/certificates</h3>
         <p class="lead">Instructs the server to generate a self-signed SSL/TLS certificate.</p>
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/certs --data '{"cert": {...}}'
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/certificates --data '{"certificate": {...}}'
         {% endhighlight %}
 
         <h4>Request Requires</h4>
@@ -873,13 +906,39 @@ title: "Kraken REST API Reference"
       <hr />
 
       <div class="api-item">
+        <h2 id="request-acme-certificate">Request ACME Certificate</h2>
+        <h3><span class="text-success">POST</span> /api/certificates</h3>
+        <p class="lead">Instructs the server to request an SSL/TLS certificate from Let's Encrypt CA.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/certificates --data '{"certificate": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new certificate.</dd>
+            <dt>domain</dt>
+            <dd>Domain ID that the certificate is to be valid for.</dd>
+            <dt>is_acme</dt>
+            <dd>Must be <code>true</code>.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>HTTP 202, with Location header specifying Job endpoint to track.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
         <h2 id="upload-certificate">Upload Certificate</h2>
-        <h3><span class="text-success">POST</span> /api/certs</h3>
+        <h3><span class="text-success">POST</span> /api/certificates</h3>
         <p class="lead">Adds an externally-sourced SSL/TLS certificate to the server via an upload from the client.</p>
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/certs --form 'id=certname;file[0]=@certfile.pem;file[1]=@keyfile.key'
+        curl -H 'Authorization: Bearer <token>' -X POST <url>/api/certificates --form 'id=certname;file[0]=@certfile.pem;file[1]=@keyfile.key'
         {% endhighlight %}
 
         <h4>Request Requires</h4>
@@ -902,7 +961,7 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="assign-certificate">Assign Certificate</h2>
-        <h3><span class="text-success">PUT</span> /api/certs/:id</h3>
+        <h3><span class="text-success">PUT</span> /api/certificates/:id</h3>
         <p class="lead">Assign/unassign the specified certificate to/from a service or website.</p>
 
         <h4>Parameters</h4>
@@ -913,7 +972,7 @@ title: "Kraken REST API Reference"
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/certs/testcert --data '{"cert": {...}}'
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X PUT <url>/api/certificates/testcert --data '{"certificate": {...}}'
         {% endhighlight %}
 
         <h4>Request Requires</h4>
@@ -930,7 +989,7 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="delete-certificate">Delete Certificate</h2>
-        <h3><span class="text-success">DELETE</span> /api/certs/:id</h3>
+        <h3><span class="text-success">DELETE</span> /api/certificates/:id</h3>
         <p class="lead">Deletes an existing SSL/TLS certificate from the server.</p>
 
         <h4>Parameters</h4>
@@ -941,7 +1000,7 @@ title: "Kraken REST API Reference"
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/certs/testcert
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/certificates/testcert
         {% endhighlight %}
 
         <h4>Responds With</h4>
@@ -951,12 +1010,12 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="list-certificate-authorities">List Certificate Authorities</h2>
-        <h3><span class="text-success">GET</span> /api/certauths</h3>
+        <h3><span class="text-success">GET</span> /api/authorities</h3>
         <p class="lead">Returns a list of SSL/TLS certificate authorities generated by the server to handle self-signed certificates.</p>
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/api/certauths
+        curl -H 'Authorization: Bearer <token>' <url>/api/authorities
         {% endhighlight %}
 
         <h4>Responds With</h4>
@@ -965,7 +1024,7 @@ title: "Kraken REST API Reference"
         <h4>Example Response</h4>
         {% highlight json %}
 {
-  "certauths": [
+  "authorities": [
     {
       "expiry": "2020-02-02T22:58:03",
       "id": "testdomain.xyz"
@@ -982,7 +1041,7 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="get-certificate-authority-details">Get Certificate Authority Details</h2>
-        <h3><span class="text-success">GET</span> /api/certauths/:id</h3>
+        <h3><span class="text-success">GET</span> /api/authorities/:id</h3>
         <p class="lead">Returns details on the specified SSL/TLS certificate authority.</p>
 
         <h4>Parameters</h4>
@@ -993,7 +1052,7 @@ title: "Kraken REST API Reference"
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' <url>/api/certauths/testdomain.xyz
+        curl -H 'Authorization: Bearer <token>' <url>/api/authorities/testdomain.xyz
         {% endhighlight %}
 
         <h4>Responds With</h4>
@@ -1002,7 +1061,7 @@ title: "Kraken REST API Reference"
         <h4>Example Response</h4>
         {% highlight json %}
 {
-  "certauth": {
+  "authority": {
     "expiry": "2020-02-02T22:58:03",  // string - expiry date in ISO-8601 format
     "id": "testdomain.xyz"            // string - unique identifier (domain name)
   }
@@ -1013,12 +1072,12 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="download-certificate-authority">Download Certificate Authority</h2>
-        <h3><span class="text-success">GET</span> /api/certauths/:id?download=true</h3>
+        <h3><span class="text-success">GET</span> /api/authorities/:id?download=true</h3>
         <p class="lead">Downloads the certificate authority X509 file.</p>
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl <url>/api/certauths/testdomain.xyz?download=true
+        curl <url>/api/authorities/testdomain.xyz?download=true
         {% endhighlight %}
 
         <h4>Responds With</h4>
@@ -1028,7 +1087,7 @@ title: "Kraken REST API Reference"
 
       <div class="api-item">
         <h2 id="delete-certificate-authority">Delete Certificate Authority</h2>
-        <h3><span class="text-success">DELETE</span> /api/certauths/:id</h3>
+        <h3><span class="text-success">DELETE</span> /api/authorities/:id</h3>
         <p class="lead">Deletes a SSL/TLS certificate authority from the server.</p>
 
         <h4>Parameters</h4>
@@ -1039,11 +1098,40 @@ title: "Kraken REST API Reference"
 
         <h4>Example</h4>
         {% highlight bash %}
-        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/certauths/testdomain.xyz
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/authorities/testdomain.xyz
         {% endhighlight %}
 
         <h4>Responds With</h4>
         <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-possible-assignments">Get Possible Assignments</h2>
+        <h3><span class="text-success">GET</span> /api/assignments</h3>
+        <p class="lead">Returns a list of <code>assign</code> objects that can be used when assigning a certificate to a service.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/assignments
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of Certificate <code>assign</code> objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "assignments": [
+    {
+      "type": "website",
+      "id": "testpress",
+      "name": "testpress"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
       </div>
       <hr />
       <br />
@@ -1217,8 +1305,7 @@ title: "Kraken REST API Reference"
       "id": "testdb",
       "is_ready": true,
       "size": 0,
-      "type_id": "db-sqlite3",
-      "type_name": "SQLite3"
+      "database_type": "db-sqlite3"
     },
     ...
   ]
@@ -1250,11 +1337,10 @@ title: "Kraken REST API Reference"
         {% highlight json %}
 {
   "database": {
-    "id": "testdb",            // string - unique identifier (name)
-    "is_ready": true,          // boolean - genesis use only
-    "size": 0,                 // integer - size of the database on disk in bytes
-    "type_id": "db-sqlite3",   // string - database type id for this user
-    "type_name": "SQLite3"     // string - pretty database type name
+    "id": "testdb",                  // string - unique identifier (name)
+    "is_ready": true,                // boolean - genesis use only
+    "size": 0,                       // integer - size of the database on disk in bytes
+    "database_type": "db-sqlite3"   // string - database type id for this user
   }
 }
         {% endhighlight %}
@@ -1276,7 +1362,7 @@ title: "Kraken REST API Reference"
         <dl>
             <dt>id</dt>
             <dd>The ID (name) for the new database.</dd>
-            <dt>type_id</dt>
+            <dt>database_type</dt>
             <dd>The ID of the database type (see database type methods below).</dd>
         </dl>
 
@@ -1370,8 +1456,7 @@ title: "Kraken REST API Reference"
       "id": "testuser",
       "is_ready": true,
       "permissions": "GRANT USAGE ON *.* TO 'testuser'@'localhost'\n",
-      "type_id": "db-mariadb",
-      "type_name": "MariaDB"
+      "database_type": "db-mariadb"
     },
     ...
   ]
@@ -1406,8 +1491,7 @@ title: "Kraken REST API Reference"
     "id": "testuser",         // string - unique identifier
     "is_ready": true,         // boolean - genesis use only
     "permissions": "GRANT USAGE ON *.* TO 'testuser'@'localhost'\n",
-    "type_id": "db-mariadb",  // string - database type id for this user
-    "type_name": "MariaDB"    // string - pretty database type name
+    "database_type": "db-mariadb"  // string - database type id for this user
   }
 }
         {% endhighlight %}
@@ -2330,6 +2414,148 @@ title: "Kraken REST API Reference"
       <hr />
       <br />
 
+      <h1 id="notifications" class="page-header">Notifications</h1>
+
+      <div class="api-item">
+        <h2 id="get-notifications">Get All Notifications</h2>
+        <h3><span class="text-success">GET</span> /api/notifications</h3>
+        <p class="lead">Get all notifications cached on the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/notifications
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of notification detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "notifications": [
+    {
+      "level": "info",
+      "complete": false,
+      "title": null,
+      "message_id": "34853c64c3",
+      "id": "34853c64c3",
+      "message": "Please wait...",
+      "time": "2016-10-12T23:00:00",
+      "cls": "notify",
+      "comp": "Sites"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-notification-details">Get Notification Details</h2>
+        <h3><span class="text-success">GET</span> /api/notification/:id</h3>
+        <p class="lead">Returns details on the specified notification.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Notification thread ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/notification/34853c64c3
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Notification detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "notification": {
+    "level": "info",
+    "complete": false,
+    "title": null,
+    "message_id": "34853c64c3",
+    "id": "34853c64c3",
+    "message": "Please wait...",
+    "time": "2016-10-12T23:00:00",
+    "cls": "notify",
+    "comp": "Sites"
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-notification">Create Notification</h2>
+        <h3><span class="text-success">POST</span> /api/notifications</h3>
+        <p class="lead">Send a new notification via Kraken.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/notification --data '{"notification": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>A notification object with at least the following parameters:</em>
+        <dl>
+            <dt>level</dt>
+            <dd>One of <code>debug</code>, <code>info</code>, <code>warning</code>, <code>error</code>, or <code>critical</code>.</dd>
+            <dt>cls</dt>
+            <dd>Either <code>notify</code> for a notification, or <code>runtime</code> for a log message only.</dd>
+            <dt>comp</dt>
+            <dd>A component name to register as the emitter of the message.</dd>
+            <dt>title</dt>
+            <dd>A title for the notification. Shown to user.</dd>
+            <dt>message</dt>
+            <dd>Message text. Shown to user.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Notification detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-notification">Delete Notification</h2>
+        <h3><span class="text-success">DELETE</span> /api/notifications/:id</h3>
+        <p class="lead">Deletes a notification (entire thread) from the server.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Notification name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/notifications/34853c64c3
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-all-notifications">Delete All Notifications</h2>
+        <h3><span class="text-success">DELETE</span> /api/notifications</h3>
+        <p class="lead">Deletes all completed notifications from the server.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/notifications
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+      <br />
+
       <h1 id="packages" class="page-header">System Packages</h1>
 
       <div class="api-item">
@@ -2948,6 +3174,34 @@ title: "Kraken REST API Reference"
       <hr />
 
       <div class="api-item">
+        <h2 id="create-custom-policy">Create Custom Policy</h2>
+        <h3><span class="text-success">POST</span> /api/system/policies</h3>
+        <p class="lead">Create a custom security policy / firewall rule.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/system/policies --data '{"policy": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new policy.</dd>
+            <dt>name</dt>
+            <dd>The display name for the new policy.</dd>
+            <dt>ports</dt>
+            <dd>Array of tuples describing the ports to regulate (i.e. <code>[('tcp', 8845), ('udp', 8845)]</code>)</dd>
+            <dt>policy<dt>
+            <dd>0 to restrict all, 1 to allow on local network only, 2 to make available to all</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>Security policy detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
         <h2 id="update-policy">Update Policy</h2>
         <h3><span class="text-success">PUT</span> /api/system/policies/:id</h3>
         <p class="lead">Change firewall rule for an arkOS app or website.</p>
@@ -2971,6 +3225,27 @@ title: "Kraken REST API Reference"
 
         <h4>Responds With</h4>
         <p>Firewall policy detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-custom-policy">Delete Custom Policy</h2>
+        <h3><span class="text-success">DELETE</span> /api/system/policies/:id</h3>
+        <p class="lead">Deletes a custom security policy from arkOS.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Policy name.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/system/policies/mypolicy
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
       </div>
       <hr />
       <br />
@@ -3129,6 +3404,282 @@ title: "Kraken REST API Reference"
       <hr />
       <br />
 
+      <h1 id="databases" class="page-header">Sharers</h1>
+
+      <div class="api-item">
+        <h2 id="get-shares">Get Shares</h2>
+        <h3><span class="text-success">GET</span> /api/shares</h3>
+        <p class="lead">Get all file shares registered with arkOS on the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/shares
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of file share detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "shares": [
+    {
+      "id": "myshare",
+      "share_type": "fs-samba",
+      "comment": "My File Share",
+      "path": "/home/user/shared",
+      "valid_users": ["userone", "userthree"],
+      "public": false,
+      "read_only": false,
+      "is_ready": true
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-share-details">Get Share Details</h2>
+        <h3><span class="text-success">GET</span> /api/shares/:id</h3>
+        <p class="lead">Returns details on the specified share.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Share name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/shares/myshare
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>Share detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "share": {
+    "id": "myshare",
+    "share_type": "fs-samba",
+    "comment": "My File Share",
+    "path": "/home/user/shared",
+    "valid_users": ["userone", "userthree"],
+    "public": false,
+    "read_only": false,
+    "is_ready": true
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="create-share">Create Share</h2>
+        <h3><span class="text-success">POST</span> /api/shares</h3>
+        <p class="lead">Add a new file share to the system.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/shares --data '{"share": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>id</dt>
+            <dd>The ID (name) for the new file share.</dd>
+            <dt>share_type</dt>
+            <dd>The ID of the file share type (see type methods below).</dd>
+            <dt>comment</dt>
+            <dd>Comment to add to the share. For Samba only. (Optional.)</dd>
+            <dt>path</dt>
+            <dd>Path to the folder on disk to share.</dd>
+            <dt>valid_users</dt>
+            <dd>List of names of users to allow access to. (Optional. If blank, the share will be public.)</dd>
+            <dt>read_only</dt>
+            <dd>True if this share is to be read only.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>File share detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="delete-share">Delete Share</h2>
+        <h3><span class="text-success">DELETE</span> /api/shares/:id</h3>
+        <p class="lead">Removes a file share from the server.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>File share name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/shares/myshare
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-mounts">Get Mounts</h2>
+        <h3><span class="text-success">GET</span> /api/mounts</h3>
+        <p class="lead">Get all file share mounts registered with arkOS on the system. Only applicable for file share engines like Samba that support mounting.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/mounts
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of file share mount detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "mounts": [
+    {
+      "id": "mymount",
+      "share_type": "fs-samba",
+      "path": "/media/mymount",
+      "network_path": "\\COMPUTER1\myshare",
+      "is_mounted": true,
+      "read_only": false,
+      "is_ready": true
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-mount-details">Get Mount Details</h2>
+        <h3><span class="text-success">GET</span> /api/mounts/:id</h3>
+        <p class="lead">Returns details on the specified mount.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Mount name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/mounts/mymount
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>File share mount detail object.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "mount": {
+    "id": "mymount",
+    "share_type": "fs-samba",
+    "path": "/media/mymount",
+    "network_path": "\\COMPUTER1\myshare",
+    "is_mounted": true,
+    "read_only": false,
+    "is_ready": true
+  }
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="mount-fileshare">Mount Fileshare</h2>
+        <h3><span class="text-success">POST</span> /api/mounts</h3>
+        <p class="lead">Mount an externally-hosted file share on your arkOS server</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Content-type: application/json' -H 'Authorization: Bearer <token>' -X POST <url>/api/mounts --data '{"mount": {...}}'
+        {% endhighlight %}
+
+        <h4>Request Requires</h4>
+        <em>An object with at least the following parameters:</em>
+        <dl>
+            <dt>path</dt>
+            <dd>Path on disk for the folder to mount on.</dd>
+            <dt>network_path</dt>
+            <dd>Identifier for the remote share. For example, a Samba share is usually in the format <code>\\COMPUTERNAME\sharename</code>.</dd>
+            <dt>username</dt>
+            <dd>Required only if it is not a public share.</dd>
+            <dt>password</dt>
+            <dd>Required only if it is not a public share.</dd>
+            <dt>read_only</dt>
+            <dd>True to mount this share as read only.</dd>
+        </dl>
+
+        <h4>Responds With</h4>
+        <p>File share mount detail object.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="unmount-fileshare">Unmount Fileshare</h2>
+        <h3><span class="text-success">DELETE</span> /api/mounts/:id</h3>
+        <p class="lead">Unmounts a remote share from the server.</p>
+
+        <h4>Parameters</h4>
+        <dl>
+            <dt>id</dt>
+            <dd>Mount name/ID.</dd>
+        </dl>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' -X DELETE <url>/api/mounts/mymount
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>HTTP 204.</p>
+      </div>
+      <hr />
+
+      <div class="api-item">
+        <h2 id="get-share-types">Get Share Types</h2>
+        <h3><span class="text-success">GET</span> /api/share_types</h3>
+        <p class="lead">Get all available fileshare engines installed in arkOS.</p>
+
+        <h4>Example</h4>
+        {% highlight bash %}
+        curl -H 'Authorization: Bearer <token>' <url>/api/share_types
+        {% endhighlight %}
+
+        <h4>Responds With</h4>
+        <p>List of share type detail objects.</p>
+
+        <h4>Example Response</h4>
+        {% highlight json %}
+{
+  "share_types": [
+    {
+      "id": "fs-samba",
+      "name": "Samba",
+      "icon": "windows icon"
+    },
+    ...
+  ]
+}
+        {% endhighlight %}
+      </div>
+      <hr />
+      <br />
+
       <h1 id="updates" class="page-header">Updates</h1>
 
       <div class="api-item">
@@ -3232,7 +3783,7 @@ title: "Kraken REST API Reference"
 {
   "websites": [
     {
-      "addr": "localhost",
+      "domain": "localhost",
       "certificate": null,
       "database": null,
       "enabled": true,
@@ -3240,7 +3791,7 @@ title: "Kraken REST API Reference"
       ...
     },
     {
-      "addr": "localhost",
+      "domain": "localhost",
       "certificate": null,
       "database": null,
       "enabled": true,
@@ -3277,7 +3828,7 @@ title: "Kraken REST API Reference"
         {% highlight json %}
 {
   "website": {
-    "addr": "localhost",
+    "domain": "localhost",
     "certificate": null,
     "database": null,
     "enabled": true,
@@ -3314,7 +3865,7 @@ title: "Kraken REST API Reference"
             <dd>The name for the new website.</dd>
             <dt>site_type</dt>
             <dd>The id of the Website Application to use for creating this site.</dd>
-            <dt>addr</dt>
+            <dt>domain</dt>
             <dd>The address to make this website respond to.</dd>
             <dt>port</dt>
             <dd>The port to make this website respond on.</dd>
@@ -3350,7 +3901,7 @@ title: "Kraken REST API Reference"
             <dd>The operation to perform: <code>enable</code>, <code>disable</code>, <code>enable_ssl</code>, <code>disable_ssl</code>, <code>update</code>. If just editing the website, leave this field blank.</dd>
             <dt>cert</dt>
             <dd>(if <code>enable_ssl</code>) The name of the certificate to assign to this website.</dd>
-            <dt>addr</dt>
+            <dt>domain</dt>
             <dd>(if editing) The address to make this website respond to.</dd>
             <dt>port</dt>
             <dd>(if editing) The port to make this website respond on.</dd>
