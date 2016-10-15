@@ -70,7 +70,7 @@
     },
     {
       "id": "rp2",
-      "name": "Raspberry Pi 2",
+      "name": "Raspberry Pi (2 and 3)",
       "logo": "https://cdn.citizenweb.io/static/img/icon-raspberrypi.png",
       "images": [
         {

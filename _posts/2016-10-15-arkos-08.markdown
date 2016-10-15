@@ -1,0 +1,29 @@
+---
+layout: post
+title:  "arkOS 0.8.0 'Galileo' Released"
+date:   2016-10-15 16:00:00
+author: "Jacob Cook"
+summary: "More new features that you've been asking for!"
+---
+
+![](/img/20161015001.png)
+
+Today arkOS took a big step forward toward stability and an eventual 1.0 with the release of **arkOS 0.8.0**, codenamed **"Galileo"**. This release packs some significant new features that users have been requesting for awhile now, and includes some important fixes and performance enhancements. Let's jump right in and see what's new!
+
+ * Enhanced, clean new look for Genesis
+ * Automatically generate free, secure TLS certificates for use with your sites and services via **Let's Encrypt**
+ * "The return of Samba": New integrated **file shares** framework, allowing you to create file shares for SMB/CIFS (Windows), AFP (Apple) and NFS (Linux systems), as well as mounting external SMB and NFS shares on your server
+ * Say goodbye to ugly router interfaces: Automatic forwarding of your new services inside your network with **uPnP**
+ * No more waiting for minutes on end for your server to start: Load times drastically reduced as **Genesis is now distributed pre-compiled**
+ * A revamped command-line utility called **arkosctl**
+ * A new **notifications framework** using WebSockets
+ * Add **custom persistent firewall rules** using the Security pane in Genesis
+ * Enhanced **error-handling and logging systems** to make sure that the problems you do encounter can be fixed quickly and efficiently.
+ * Added functionality through **Mailserver**, **OpenVPN** and **Dynamic DNS** apps (pending releases)
+ * And much more!
+
+ And finally, a word on stability: a lot of you have been asking when the platform is going to be stable enough to remove that nagging "do not depend on arkOS for anything other than testing" notice we've plastered everywhere. This release goes a long way to fixing a lot of the stability problems people have encountered in past versions, but we aren't quite at 1.0 just yet. The important thing with this release is that, when you do encounter issues, they are logged and handled much better than in past versions. So if you ever need help on the support forums, it should be much easier to diagnose and fix your server's issues. And it helps us permanently fix the problems in future releases. A win-win!
+
+ **[arkOS 0.8.0 Galileo is available now through arkOS Assistant and raw images on the Downloads page.](https://arkos.io/downloads)**
+
+ Thanks so much for your support and patience during this most recent development cycle. And, enjoy Galileo!

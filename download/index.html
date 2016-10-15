@@ -64,7 +64,7 @@ title: Downloads
     <h2>Install arkOS CLI</h2>
     <p>arkOS CLI is a command-line interface for remote management of arkOS servers. It provides a quick and easy alternative to managing your server via the Genesis web interface. It can be installed on your local client computer and run through the Terminal.</p>
     <p>Installation of the CLI requires <code>pip</code>, installable through Python for Windows, Homebrew for macOS, or the default package manager for your Linux distribution. To install the CLI, run:</p>
-    {% highlight bash %}sudo pip install arkos-cli{% endhighlight %}
+    {% highlight bash %}sudo pip install arkosctl{% endhighlight %}
     <p>For information on how to use the CLI, see <a href="https://wiki.arkos.io/en:managing_arkos">the documentation</a>.</p>
   </section>
 
@@ -100,14 +100,9 @@ title: Downloads
         <td><a a-type="rpisplit" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rpisplit.zip'><i class="fa fa-download"></i> Download</a></td>
       </tr>
       <tr>
-        <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi 2</td>
+        <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi (2 and 3)</td>
         <td><a a-type="rp2" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rp2.zip'><i class="fa fa-download"></i> Download</a></td>
         <td><a a-type="rp2split" class="btn btn-default dbutton" href='https://nyus.mirror.arkos.io/os/latest-rp2split.zip'><i class="fa fa-download"></i> Download</a></td>
-      </tr>
-      <tr>
-        <td><img src="https://cdn.citizenweb.io/static/img/icon-raspberrypi.png" /> Raspberry Pi 3</td>
-        <td>Coming Soon</td>
-        <td>Coming Soon</td>
       </tr>
     </table>
   </section>
@@ -135,18 +130,16 @@ title: Downloads
         <th>SHA256sum</th>
         <th>GPG Signature</th>
       </tr>
-      <tr><td rowspan=2><strong>Cubieboard2</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-cb2.zip.sha256.txt">ea755d98cbd791bedb1d6d20ffe94af7a7a532e8ece60a57e0a20de24e4d03e3</a></td><td><a href="https://pkg.arkos.io/os/latest-cb2.zip.sig">GPG Signature</a></td></tr>
-        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-cb2split.zip.sha256.txt">a9baa8346553ec6141c609d1ac2eecdfdecf9888d14e2ddeb97721f2107b7688</a></td><td><a href="https://pkg.arkos.io/os/latest-cb2split.zip.sig">GPG Signature</a></td></tr>
-      <tr><td rowspan=2><strong>Cubietruck</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-cb3.zip.sha256.txt">87618dded7d5b55063f16e1aaa36e0bff9f1cd80b6fa31d609703331571bf4fe</a></td><td><a href="https://pkg.arkos.io/os/latest-cb3.zip.sig">GPG Signature</a></td></tr>
-        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-cb3split.zip.sha256.txt">b111b2e875860297ff2b2737ba7650eddb142c3a6ddf319f464a5467ad37d6b8</a></td><td><a href="https://pkg.arkos.io/os/latest-cb3split.zip.sig">GPG Signature</a></td></tr>
-      <tr><td rowspan=2><strong>ODROID U Series</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-odu.zip.sha256.txt">d98ee4940ef0aa578cc7e8b18d4844f252e32f5ac57f916d7edda0d79a774596</a></td><td><a href="https://pkg.arkos.io/os/latest-odu.zip.sig">GPG Signature</a></td></tr>
-        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-odusplit.zip.sha256.txt">cb87700da0af0eded150aac8aecf191b74e13bbfedfb3c21daa2fe684edced75</a></td><td><a href="https://pkg.arkos.io/os/latest-odusplit.zip.sig">GPG Signature</a></td></tr>
-      <tr><td rowspan=2><strong>Raspberry Pi</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-rpi.zip.sha256.txt">65601ca0465923e3b60f060194144789d71155d73f79f0933579a2ce4e6cfb1a</a></td><td><a href="https://pkg.arkos.io/os/latest-rpi.zip.sig">GPG Signature</a></td></tr>
-        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-rpisplit.zip.sha256.txt">a3e1a15b09bfe052dddf55e1baea6ff1cc56d4a95a8a0ffa824fbca1c3fa8a61</a></td><td><a href="https://pkg.arkos.io/os/latest-rpisplit.zip.sig">GPG Signature</a></td></tr>
-      <tr><td rowspan=2><strong>Raspberry Pi 2</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-rp2.zip.sha256.txt">53ba47885473d99cfe16c80eb7c62284ec66de89f25390152905ba0d59cea22b</a></td><td><a href="https://pkg.arkos.io/os/latest-rp2.zip.sig">GPG Signature</a></td></tr>
-        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-rp2split.zip.sha256.txt">8e5feb6b68985484e236abe7f1b2cdbc6b53204d7983e64541db7f703ab275a2</a></td><td><a href="https://pkg.arkos.io/os/latest-rp2split.zip.sig">GPG Signature</a></td></tr>
-      <tr><td rowspan=2><strong>Raspberry Pi 3</strong></td><td>Default</td><td>Coming Soon</td><td>Coming Soon</td></tr>
-        <tr><td>Split</td><td>Coming Soon</td><td>Coming Soon</td></tr>
+      <tr><td rowspan=2><strong>Cubieboard2</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-cb2.zip.sha256.txt">7649e7a5fba4101ee04b25a4a42c06d243863e1a0c0100f76fb0db201f8be3a2</a></td><td><a href="https://pkg.arkos.io/os/latest-cb2.zip.asc">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-cb2split.zip.sha256.txt">bc66615293f7429092911a770ec77b6b320d8ed4ac601392cfb482d126a28bf7</a></td><td><a href="https://pkg.arkos.io/os/latest-cb2split.zip.asc">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>Cubietruck</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-cb3.zip.sha256.txt">7fba8c6396ecfe2e6f3239003b83fba2f34b53cd69e6d745e6959ffd116497ec</a></td><td><a href="https://pkg.arkos.io/os/latest-cb3.zip.asc">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-cb3split.zip.sha256.txt">67dce80546d79a19cb57d2b121f6c1b3e66ddd990b33bf68d499f5a99e0a2ddb</a></td><td><a href="https://pkg.arkos.io/os/latest-cb3split.zip.asc">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>ODROID U Series</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-odu.zip.sha256.txt">1a5d386511a13a6d014f95514d2b13dcae611ba4538a8e8ec393ed6e65d6a700</a></td><td><a href="https://pkg.arkos.io/os/latest-odu.zip.asc">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-odusplit.zip.sha256.txt">8b1858afaf9773dd0c932fd27204bbe3fc73977888aa41e21171106b57531626</a></td><td><a href="https://pkg.arkos.io/os/latest-odusplit.zip.asc">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>Raspberry Pi (original)</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-rpi.zip.sha256.txt">59d680645a5b3220268504556638bbb0a8fc5bba33a232b9f114a788c60fc90f</a></td><td><a href="https://pkg.arkos.io/os/latest-rpi.zip.asc">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-rpisplit.zip.sha256.txt">b6592ac39c6787613d32aa2d793ef446f17c2bd0fc07196d4c9aaf12641d3c20</a></td><td><a href="https://pkg.arkos.io/os/latest-rpisplit.zip.asc">GPG Signature</a></td></tr>
+      <tr><td rowspan=2><strong>Raspberry Pi (2 and 3)</strong></td><td>Default</td><td><a href="https://pkg.arkos.io/os/latest-rp2.zip.sha256.txt">37043804cfc288d23be05720f8e2b6e587dc5f1e065fe972a68744bd7f94ab21</a></td><td><a href="https://pkg.arkos.io/os/latest-rp2.zip.asc">GPG Signature</a></td></tr>
+        <tr><td>Split</td><td><a href="https://pkg.arkos.io/os/latest-rp2split.zip.sha256.txt">1c150fcaf8c06cb467e2a62ba8ca4f9a2e640b13f63b7c8468d2547437b3ab27</a></td><td><a href="https://pkg.arkos.io/os/latest-rp2split.zip.asc">GPG Signature</a></td></tr>
     </table>
   </section>
 
