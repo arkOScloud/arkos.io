@@ -72,7 +72,7 @@ title: Downloads
     <h2>Install arkOS from Image</h2>
     <p>If you do not wish to use the arkOS Assistant, you can still install arkOS by manually flashing the images to your devices. Instructions on how to install these images can be found <a href="https://wiki.arkos.io/en:getting_started#manually_writing_a_disk_image">on the Wiki</a>.</p>
     <p><strong>Select your download mirror:</strong></p>
-    <p><select id="ddrop" class="form-control" onchange="$('.dbutton').each(function(i,e){$(this).attr('href', 'https://'+$('#ddrop').val()+'.mirror.arkos.io/os/latest-'+$(this).attr('a-type')+'.zip')});"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select></p>
+    <p><select id="ddrop" class="form-control" onchange="$('.dbutton').each(function(i,e){$(this).attr('href', 'https://'+$('#ddrop').val()+'.mirror.arkos.io/os/latest-'+$(this).attr('a-type')+'.zip')});"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="frde">Frankfurt (EU)</option><option value="sgsg">Singapore (Asia)</option></select></p>
     <table class="table table-striped">
       <tr>
         <th>Device</th>
@@ -111,7 +111,7 @@ title: Downloads
     <h2>arkOS Testing and Development</h2>
     <p>You can install a Vagrant box on any Windows/OS X/Linux computer to begin using arkOS for testing or development purposes. See the appropriate <a href="/dev/docs/vagrant">documentation</a> for help in getting started.</p>
     <div class="input-group">
-      <select id="gtddrop" class="form-control" onchange="$('#gtdbutton').attr('href', 'https://'+$('#gtddrop').val()+'.mirror.arkos.io/resources/arkos-dev.box');"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="amnl">Amsterdam (EU)</option><option value="frde">Frankfurt (EU)</option><option value="louk">London (UK)</option><option value="sgsg">Singapore (Asia)</option></select>
+      <select id="gtddrop" class="form-control" onchange="$('#gtdbutton').attr('href', 'https://'+$('#gtddrop').val()+'.mirror.arkos.io/resources/arkos-dev.box');"><option value="nyus">New York (USA)</option><option value="sfus">San Francisco (USA)</option><option value="frde">Frankfurt (EU)</option><option value="sgsg">Singapore (Asia)</option></select>
       <span class="input-group-btn">
         <a id="gtdbutton" class="btn btn-default" href='https://nyus.mirror.arkos.io/resources/arkos-dev.box'><i class="fa fa-download"></i> Download</a>
       </span>
