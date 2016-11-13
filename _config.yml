@@ -2,14 +2,14 @@ gems: [jekyll-paginate]
 
 # Site settings
 title: arkOS
-email: info@citizenweb.io
+email: info@arkos.io
 description: > # this means to ignore newlines until "baseurl:"
   A project to help users self-host their websites, email, files and more.
   Decentralize your web and reclaim your privacy rights while keeping
   the conveniences you need.
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "https://arkos.io" # the base hostname & protocol for your site
-twitter_username: cznweb
+twitter_username: arkOScloud
 github_username:  cznweb
 
 # Build settings
