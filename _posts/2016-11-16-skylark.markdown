@@ -1,0 +1,37 @@
+---
+layout: post
+title:  "(Re-)Introducing Skylark"
+date:   2016-11-16 12:00:00
+author: "Jacob Cook"
+summary: "Private, simplified arkOS personal clouds, hosted by us."
+---
+
+![](https://skylark.cloud/img/20161116001.jpg)
+
+Hey all,
+
+I wanted to let you know about a new service in the works that is being powered by arkOS. Some members of the community may remember **Skylark**, a service we announced a couple of years back that was intended to provide a hosted version of arkOS, for people that wanted their own individual, private cloud but didn't want to mess around with hosting on their own hardware or on their home internet connection.
+
+We are bringing back the idea of Skylark today because many people want to have a more private alternative to the big companies (Google, Dropbox, Apple, etc) that is just as convenient and simple. And we're happy to announce that we've found a way to do this at a very affordable price.
+
+### What is Skylark?
+
+Skylark is a service for providing Debian-based virtual servers running a specially-created version of arkOS. This special version is more akin to services like a hosted Nextcloud, Cozy or the like: you can access calendars, address books, email, files and more directly from the web interface (i.e., the Skylark edition of "Genesis"). But Skylark also provides what these services don't: a way to host your own websites like Wordpress, Ghost, Jekyll etc, *and* have your own fully-modifiable Debian server should you still wish to hack on things on the side.
+
+![](https://skylark.cloud/img/20161116002.png)
+
+### What's good about it?
+
+In a nutshell, here's why Skylark is great news for the arkOS ecosystem as a whole:
+
+**Skylark does more with less.** With Skylark we are specifically developing a simple, clean and all-in-one personal cloud solution. Much of what arkOS does today is important and applicable to the self-hosting experience, but only in the context of running it on your own hardware. And coincidentally, those particular elements of arkOS are the ones that give people the most trouble, are the most difficult to test and prototype so everyone can have the same experience. In short, Skylark is more stable than arkOS because **it's not a full replacement for arkOS, but a selection of the best parts of it.** So, for example, you may not see an XMPP server, Nextcloud app or Syncthing integration in Skylark. What you will see is a unique web interface, secure automatic update channel, and selection of external clients that allow you to do what you really need on a day-to-day basis, all built into the core of Skylark.
+
+**And Skylark funds the future of the platform.** We've been trying for a long time to launch services (arkOS Connect, etc) to support arkOS' development but, due to a variety of factors, we haven't been able to get anything viable off the ground yet. Until now. If successful, Skylark will be a driving force behind moving arkOS forward - funding people's work on the idea as well as taking care of the hosting and infrastructure costs which number in the hundreds of dollars every month.
+
+---
+
+**Skylark is launching on December 16th.** Service starts at as little as $10 per month. For more information:
+
+Website: [https://skylark.cloud](https://skylark.cloud)
+
+**[Preorder today and get 25% off of four months!](https://panel.skylark.cloud/preorder)**
