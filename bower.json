@@ -18,6 +18,7 @@
   "dependencies": {
     "font-awesome": "^4.7.0",
     "bootstrap": "^3.3.7",
-    "lato": "^0.3.0"
+    "lato": "^0.3.0",
+    "jquery": "1.10.2"
   }
 }
