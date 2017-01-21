@@ -1,0 +1,12 @@
+language: ruby
+sudo: false
+rvm:
+- 2.2.5
+env:
+  global:
+  - domain: alpha.coderouge.co
+  - site_path: /var/www/arkos/site
+  - secure: gwxfjagtPYUU7eBaTu00JnMQnjmHaszzfHfXpo+2lNmwHc9qV+0VhSMmtGKMrn1zgHQf26eLn7xj120dP6mh8qicIUWGnT1RoJ4tUS+HCxwK7CMxq6UyBuRVEeBcU+GaEpWD5miekGIY4qGtCVj9f7HFFIMoJLgRDfP1VHDEf+EQGyZLBZEKS0wnbPnbvlS2b+HH+aIugmXJip9UOXqQMYedvjQ8VmCfrHRttjAc68VODGgvua15Vij4KUrSyTQSMuVbpKjwDxGl85Kys0mGF5uN2EaKH71047xTtPoXUWASMtawvd7AZfu9Pmuwl37MmXZMPsafau34GkG5srYm6jhao4VABNrL3QJyTuROD5j9u7q5fNr2H8W2cvMlFSvtVLJfRrScAiWo2zy+43ozR81S8NKe6nbetrL0lVyogsH32ootmxLzeBubOwsYzx4FBuDj9jq4Ljk7yJ1kTBPuXjzErtdXkcOmhHUZEhhNVTRfgHppmagJn8nCjFopdn6zhFia5iAr6J3mCcafkN4xlFyOLhEjxop+CMU5aKn0NLO/wz2m4UObOUdWKfN/Y+ITPyCAjJ+ASbt34tlPzxJTvmLKc3tRWkj600AQ28I7Pwj2kSxrbeUEgValhelg9ocFlA57o/9H04lK28oFUs7Hm/Zu8tQeWZppTuX6axWD/FQ=
+script: bundle exec jekyll build
+after_success:
+  - ./deploy/deploy.sh
