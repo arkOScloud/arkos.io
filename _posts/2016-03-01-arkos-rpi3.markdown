@@ -6,7 +6,7 @@ author: "Jacob Cook"
 summary: "New board and new software coming soon."
 ---
 
-![](/img/20150202001.png)
+![](/static/img/20150202001.png)
 
 arkOS is happy to report that the latest iteration of the Raspberry Pi family, the **[Raspberry Pi 3](https://www.raspberrypi.org/blog/raspberry-pi-3-on-sale/)**, has been released. The Pi 3 comes in at the same price ($35) as the original editions, and has a similar hardware profile to the Raspberry Pi 2, but with a few notable additions: the processor moves to an ARMv8 (aarch64) 64-bit multicore embedded processor, as well as featuring on-board WiFi and Bluetooth.
 

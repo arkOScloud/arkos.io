@@ -1,0 +1,23 @@
+{
+  "name": "arkos.io",
+  "homepage": "https://github.com/arkOScloud/arkos.io",
+  "authors": [
+    "Jacob Cook <jacob@peakwinter.net>"
+  ],
+  "description": "arkOS website",
+  "main": "index.html",
+  "license": "GPLv3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "font-awesome": "^4.7.0",
+    "bootstrap": "^3.3.7",
+    "lato": "^0.3.0"
+  }
+}

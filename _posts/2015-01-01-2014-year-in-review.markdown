@@ -21,8 +21,8 @@ The largest step yet towards a vision of a stable and secure arkOS ecosystem wil
 
 0.7 brings us one BIG step closer to arkOS 1.0, which we are finally able to think about and are targeting to release this year. There are some exciting things in store!
 
-![](/img/20150101001.png)
-![](/img/20150101002.png)
+![](/static/img/20150101001.png)
+![](/static/img/20150101002.png)
 
 
 ### The true centre of your self-hosted Internet

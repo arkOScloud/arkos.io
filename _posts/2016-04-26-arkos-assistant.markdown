@@ -6,7 +6,7 @@ author: "Jacob Cook"
 summary: "Flashy new way to install arkOS!"
 ---
 
-![](/img/20160426001.png)
+![](/static/img/20160426001.png)
 
 Lots of changes are in store for arkOS these days, with the development of 0.8 underway and the release (finally) of arkOS Connect on the horizon. Users will need a new, easier way to install arkOS and to connect to their servers &mdash; and today they've got it.
 

@@ -6,7 +6,7 @@ author: "Jacob Cook"
 summary: "Private, simplified arkOS personal clouds, hosted by us."
 ---
 
-![](https://skylark.cloud/img/20161116001.jpg)
+![](https://skylark.cloud/static/img/20161116001.jpg)
 
 Hey all,
 
@@ -18,7 +18,7 @@ We are bringing back the idea of Skylark today because many people want to have 
 
 Skylark is a service for providing Debian-based virtual servers running a specially-created version of arkOS. This special version is more akin to services like a hosted Nextcloud, Cozy or the like: you can access calendars, address books, email, files and more directly from the web interface (i.e., the Skylark edition of "Genesis"). But Skylark also provides what these services don't: a way to host your own websites like Wordpress, Ghost, Jekyll etc, *and* have your own fully-modifiable Debian server should you still wish to hack on things on the side.
 
-![](https://skylark.cloud/img/20161116002.png)
+![](https://skylark.cloud/static/img/20161116002.png)
 
 ### What's good about it?
 

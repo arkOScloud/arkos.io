@@ -5,37 +5,6 @@
 */
 
 
-/* Fonts */
-
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 100;
-  src: local('Lato Hairline'), local('Lato-Hairline'), url("/static/font/latohairline.ttf") format('truetype');
-}
-
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 200;
-  src: local('Lato Light'), local('Lato-Light'), url("/static/font/latolight.ttf") format('truetype');
-}
-
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Lato'), local('Lato-Regular'), url("/static/font/lato.ttf") format('truetype');
-}
-
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 800;
-  src: local('Lato Bold'), local('Lato-Bold'), url("/static/font/latobold.ttf") format('truetype');
-}
-
-
 /* Body Styles */
 
 body {

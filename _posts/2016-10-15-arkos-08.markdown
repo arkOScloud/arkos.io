@@ -6,7 +6,7 @@ author: "Jacob Cook"
 summary: "More new features that you've been asking for!"
 ---
 
-![](/img/20161015001.png)
+![](/static/img/20161015001.png)
 
 Today arkOS took a big step forward toward stability and an eventual 1.0 with the release of **arkOS 0.8.0**, codenamed **"Galileo"**. This release packs some significant new features that users have been requesting for awhile now, and includes some important fixes and performance enhancements. Let's jump right in and see what's new!
 

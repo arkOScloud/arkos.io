@@ -7,7 +7,7 @@ summary: "Thanks to everyone who gave their input on our very first user survey!
 ---
 First off I’d like to thank everyone who gave their input on our first user survey. Over 380 people completed it, giving us a very good read of what our users are interested in and how they feel we should best be supporting ourselves. This kind of input is critical to our mission of building a quality self-hosted data platform that all individuals have complete control and input over. **Thank you!**
 
-![Map of survey responses by country]({{ "/img/20140527001.png" | prepend: site.baseurl }})
+![Map of survey responses by country]({{ "/static/img/20140527001.png" | prepend: site.baseurl }})
 
 (We received survey input from all over the world (top spot once again was Germany!)
 
