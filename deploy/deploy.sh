@@ -32,5 +32,5 @@ printf "Host *\n    StrictHostKeyChecking no\n" > ~/.ssh/config
 chmod 400 ~/.ssh/config
 
 echo "copying site to $domain..."
-scp -i deploy/deploy_key site.zip deploy@$domain:site.zip
-ssh -i deploy/deploy_key deploy@$domain 'rm -rf "$site_path/*" && unzip site.zip -d "$site_path" && rm site.zip'
+scp -i deploy/deploy_key site.zip deploy@$domain:~/site.zip
+ssh -i deploy/deploy_key deploy@$domain 'rm -rf "$site_path/*" && unzip ~/site.zip -d "$site_path" && rm ~/site.zip'
