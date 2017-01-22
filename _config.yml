@@ -1,5 +1,5 @@
 gems: [jekyll-paginate]
-exclude: [deploy]
+exclude: [deploy, bower.json, Gemfile, Gemfile.lock]
 
 # Site settings
 title: arkOS
