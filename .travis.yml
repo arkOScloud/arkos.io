@@ -11,5 +11,9 @@ before_script:
   - npm install -g bower
   - bower install
 script: bundle exec jekyll build
-after_success:
-- "./deploy/deploy.sh"
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: "./deploy/deploy.sh"
+  on:
+    branch: master
